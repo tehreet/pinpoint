@@ -20,6 +20,7 @@ import (
 	"github.com/tehreet/pinpoint/internal/config"
 	"github.com/tehreet/pinpoint/internal/discover"
 	"github.com/tehreet/pinpoint/internal/gate"
+	"github.com/tehreet/pinpoint/internal/manifest"
 	"github.com/tehreet/pinpoint/internal/poller"
 	"github.com/tehreet/pinpoint/internal/risk"
 	"github.com/tehreet/pinpoint/internal/store"
@@ -49,6 +50,8 @@ func main() {
 		cmdAudit()
 	case "gate":
 		cmdGate()
+	case "manifest":
+		cmdManifest()
 	case "version":
 		fmt.Printf("pinpoint %s (commit: %s, built: %s)\n", version, commit, date)
 	case "help", "-h", "--help":
@@ -69,6 +72,7 @@ USAGE:
   pinpoint discover  --workflows <dir>
   pinpoint audit     --org <name>  [--output report|config|manifest|json]  [--skip-upstream]
   pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]
+  pinpoint manifest  <refresh|verify|init>  [options]
 
 COMMANDS:
   scan       One-shot: poll all monitored actions and report changes
@@ -76,6 +80,7 @@ COMMANDS:
   discover   Scan workflow files and output actions to monitor
   audit      Scan an entire GitHub org and produce a security posture report
   gate       Pre-execution: verify action tag integrity before CI runs
+  manifest   Manage the pinpoint manifest (refresh, verify, init)
 
 ENVIRONMENT:
   GITHUB_TOKEN     GitHub personal access token (recommended)
@@ -650,6 +655,199 @@ func fetchTagsREST(ctx context.Context, client *poller.GitHubClient, actions []c
 		results[actionCfg.Repo] = result
 	}
 	return results
+}
+
+func cmdManifest() {
+	if len(os.Args) < 3 {
+		fmt.Fprintf(os.Stderr, `Usage:
+  pinpoint manifest refresh  --manifest <path>  --workflows <dir>  [--discover]
+  pinpoint manifest verify   --manifest <path>
+  pinpoint manifest init
+
+SUBCOMMANDS:
+  refresh   Update manifest with current tag SHAs (exit 0=no changes, 3=changes written)
+  verify    Check manifest against live tags without modifying (exit 0=match, 3=drift)
+  init      Write starter manifest and workflow files to current directory
+`)
+		os.Exit(1)
+	}
+
+	switch os.Args[2] {
+	case "refresh":
+		cmdManifestRefresh()
+	case "verify":
+		cmdManifestVerify()
+	case "init":
+		cmdManifestInit()
+	case "help", "-h", "--help":
+		fmt.Fprintf(os.Stderr, `Usage:
+  pinpoint manifest refresh  --manifest <path>  --workflows <dir>  [--discover]
+  pinpoint manifest verify   --manifest <path>
+  pinpoint manifest init
+`)
+	default:
+		fmt.Fprintf(os.Stderr, "Unknown manifest subcommand: %s\n\nRun 'pinpoint manifest' for usage.\n", os.Args[2])
+		os.Exit(1)
+	}
+}
+
+func cmdManifestRefresh() {
+	manifestPath := getFlag("manifest")
+	if manifestPath == "" {
+		manifestPath = ".pinpoint-manifest.json"
+	}
+
+	workflowDir := getFlag("workflows")
+	if workflowDir == "" {
+		workflowDir = ".github/workflows"
+	}
+
+	doDiscover := hasFlag("discover")
+
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		fmt.Fprintln(os.Stderr, "Warning: GITHUB_TOKEN not set. API rate limits will be very low (60/hour).\nSet GITHUB_TOKEN for authenticated access (5000 requests/hour).")
+	}
+
+	client := poller.NewGraphQLClient(token)
+
+	ctx := context.Background()
+	fmt.Fprintf(os.Stderr, "Refreshing manifest (%s)...\n", manifestPath)
+
+	result, err := manifest.Refresh(ctx, manifestPath, workflowDir, doDiscover, client)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Print per-change details
+	for _, c := range result.Changes {
+		switch c.Type {
+		case "updated":
+			fmt.Fprintf(os.Stderr, "  %s@%s: UPDATED %s → %s (tag advanced)\n", c.Action, c.Tag, shortSHA(c.OldSHA), shortSHA(c.NewSHA))
+		case "added":
+			source := ""
+			if c.Source != "" {
+				source = fmt.Sprintf(" (discovered from %s)", c.Source)
+			}
+			fmt.Fprintf(os.Stderr, "  + %s@%s: NEW%s\n", c.Action, c.Tag, source)
+		case "missing_tag":
+			fmt.Fprintf(os.Stderr, "  ! %s@%s: WARNING tag no longer exists on remote (keeping old SHA %s)\n", c.Action, c.Tag, shortSHA(c.OldSHA))
+		}
+	}
+
+	// Summary
+	fmt.Fprintf(os.Stderr, "\nManifest updated: %d changed, %d added, %d unchanged.\n",
+		result.Updated, result.Added, result.Unchanged)
+
+	if result.Updated > 0 || result.Added > 0 {
+		os.Exit(3)
+	}
+}
+
+func cmdManifestVerify() {
+	manifestPath := getFlag("manifest")
+	if manifestPath == "" {
+		manifestPath = ".pinpoint-manifest.json"
+	}
+
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		fmt.Fprintln(os.Stderr, "Warning: GITHUB_TOKEN not set. API rate limits will be very low (60/hour).\nSet GITHUB_TOKEN for authenticated access (5000 requests/hour).")
+	}
+
+	client := poller.NewGraphQLClient(token)
+
+	ctx := context.Background()
+	fmt.Fprintf(os.Stderr, "Verifying manifest (%s)...\n", manifestPath)
+
+	result, err := manifest.Verify(ctx, manifestPath, client)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
+
+	total := result.Unchanged + result.Updated + result.Missing
+	drifted := result.Updated + result.Missing
+
+	for _, c := range result.Changes {
+		switch c.Type {
+		case "updated":
+			fmt.Fprintf(os.Stderr, "  ✗ %s@%s: DRIFTED\n", c.Action, c.Tag)
+			fmt.Fprintf(os.Stderr, "    manifest: %s\n", shortSHA(c.OldSHA))
+			fmt.Fprintf(os.Stderr, "    current:  %s  (resolved just now)\n", shortSHA(c.NewSHA))
+		case "missing_tag":
+			fmt.Fprintf(os.Stderr, "  ✗ %s@%s: TAG MISSING (was %s)\n", c.Action, c.Tag, shortSHA(c.OldSHA))
+		}
+	}
+
+	// Print matches
+	if drifted == 0 {
+		fmt.Fprintf(os.Stderr, "\n✓ All %d tags match manifest.\n", total)
+	} else {
+		fmt.Fprintf(os.Stderr, "\n✗ Manifest drift detected: %d of %d tags have changed.\n", drifted, total)
+		fmt.Fprintf(os.Stderr, "  Run: pinpoint manifest refresh --manifest %s\n", manifestPath)
+		os.Exit(3)
+	}
+}
+
+func cmdManifestInit() {
+	manifestPath := ".pinpoint-manifest.json"
+	refreshPath := ".github/workflows/pinpoint-refresh.yml"
+	gatePath := ".github/workflows/pinpoint-gate.yml"
+
+	// Check for existing files
+	for _, path := range []string{manifestPath, refreshPath, gatePath} {
+		if _, err := os.Stat(path); err == nil {
+			fmt.Fprintf(os.Stderr, "File already exists: %s\nRemove it first or use 'pinpoint manifest refresh' to update.\n", path)
+			os.Exit(1)
+		}
+	}
+
+	// Ensure .github/workflows/ exists
+	if err := os.MkdirAll(".github/workflows", 0755); err != nil {
+		fmt.Fprintf(os.Stderr, "Error creating workflow directory: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Write empty manifest
+	m := &manifest.Manifest{
+		Version: 1,
+		Actions: make(map[string]map[string]manifest.ManifestEntry),
+	}
+	if err := manifest.SaveManifest(manifestPath, m); err != nil {
+		fmt.Fprintf(os.Stderr, "Error writing manifest: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Fprintf(os.Stderr, "  ✓ Created %s\n", manifestPath)
+
+	// Write refresh workflow
+	if err := os.WriteFile(refreshPath, []byte(manifest.RefreshWorkflowTemplate), 0644); err != nil {
+		fmt.Fprintf(os.Stderr, "Error writing workflow: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Fprintf(os.Stderr, "  ✓ Created %s\n", refreshPath)
+
+	// Write gate workflow
+	if err := os.WriteFile(gatePath, []byte(manifest.GateWorkflowTemplate), 0644); err != nil {
+		fmt.Fprintf(os.Stderr, "Error writing workflow: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Fprintf(os.Stderr, "  ✓ Created %s\n", gatePath)
+
+	fmt.Fprintf(os.Stderr, `
+Next steps:
+  1. Populate the manifest:  pinpoint manifest refresh --manifest %s --workflows .github/workflows/ --discover
+  2. Commit all three files
+  3. The refresh workflow will run weekly to keep the manifest current
+`, manifestPath)
+}
+
+func shortSHA(sha string) string {
+	if len(sha) > 7 {
+		return sha[:7] + "..."
+	}
+	return sha
 }
 
 func truncate(s string, max int) string {
