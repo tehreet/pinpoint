@@ -19,6 +19,7 @@ import (
 	"github.com/tehreet/pinpoint/internal/audit"
 	"github.com/tehreet/pinpoint/internal/config"
 	"github.com/tehreet/pinpoint/internal/discover"
+	"github.com/tehreet/pinpoint/internal/gate"
 	"github.com/tehreet/pinpoint/internal/poller"
 	"github.com/tehreet/pinpoint/internal/risk"
 	"github.com/tehreet/pinpoint/internal/store"
@@ -41,6 +42,8 @@ func main() {
 		cmdDiscover()
 	case "audit":
 		cmdAudit()
+	case "gate":
+		cmdGate()
 	case "version":
 		fmt.Printf("pinpoint %s\n", version)
 	case "help", "-h", "--help":
@@ -60,12 +63,14 @@ USAGE:
   pinpoint watch     --config <path>  [--state <path>]  [--interval 5m]  [--rest]
   pinpoint discover  --workflows <dir>
   pinpoint audit     --org <name>  [--output report|config|manifest|json]  [--skip-upstream]
+  pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]
 
 COMMANDS:
   scan       One-shot: poll all monitored actions and report changes
   watch      Continuous: poll on interval, alert on changes
   discover   Scan workflow files and output actions to monitor
   audit      Scan an entire GitHub org and produce a security posture report
+  gate       Pre-execution: verify action tag integrity before CI runs
 
 ENVIRONMENT:
   GITHUB_TOKEN     GitHub personal access token (recommended)
@@ -346,6 +351,84 @@ Optional scope: admin:org (enables SHA pinning policy check)
 		}
 		fmt.Print(jsonStr)
 	}
+}
+
+func cmdGate() {
+	repo := getFlag("repo")
+	if repo == "" {
+		repo = os.Getenv("GITHUB_REPOSITORY")
+	}
+	if repo == "" {
+		fmt.Fprintf(os.Stderr, "Error: --repo is required (or set GITHUB_REPOSITORY).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned]\n")
+		os.Exit(1)
+	}
+
+	sha := getFlag("sha")
+	if sha == "" {
+		sha = os.Getenv("GITHUB_SHA")
+	}
+	if sha == "" {
+		fmt.Fprintf(os.Stderr, "Error: --sha is required (or set GITHUB_SHA).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned]\n")
+		os.Exit(1)
+	}
+
+	workflowRef := getFlag("workflow-ref")
+	if workflowRef == "" {
+		workflowRef = os.Getenv("GITHUB_WORKFLOW_REF")
+	}
+	if workflowRef == "" {
+		fmt.Fprintf(os.Stderr, "Error: --workflow-ref is required (or set GITHUB_WORKFLOW_REF).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned]\n")
+		os.Exit(1)
+	}
+
+	manifestPath := getFlag("manifest")
+	if manifestPath == "" {
+		manifestPath = ".pinpoint-manifest.json"
+	}
+
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		fmt.Fprintln(os.Stderr, "Warning: GITHUB_TOKEN not set. API requests may fail or be rate-limited.")
+	}
+
+	apiURL := os.Getenv("GITHUB_API_URL")
+	if apiURL == "" {
+		apiURL = "https://api.github.com"
+	}
+
+	graphqlURL := os.Getenv("GITHUB_GRAPHQL_URL")
+	if graphqlURL == "" {
+		graphqlURL = "https://api.github.com/graphql"
+	}
+
+	opts := gate.GateOptions{
+		Repo:           repo,
+		SHA:            sha,
+		WorkflowRef:    workflowRef,
+		ManifestPath:   manifestPath,
+		Token:          token,
+		APIURL:         apiURL,
+		GraphQLURL:     graphqlURL,
+		FailOnMissing:  hasFlag("fail-on-missing"),
+		FailOnUnpinned: hasFlag("fail-on-unpinned"),
+	}
+
+	ctx := context.Background()
+	result, err := gate.RunGate(ctx, opts)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Gate error: %v\n", err)
+		os.Exit(1)
+	}
+
+	if len(result.Violations) > 0 {
+		fmt.Fprintf(os.Stderr, "\n✗ INTEGRITY VIOLATION: %d action tag(s) do not match manifest\n", len(result.Violations))
+		fmt.Fprintf(os.Stderr, "  Job will not continue. Investigate immediately.\n")
+		fmt.Fprintf(os.Stderr, "  Dashboard: https://github.com/%s/security\n", repo)
+		os.Exit(2)
+	}
+
+	fmt.Fprintf(os.Stderr, "\n✓ All action integrity checks passed (%d verified, %d skipped, 0 violations) in %s\n",
+		result.Verified, result.Skipped, result.Duration.Round(time.Millisecond))
 }
 
 // runScan performs a single scan cycle across all configured actions.

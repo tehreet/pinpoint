@@ -1,0 +1,59 @@
+name: 'Pinpoint Gate'
+description: 'Verify GitHub Action tag integrity before execution'
+branding:
+  icon: 'shield'
+  color: 'red'
+inputs:
+  manifest:
+    description: 'Path to manifest file in the repository'
+    required: false
+    default: '.pinpoint-manifest.json'
+  fail-on-missing:
+    description: 'Fail if an action reference is not in the manifest'
+    required: false
+    default: 'false'
+  fail-on-unpinned:
+    description: 'Fail if any action uses a mutable ref (tag/branch)'
+    required: false
+    default: 'false'
+  version:
+    description: 'Pinpoint version to use'
+    required: false
+    default: '1.0.0'
+runs:
+  using: 'composite'
+  steps:
+    - name: Download pinpoint
+      shell: bash
+      run: |
+        VERSION="${{ inputs.version }}"
+        OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+        ARCH=$(uname -m)
+        case "$ARCH" in
+          x86_64)       ARCH="amd64" ;;
+          aarch64|arm64) ARCH="arm64" ;;
+        esac
+        BINARY="pinpoint-${OS}-${ARCH}"
+        URL="https://github.com/tehreet/pinpoint/releases/download/v${VERSION}/${BINARY}"
+
+        curl -sSL "$URL" -o "${{ runner.temp }}/pinpoint"
+        curl -sSL "${URL}.sha256" -o "${{ runner.temp }}/pinpoint.sha256"
+
+        cd "${{ runner.temp }}"
+        sha256sum -c pinpoint.sha256
+        chmod +x pinpoint
+
+    - name: Verify action integrity
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      run: |
+        ARGS="--manifest ${{ inputs.manifest }}"
+        if [ "${{ inputs.fail-on-missing }}" = "true" ]; then
+          ARGS="$ARGS --fail-on-missing"
+        fi
+        if [ "${{ inputs.fail-on-unpinned }}" = "true" ]; then
+          ARGS="$ARGS --fail-on-unpinned"
+        fi
+
+        "${{ runner.temp }}/pinpoint" gate $ARGS
