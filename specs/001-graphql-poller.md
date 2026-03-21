@@ -448,3 +448,270 @@ And this integration test (run manually, not in CI):
 GITHUB_TOKEN=$(gh auth token) ./pinpoint scan --config test-config.yml
 ```
 Should produce the same results as the REST poller for the same config.
+
+---
+
+## Addendum: Verified at 50-Repo Scale (2026-03-21)
+
+Empirical test with 50 real GitHub Action repos in a single query:
+
+```
+Repos queried:     50
+Total tags:        2,629
+API cost:          1 point
+Remaining budget:  4,990 points
+Node count:        5,000
+Response time:     6,488ms
+```
+
+The 50-repo batch is confirmed working. Node count hits exactly 5,000
+(50 repos × first:100 = 5,000 nodes), well under the 500,000 limit.
+Response time of ~6.5s is acceptable for a monitoring tool.
+
+## Addendum: Alias Collision Handling
+
+The alias function maps `foo/bar-baz` and `foo/bar_baz` to the same alias
+`foo_bar_baz`. In practice this is extremely unlikely — GitHub org/repo names
+that differ only in hyphens vs underscores for repos that are BOTH GitHub
+Actions is vanishingly rare.
+
+However, to be safe: after generating aliases, check for duplicates. If a
+collision occurs, append a numeric suffix: `foo_bar_baz`, `foo_bar_baz_2`.
+Maintain a reverse map from alias -> owner/repo for response parsing.
+
+```go
+func buildAliasMap(repos []string) map[string]string {
+    aliasToRepo := make(map[string]string)
+    for _, repo := range repos {
+        alias := repoToAlias(repo)
+        if _, exists := aliasToRepo[alias]; exists {
+            // Collision — append incrementing suffix
+            for i := 2; ; i++ {
+                candidate := fmt.Sprintf("%s_%d", alias, i)
+                if _, exists := aliasToRepo[candidate]; !exists {
+                    alias = candidate
+                    break
+                }
+            }
+        }
+        aliasToRepo[alias] = repo
+    }
+    return aliasToRepo
+}
+```
+
+This is a defensive measure. Do not over-engineer it.
+
+## Addendum: Pagination Strategy
+
+If `pageInfo.hasNextPage` is true for a repo, issue individual follow-up
+GraphQL queries (NOT batched — pagination cursors are per-repo).
+
+**Max pagination depth: 3 pages (300 tags).** If a repo has >300 tags,
+log a warning and stop paginating. Rationale:
+- No legitimate GitHub Action has >300 tags
+- A repo with >300 tags is either a monorepo or something unusual
+- Unbounded pagination could burn API budget on a single repo
+
+```go
+const maxPaginationPages = 3  // 300 tags max per repo
+
+func (c *GraphQLClient) paginateRepo(ctx context.Context, owner, repo, cursor string, page int) ([]ResolvedTag, error) {
+    if page >= maxPaginationPages {
+        fmt.Fprintf(os.Stderr, "Warning: %s/%s has >%d tags, stopping pagination\n",
+            owner, repo, maxPaginationPages*100)
+        return nil, nil
+    }
+    // ... single-repo query with after: cursor ...
+}
+```
+
+Each pagination follow-up costs 1 GraphQL point. For a poll cycle monitoring
+200 repos where 5 need pagination: 4 batch queries + 5 pagination queries =
+9 points total. Still negligible.
+
+## Addendum: Automated GraphQL→REST Failover
+
+### Behavior
+
+If the GraphQL call fails (network error, 5xx, auth error), pinpoint
+automatically falls back to the REST client for that poll cycle. It does NOT
+retry GraphQL — it immediately switches to REST for the affected batch.
+
+On the NEXT poll cycle, it tries GraphQL again. If GraphQL succeeds, normal
+operation resumes. If it fails again, fall back to REST again.
+
+This is a per-cycle failover, not a permanent switch.
+
+### Risks of Automated Failover
+
+**Risk 1: REST rate limit burn.**
+If GraphQL is down for an extended period and pinpoint is monitoring 200 repos,
+each REST poll cycle costs 200+ API calls (plus annotated tag dereferencing).
+At 5-minute intervals: 200 × 12 = 2,400 REST calls/hour. This is 48% of the
+5,000/hr REST budget. If the user has OTHER tools using the same token,
+they could hit the REST limit.
+
+**Mitigation:** When in REST failover mode, automatically increase the poll
+interval to 15 minutes (4 polls/hr × 200 = 800 calls/hr — safe). Log a
+prominent warning:
+
+```
+⚠ GraphQL unavailable. Falling back to REST with extended interval (15m).
+  REST API budget: 800/hr estimated usage, 5000/hr limit.
+```
+
+**Risk 2: Annotated tag dereferencing multiplier.**
+The REST client needs a second call per annotated tag. If 50% of 2,000 tags
+are annotated: 1,000 extra calls per cycle. At 15-minute intervals: 4 × 1,200
+= 4,800 calls/hr. Dangerously close to the limit.
+
+**Mitigation:** The tag-object SHA cache (spec to be written) eliminates this.
+In the interim, during REST failover, skip enrichment (no commit ancestry
+checks, no file size comparisons). Detection-only mode: compare SHAs, alert
+on changes, skip the expensive enrichment calls.
+
+**Risk 3: Silent degradation.**
+If failover happens silently and the user doesn't notice, they might not
+realize their poll interval has degraded from 5min to 15min. An attacker who
+can cause GraphQL failures could exploit this.
+
+**Mitigation:** The Slack/webhook alert channel should emit a
+SYSTEM_DEGRADED alert when failover occurs:
+
+```json
+{
+  "severity": "MEDIUM",
+  "type": "SYSTEM_DEGRADED",
+  "message": "GraphQL API unavailable. Operating in REST fallback mode with 15m poll interval.",
+  "detected_at": "2026-03-21T06:00:00Z"
+}
+```
+
+And a SYSTEM_RECOVERED alert when GraphQL comes back:
+
+```json
+{
+  "severity": "LOW",
+  "type": "SYSTEM_RECOVERED",
+  "message": "GraphQL API available. Resuming normal 5m poll interval.",
+  "detected_at": "2026-03-21T06:15:00Z"
+}
+```
+
+### Implementation
+
+```go
+type Poller struct {
+    graphql     *GraphQLClient
+    rest        *GitHubClient
+    forceREST   bool          // --rest flag
+    inFailover  bool          // currently in REST fallback
+    normalInterval time.Duration
+    failoverInterval time.Duration
+}
+
+func (p *Poller) Poll(ctx context.Context, repos []string) (map[string]*FetchResult, error) {
+    if p.forceREST {
+        return p.pollREST(ctx, repos)
+    }
+
+    results, err := p.graphql.FetchTagsBatch(ctx, repos)
+    if err != nil {
+        if !p.inFailover {
+            p.inFailover = true
+            // Emit SYSTEM_DEGRADED alert
+            fmt.Fprintf(os.Stderr, "⚠ GraphQL unavailable (%v). Falling back to REST.\n", err)
+        }
+        return p.pollREST(ctx, repos)
+    }
+
+    if p.inFailover {
+        p.inFailover = false
+        // Emit SYSTEM_RECOVERED alert
+        fmt.Fprintf(os.Stderr, "✓ GraphQL recovered. Resuming normal operation.\n")
+    }
+    return results, nil
+}
+
+func (p *Poller) CurrentInterval() time.Duration {
+    if p.inFailover {
+        return p.failoverInterval
+    }
+    return p.normalInterval
+}
+```
+
+## Addendum: Production Rate Limit Monitoring
+
+Every GraphQL response includes the `rateLimit` object. Use it.
+
+### Adaptive Backoff
+
+After every GraphQL call, read `rateLimit.remaining`. If remaining drops
+below a threshold, slow down proactively:
+
+```go
+const (
+    rateLimitWarning  = 500   // Slow down
+    rateLimitCritical = 100   // Emergency: skip enrichment, extend interval
+    rateLimitPanic    = 10    // Stop polling, wait for reset
+)
+
+func (p *Poller) adaptToRateLimit(remaining int) {
+    switch {
+    case remaining < rateLimitPanic:
+        fmt.Fprintf(os.Stderr, "🛑 Rate limit nearly exhausted (%d remaining). Pausing until reset.\n", remaining)
+        // Sleep until rateLimit.resetAt (would need to track this)
+    case remaining < rateLimitCritical:
+        fmt.Fprintf(os.Stderr, "⚠ Rate limit low (%d remaining). Disabling enrichment, extending interval.\n", remaining)
+        p.skipEnrichment = true
+        // Double the poll interval temporarily
+    case remaining < rateLimitWarning:
+        fmt.Fprintf(os.Stderr, "Rate limit advisory: %d points remaining.\n", remaining)
+    }
+}
+```
+
+### Structured Logging for Rate Limits
+
+Every poll cycle should log (to stderr at minimum, to metrics eventually):
+
+```
+[poll] repos=200 batches=4 cost=4 remaining=4986 duration=26.2s
+```
+
+This gives operators visibility into API budget consumption at a glance.
+When we add Prometheus metrics (v0.5), expose:
+
+```
+pinpoint_graphql_cost_total            (counter)
+pinpoint_graphql_remaining             (gauge)
+pinpoint_graphql_request_duration_seconds (histogram)
+pinpoint_poll_repos_total              (counter)
+pinpoint_failover_active               (gauge, 0 or 1)
+```
+
+### Test Case for Failover
+
+**Test 8: GraphQL Failure Triggers REST Fallback**
+
+Mock GraphQL endpoint to return 500. Verify:
+- Poller falls back to REST
+- SYSTEM_DEGRADED message is emitted
+- Poll interval changes to failoverInterval
+- Tags are still resolved correctly via REST
+
+**Test 9: GraphQL Recovery**
+
+After Test 8, mock GraphQL endpoint to return 200. Verify:
+- Poller switches back to GraphQL
+- SYSTEM_RECOVERED message is emitted
+- Poll interval returns to normalInterval
+
+**Test 10: Rate Limit Adaptive Backoff**
+
+Mock GraphQL response with rateLimit.remaining = 50. Verify:
+- Poller logs a critical warning
+- Enrichment is disabled
+- No panic, no crash
