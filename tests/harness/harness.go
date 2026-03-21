@@ -249,16 +249,29 @@ func (h *TestHelper) getRef(t *testing.T, repo, ref string) string {
 	return result.Object.SHA
 }
 
-// RunPinpointScan executes pinpoint scan and returns stdout+stderr and exit code.
+// RunPinpointScan builds and executes pinpoint scan, returning output and exit code.
+// NOTE: We build the binary first because "go run" swallows exit codes —
+// any non-zero exit becomes 1, losing the distinction between 1 (error) and 2 (alert).
 func RunPinpointScan(t *testing.T, configPath, statePath string) (string, int) {
 	t.Helper()
+	projectRoot := findProjectRoot(t)
 	token := os.Getenv("GITHUB_TOKEN")
-	cmd := exec.Command("go", "run", "./cmd/pinpoint/", "scan",
+
+	// Build binary to a temp location
+	binPath := filepath.Join(t.TempDir(), "pinpoint")
+	build := exec.Command("go", "build", "-o", binPath, "./cmd/pinpoint/")
+	build.Dir = projectRoot
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("Failed to build pinpoint: %v\n%s", err, string(out))
+	}
+
+	// Run the built binary directly
+	cmd := exec.Command(binPath, "scan",
 		"--config", configPath,
 		"--state", statePath,
 		"--json")
 	cmd.Env = append(os.Environ(), "GITHUB_TOKEN="+token)
-	cmd.Dir = findProjectRoot(t)
+	cmd.Dir = projectRoot
 	out, err := cmd.CombinedOutput()
 	exitCode := 0
 	if err != nil {

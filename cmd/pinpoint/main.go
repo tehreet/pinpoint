@@ -392,15 +392,7 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 					a.Enrichment["commit_message"] = truncate(commitInfo.Message, 100)
 				}
 
-				if risk.MeetsThreshold(severity, cfg.Alerts.MinSeverity) {
-					allAlerts = append(allAlerts, a)
-					if jsonOutput {
-						j, _ := alert.FormatJSON(a)
-						fmt.Println(j)
-					} else {
-						emitter.Emit(a)
-					}
-				}
+				allAlerts = append(allAlerts, a)
 			}
 		}
 
@@ -420,10 +412,7 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 							Signals:    []string{"TAG_DELETED: previously tracked tag no longer exists"},
 							SelfHosted: actionCfg.SelfHostedRunners,
 						}
-						if risk.MeetsThreshold(risk.SeverityMedium, cfg.Alerts.MinSeverity) {
-							allAlerts = append(allAlerts, a)
-							emitter.Emit(a)
-						}
+						allAlerts = append(allAlerts, a)
 					}
 				}
 			}
@@ -443,7 +432,21 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 		}
 	}
 
-	return allAlerts, nil
+	// Emit all alerts (after mass repoint scoring has been applied)
+	var filteredAlerts []risk.Alert
+	for _, a := range allAlerts {
+		if risk.MeetsThreshold(a.Severity, cfg.Alerts.MinSeverity) {
+			filteredAlerts = append(filteredAlerts, a)
+			if jsonOutput {
+				j, _ := alert.FormatJSON(a)
+				fmt.Println(j)
+			} else {
+				emitter.Emit(a)
+			}
+		}
+	}
+
+	return filteredAlerts, nil
 }
 
 // fetchTagsREST fetches tags for each repo individually using the REST API.
