@@ -1,0 +1,22 @@
+# Binary (built at repo root)
+/pinpoint
+*.exe
+
+# State files
+.pinpoint-state.json
+
+# Test configs with secrets
+test-config.yml
+
+# Go
+vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,410 @@
+// Copyright (C) 2026 CoreWeave, Inc.
+// SPDX-License-Identifier: GPL-3.0-only
+//
+// Pinpoint detects GitHub Actions tag repointing attacks.
+// It monitors the commit SHAs behind action version tags
+// and alerts when they change — before malicious code executes.
+
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	"os/signal"
+	"strings"
+	"time"
+
+	"github.com/tehreet/pinpoint/internal/alert"
+	"github.com/tehreet/pinpoint/internal/config"
+	"github.com/tehreet/pinpoint/internal/discover"
+	"github.com/tehreet/pinpoint/internal/poller"
+	"github.com/tehreet/pinpoint/internal/risk"
+	"github.com/tehreet/pinpoint/internal/store"
+)
+
+const version = "0.1.0"
+
+func main() {
+	if len(os.Args) < 2 {
+		printUsage()
+		os.Exit(1)
+	}
+
+	switch os.Args[1] {
+	case "scan":
+		cmdScan()
+	case "watch":
+		cmdWatch()
+	case "discover":
+		cmdDiscover()
+	case "version":
+		fmt.Printf("pinpoint %s\n", version)
+	case "help", "-h", "--help":
+		printUsage()
+	default:
+		fmt.Fprintf(os.Stderr, "Unknown command: %s\n\n", os.Args[1])
+		printUsage()
+		os.Exit(1)
+	}
+}
+
+func printUsage() {
+	fmt.Fprintf(os.Stderr, `pinpoint %s — GitHub Actions tag integrity monitor
+
+USAGE:
+  pinpoint scan      --config <path>  [--state <path>]  [--json]
+  pinpoint watch     --config <path>  [--state <path>]  [--interval 5m]
+  pinpoint discover  --workflows <dir>
+
+COMMANDS:
+  scan       One-shot: poll all monitored actions and report changes
+  watch      Continuous: poll on interval, alert on changes
+  discover   Scan workflow files and output actions to monitor
+
+ENVIRONMENT:
+  GITHUB_TOKEN     GitHub personal access token (recommended)
+  PINPOINT_CONFIG  Default config path (overridden by --config)
+
+`, version)
+}
+
+func getFlag(name string) string {
+	for i, arg := range os.Args {
+		if arg == "--"+name && i+1 < len(os.Args) {
+			return os.Args[i+1]
+		}
+		if strings.HasPrefix(arg, "--"+name+"=") {
+			return strings.TrimPrefix(arg, "--"+name+"=")
+		}
+	}
+	return ""
+}
+
+func hasFlag(name string) bool {
+	for _, arg := range os.Args {
+		if arg == "--"+name {
+			return true
+		}
+	}
+	return false
+}
+
+func cmdScan() {
+	configPath := getFlag("config")
+	if configPath == "" {
+		configPath = os.Getenv("PINPOINT_CONFIG")
+	}
+	if configPath == "" {
+		configPath = ".pinpoint.yml"
+	}
+
+	cfg, err := config.Load(configPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error loading config: %v\n", err)
+		os.Exit(1)
+	}
+
+	statePath := getFlag("state")
+	if statePath == "" {
+		statePath = cfg.Store.Path
+	}
+
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		fmt.Fprintln(os.Stderr, "Warning: GITHUB_TOKEN not set. API rate limits will be very low (60/hour).")
+	}
+
+	jsonOutput := hasFlag("json")
+
+	ctx := context.Background()
+	client := poller.NewGitHubClient(token)
+	stateStore, err := store.NewFileStore(statePath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error loading state: %v\n", err)
+		os.Exit(1)
+	}
+	emitter := alert.NewEmitter(!jsonOutput, cfg.Alerts.SlackWebhook, cfg.Alerts.WebhookURL)
+
+	alerts, err := runScan(ctx, cfg, client, stateStore, emitter, jsonOutput)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Scan error: %v\n", err)
+		os.Exit(1)
+	}
+
+	if err := stateStore.Save(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
+		os.Exit(1)
+	}
+
+	if len(alerts) > 0 {
+		fmt.Fprintf(os.Stderr, "\n⚠ %d alert(s) detected.\n", len(alerts))
+		os.Exit(2) // Non-zero exit for CI integration
+	} else {
+		fmt.Fprintf(os.Stderr, "✓ All %d tracked tags verified. No repointing detected.\n", stateStore.TagCount())
+	}
+}
+
+func cmdWatch() {
+	configPath := getFlag("config")
+	if configPath == "" {
+		configPath = ".pinpoint.yml"
+	}
+
+	cfg, err := config.Load(configPath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error loading config: %v\n", err)
+		os.Exit(1)
+	}
+
+	statePath := getFlag("state")
+	if statePath == "" {
+		statePath = cfg.Store.Path
+	}
+
+	intervalStr := getFlag("interval")
+	if intervalStr == "" {
+		intervalStr = "5m"
+	}
+	interval, err := time.ParseDuration(intervalStr)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Invalid interval %q: %v\n", intervalStr, err)
+		os.Exit(1)
+	}
+
+	token := os.Getenv("GITHUB_TOKEN")
+	client := poller.NewGitHubClient(token)
+	stateStore, err := store.NewFileStore(statePath)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error loading state: %v\n", err)
+		os.Exit(1)
+	}
+	emitter := alert.NewEmitter(true, cfg.Alerts.SlackWebhook, cfg.Alerts.WebhookURL)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	// Graceful shutdown
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt)
+	go func() {
+		<-sigCh
+		fmt.Fprintln(os.Stderr, "\nShutting down...")
+		cancel()
+	}()
+
+	fmt.Fprintf(os.Stderr, "pinpoint watching (interval: %s, actions: %d)\n", interval, len(cfg.Actions))
+	fmt.Fprintln(os.Stderr, "Press Ctrl+C to stop.\n")
+
+	// Initial scan
+	runScan(ctx, cfg, client, stateStore, emitter, false)
+	stateStore.Save()
+
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			stateStore.Save()
+			return
+		case <-ticker.C:
+			runScan(ctx, cfg, client, stateStore, emitter, false)
+			stateStore.Save()
+		}
+	}
+}
+
+func cmdDiscover() {
+	dir := getFlag("workflows")
+	if dir == "" {
+		dir = ".github/workflows"
+	}
+
+	refs, err := discover.FromWorkflowDir(dir)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error scanning workflows: %v\n", err)
+		os.Exit(1)
+	}
+
+	if len(refs) == 0 {
+		fmt.Fprintln(os.Stderr, "No GitHub Action references found.")
+		os.Exit(0)
+	}
+
+	fmt.Fprintln(os.Stderr, discover.Summary(refs))
+
+	if hasFlag("config") {
+		fmt.Print(discover.GenerateConfig(refs))
+	}
+}
+
+// runScan performs a single scan cycle across all configured actions.
+func runScan(ctx context.Context, cfg *config.Config, client *poller.GitHubClient, stateStore *store.FileStore, emitter *alert.Emitter, jsonOutput bool) ([]risk.Alert, error) {
+	var allAlerts []risk.Alert
+	batchChanges := make(map[string]int) // repo → count of changes this cycle
+
+	for _, actionCfg := range cfg.Actions {
+		if actionCfg.Discover || actionCfg.Repo == "" {
+			continue // discover-only entries handled separately
+		}
+
+		parts := strings.SplitN(actionCfg.Repo, "/", 2)
+		if len(parts) != 2 {
+			fmt.Fprintf(os.Stderr, "Warning: invalid repo %q, skipping\n", actionCfg.Repo)
+			continue
+		}
+		owner, repo := parts[0], parts[1]
+
+		actionState := stateStore.GetActionState(actionCfg.Repo)
+
+		result, err := client.FetchAllTags(ctx, owner, repo, actionState.RepoETag)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error fetching %s: %v\n", actionCfg.Repo, err)
+			continue
+		}
+
+		if result.NotModified {
+			continue // Nothing changed
+		}
+
+		stateStore.SetRepoETag(actionCfg.Repo, result.ETag)
+
+		// Build set of current tags for deletion detection
+		currentTags := make(map[string]bool)
+
+		for _, tag := range result.Tags {
+			// Filter to configured tags unless monitoring all
+			if !actionCfg.AllTags {
+				found := false
+				for _, t := range actionCfg.Tags {
+					if t == tag.Name {
+						found = true
+						break
+					}
+				}
+				if !found {
+					continue
+				}
+			}
+
+			currentTags[tag.Name] = true
+
+			changed, previousSHA := stateStore.RecordTag(actionCfg.Repo, tag.Name, tag.CommitSHA, tag.TagSHA)
+			if changed {
+				batchChanges[actionCfg.Repo]++
+
+				// Build scoring context
+				scoreCtx := risk.ScoreContext{
+					TagName:    tag.Name,
+					SelfHosted: actionCfg.SelfHostedRunners,
+					BatchSize:  1, // Updated after all tags processed
+				}
+
+				// Enrichment: check commit ancestry
+				isDesc, ahead, behind, err := client.CompareCommits(ctx, owner, repo, previousSHA, tag.CommitSHA)
+				if err == nil {
+					scoreCtx.IsDescendant = isDesc
+					scoreCtx.AheadBy = ahead
+					scoreCtx.BehindBy = behind
+				}
+
+				// Enrichment: commit info
+				commitInfo, err := client.GetCommitInfo(ctx, owner, repo, tag.CommitSHA)
+				if err == nil {
+					scoreCtx.CommitAuthor = commitInfo.AuthorName
+					scoreCtx.CommitEmail = commitInfo.AuthorEmail
+					scoreCtx.CommitDate = commitInfo.CommitDate
+				}
+
+				// Enrichment: entry point size (check common paths)
+				for _, path := range []string{"entrypoint.sh", "dist/index.js", "action.yml"} {
+					oldSize, _ := client.GetFileSize(ctx, owner, repo, path, previousSHA)
+					newSize, _ := client.GetFileSize(ctx, owner, repo, path, tag.CommitSHA)
+					if oldSize > 0 && newSize > 0 {
+						scoreCtx.EntryPointOld = oldSize
+						scoreCtx.EntryPointNew = newSize
+						break
+					}
+				}
+
+				severity, signals := risk.Score(scoreCtx)
+
+				a := risk.Alert{
+					Severity:    severity,
+					Type:        "TAG_REPOINTED",
+					Action:      actionCfg.Repo,
+					Tag:         tag.Name,
+					PreviousSHA: previousSHA,
+					CurrentSHA:  tag.CommitSHA,
+					DetectedAt:  time.Now().UTC(),
+					Signals:     signals,
+					SelfHosted:  actionCfg.SelfHostedRunners,
+					Enrichment:  make(map[string]string),
+				}
+
+				if commitInfo != nil {
+					a.Enrichment["commit_author"] = fmt.Sprintf("%s <%s>", commitInfo.AuthorName, commitInfo.AuthorEmail)
+					a.Enrichment["commit_date"] = commitInfo.CommitDate.Format(time.RFC3339)
+					a.Enrichment["commit_message"] = truncate(commitInfo.Message, 100)
+				}
+
+				if risk.MeetsThreshold(severity, cfg.Alerts.MinSeverity) {
+					allAlerts = append(allAlerts, a)
+					if jsonOutput {
+						j, _ := alert.FormatJSON(a)
+						fmt.Println(j)
+					} else {
+						emitter.Emit(a)
+					}
+				}
+			}
+		}
+
+		// Detect deleted tags
+		if !actionCfg.AllTags {
+			for _, t := range actionCfg.Tags {
+				if !currentTags[t] {
+					if _, exists := actionState.Tags[t]; exists {
+						stateStore.RecordDeletedTag(actionCfg.Repo, t)
+						a := risk.Alert{
+							Severity:   risk.SeverityMedium,
+							Type:       "TAG_DELETED",
+							Action:     actionCfg.Repo,
+							Tag:        t,
+							DetectedAt: time.Now().UTC(),
+							Signals:    []string{"TAG_DELETED: previously tracked tag no longer exists"},
+							SelfHosted: actionCfg.SelfHostedRunners,
+						}
+						if risk.MeetsThreshold(risk.SeverityMedium, cfg.Alerts.MinSeverity) {
+							allAlerts = append(allAlerts, a)
+							emitter.Emit(a)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Second pass: update batch sizes and re-score if mass repointing detected
+	for repo, count := range batchChanges {
+		if count > 5 {
+			for i := range allAlerts {
+				if allAlerts[i].Action == repo {
+					allAlerts[i].Severity = risk.SeverityCritical
+					allAlerts[i].Signals = append(allAlerts[i].Signals,
+						fmt.Sprintf("MASS_REPOINT: %d tags repointed in same scan cycle", count))
+				}
+			}
+		}
+	}
+
+	return allAlerts, nil
+}
+
+func truncate(s string, max int) string {
+	if len(s) <= max {
+		return s
+	}
+	return s[:max-3] + "..."
+}

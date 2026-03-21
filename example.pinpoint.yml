@@ -1,0 +1,30 @@
+# pinpoint example configuration
+#
+# Generate a config from your existing workflows:
+#   pinpoint discover --workflows .github/workflows/ --config > .pinpoint.yml
+
+actions:
+  # Monitor specific tags on an action
+  - repo: aquasecurity/trivy-action
+    tags:
+      - "0.35.0"
+    self_hosted_runners: true
+
+  # Monitor all tags on a critical dependency
+  - repo: actions/checkout
+    tags: ["*"]
+
+  - repo: actions/setup-go
+    tags: ["*"]
+
+  - repo: docker/build-push-action
+    tags: ["*"]
+
+alerts:
+  min_severity: medium
+  stdout: true
+  # slack_webhook: https://hooks.slack.com/services/T.../B.../xxx
+  # webhook_url: https://your-endpoint.example.com/pinpoint
+
+store:
+  path: .pinpoint-state.json

@@ -1,0 +1,180 @@
+// Copyright (C) 2026 CoreWeave, Inc.
+// SPDX-License-Identifier: GPL-3.0-only
+
+package risk
+
+import (
+	"regexp"
+	"strings"
+	"time"
+)
+
+// Severity levels for alerts.
+type Severity string
+
+const (
+	SeverityLow      Severity = "LOW"
+	SeverityMedium   Severity = "MEDIUM"
+	SeverityCritical Severity = "CRITICAL"
+)
+
+// Alert represents a detected tag integrity issue.
+type Alert struct {
+	Severity    Severity          `json:"severity"`
+	Type        string            `json:"type"` // TAG_REPOINTED, TAG_DELETED, MASS_REPOINT
+	Action      string            `json:"action"`
+	Tag         string            `json:"tag"`
+	PreviousSHA string            `json:"previous_sha,omitempty"`
+	CurrentSHA  string            `json:"current_sha,omitempty"`
+	DetectedAt  time.Time         `json:"detected_at"`
+	Enrichment  map[string]string `json:"enrichment,omitempty"`
+	Signals     []string          `json:"signals"` // Human-readable risk signals
+	SelfHosted  bool              `json:"self_hosted_runners"`
+}
+
+// ScoreContext provides the data needed to score a tag repointing event.
+type ScoreContext struct {
+	TagName         string
+	IsDescendant    bool   // Is the new commit a descendant of the old?
+	AheadBy         int
+	BehindBy        int
+	CommitAuthor    string
+	CommitEmail     string
+	CommitDate      time.Time
+	OldCommitDate   time.Time
+	EntryPointOld   int64  // File size at old SHA (-1 if not found)
+	EntryPointNew   int64  // File size at new SHA (-1 if not found)
+	ReleaseExists   bool
+	SelfHosted      bool
+	BatchSize       int    // Number of tags repointed in same polling interval
+}
+
+var (
+	// Major version tags like v1, v2, v3 — these are routinely moved
+	majorVersionRe = regexp.MustCompile(`^v?\d+$`)
+	// Exact semver tags like v1.2.3 — these should NEVER move
+	semverExactRe = regexp.MustCompile(`^v?\d+\.\d+\.\d+`)
+)
+
+// Score evaluates a tag repointing event and returns severity + signals.
+func Score(ctx ScoreContext) (Severity, []string) {
+	var signals []string
+	score := 0
+
+	// === CRITICAL SIGNALS ===
+
+	// Mass repointing: >5 tags in one interval (signature of Trivy/tj-actions attacks)
+	if ctx.BatchSize > 5 {
+		score += 100
+		signals = append(signals, "MASS_REPOINT: %d tags repointed in same polling interval")
+	}
+
+	// New commit is NOT a descendant of old commit (diverged history)
+	if !ctx.IsDescendant && ctx.AheadBy == 0 {
+		score += 80
+		signals = append(signals, "OFF_BRANCH: new commit is not a descendant of previous commit")
+	}
+
+	// Entry point size changed >50%
+	if ctx.EntryPointOld > 0 && ctx.EntryPointNew > 0 {
+		ratio := float64(ctx.EntryPointNew) / float64(ctx.EntryPointOld)
+		if ratio > 1.5 || ratio < 0.5 {
+			score += 60
+			pctChange := (ratio - 1.0) * 100
+			signals = append(signals, formatSignal("SIZE_ANOMALY: entry point size changed %.0f%% (%d → %d bytes)", pctChange, ctx.EntryPointOld, ctx.EntryPointNew))
+		}
+	}
+
+	// Exact semver tag was repointed (these should never move)
+	if semverExactRe.MatchString(ctx.TagName) {
+		score += 50
+		signals = append(signals, "SEMVER_REPOINT: exact version tag should never be moved")
+	}
+
+	// Commit date is backdated (>30 days before detection)
+	if time.Since(ctx.CommitDate) > 30*24*time.Hour {
+		score += 40
+		signals = append(signals, "BACKDATED_COMMIT: commit date is >30 days old")
+	}
+
+	// === MEDIUM SIGNALS ===
+
+	// No corresponding release
+	if !ctx.ReleaseExists {
+		score += 20
+		signals = append(signals, "NO_RELEASE: no GitHub Release associated with this tag")
+	}
+
+	// Self-hosted runners affected
+	if ctx.SelfHosted {
+		score += 15
+		signals = append(signals, "SELF_HOSTED: this action runs on self-hosted runners (elevated blast radius)")
+	}
+
+	// === LOW SIGNALS (informational) ===
+
+	// Major version tag moved forward to descendant (expected behavior)
+	if majorVersionRe.MatchString(ctx.TagName) && ctx.IsDescendant {
+		score -= 30
+		signals = append(signals, "MAJOR_TAG_ADVANCE: major version tag moved forward (routine)")
+	}
+
+	// Determine severity from score
+	severity := SeverityLow
+	if score >= 50 {
+		severity = SeverityCritical
+	} else if score >= 20 {
+		severity = SeverityMedium
+	}
+
+	return severity, signals
+}
+
+// MeetsThreshold checks if a severity meets the configured minimum.
+func MeetsThreshold(severity Severity, threshold string) bool {
+	levels := map[string]int{
+		"low":      0,
+		"medium":   1,
+		"critical": 2,
+	}
+	sevLevel := levels[strings.ToLower(string(severity))]
+	threshLevel := levels[strings.ToLower(threshold)]
+	return sevLevel >= threshLevel
+}
+
+func formatSignal(format string, args ...interface{}) string {
+	// Simple formatting without importing fmt to keep it clean
+	result := format
+	for _, arg := range args {
+		switch v := arg.(type) {
+		case float64:
+			result = strings.Replace(result, "%.0f%%", strings.TrimRight(strings.TrimRight(formatFloat(v), "0"), ".")+"%", 1)
+		case int64:
+			result = strings.Replace(result, "%d", formatInt(v), 1)
+		}
+	}
+	return result
+}
+
+func formatFloat(f float64) string {
+	if f < 0 {
+		return "-" + formatFloat(-f)
+	}
+	whole := int64(f)
+	return formatInt(whole)
+}
+
+func formatInt(i int64) string {
+	if i < 0 {
+		return "-" + formatInt(-i)
+	}
+	s := ""
+	if i == 0 {
+		return "0"
+	}
+	for i > 0 {
+		s = string(rune('0'+i%10)) + s
+		i /= 10
+	}
+	return s
+}
