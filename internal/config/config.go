@@ -12,9 +12,20 @@ import (
 
 // Config represents the pinpoint configuration file.
 type Config struct {
-	Actions []ActionConfig `yaml:"actions"`
-	Alerts  AlertConfig    `yaml:"alerts"`
-	Store   StoreConfig    `yaml:"store"`
+	Actions    []ActionConfig `yaml:"actions"`
+	AllowRules []AllowRule    `yaml:"allow"`
+	Alerts     AlertConfig    `yaml:"alerts"`
+	Store      StoreConfig    `yaml:"store"`
+}
+
+// AllowRule defines a false-positive suppression rule.
+type AllowRule struct {
+	Repo      string   `yaml:"repo"`      // Glob pattern: "actions/*", "docker/build-push-action"
+	Tags      []string `yaml:"tags"`      // Glob patterns: ["v*"], ["v1", "v2"]
+	Actor     string   `yaml:"actor"`     // Committer/pusher: "github-actions[bot]"
+	Condition string   `yaml:"condition"` // "major_tag_advance", "descendant", "any"
+	Suppress  bool     `yaml:"suppress"`  // true = suppress ALL alerts for this match
+	Reason    string   `yaml:"reason"`    // Human-readable justification (required)
 }
 
 // ActionConfig defines an action to monitor.
@@ -47,8 +58,17 @@ func Load(path string) (*Config, error) {
 		return nil, fmt.Errorf("reading config %s: %w", path, err)
 	}
 
+	cfg, err := LoadFromBytes(data)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", path, err)
+	}
+
+	return cfg, nil
+}
+
+// LoadFromBytes parses config from raw YAML bytes.
+func LoadFromBytes(data []byte) (*Config, error) {
 	cfg := &Config{
-		// Defaults
 		Alerts: AlertConfig{
 			MinSeverity: "medium",
 			Stdout:      true,
@@ -59,7 +79,7 @@ func Load(path string) (*Config, error) {
 	}
 
 	if err := yaml.Unmarshal(data, cfg); err != nil {
-		return nil, fmt.Errorf("parsing config %s: %w", path, err)
+		return nil, fmt.Errorf("parsing config: %w", err)
 	}
 
 	// Process wildcard tags
@@ -69,6 +89,13 @@ func Load(path string) (*Config, error) {
 				cfg.Actions[i].AllTags = true
 				break
 			}
+		}
+	}
+
+	// Validate allow rules
+	for i, rule := range cfg.AllowRules {
+		if rule.Reason == "" {
+			return nil, fmt.Errorf("allow rule %d: 'reason' is required. Explain why this suppression is safe so future readers understand the risk acceptance", i+1)
 		}
 	}
 

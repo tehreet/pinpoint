@@ -25,6 +25,7 @@ import (
 	"github.com/tehreet/pinpoint/internal/risk"
 	"github.com/tehreet/pinpoint/internal/sarif"
 	"github.com/tehreet/pinpoint/internal/store"
+	"github.com/tehreet/pinpoint/internal/suppress"
 )
 
 // version is set at build time via ldflags.
@@ -467,7 +468,8 @@ func cmdGate() {
 // runScan performs a single scan cycle across all configured actions.
 func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubClient, graphqlClient *poller.GraphQLClient, stateStore *store.FileStore, emitter *alert.Emitter, jsonOutput bool) ([]risk.Alert, error) {
 	var allAlerts []risk.Alert
-	batchChanges := make(map[string]int) // repo → count of changes this cycle
+	batchChanges := make(map[string]int)                     // repo → count of changes this cycle
+	scoreContexts := make(map[string]risk.ScoreContext) // "repo@tag" → context for suppression
 
 	// Collect valid repos for batching
 	validActions := make([]config.ActionConfig, 0, len(cfg.Actions))
@@ -580,6 +582,7 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 				}
 
 				severity, signals := risk.Score(scoreCtx)
+				scoreContexts[actionCfg.Repo+"@"+tag.Name] = scoreCtx
 
 				a := risk.Alert{
 					Severity:    severity,
@@ -640,7 +643,19 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 		}
 	}
 
-	// Emit all alerts (after mass repoint scoring has been applied)
+	// Apply allow-list suppression
+	if len(cfg.AllowRules) > 0 {
+		filterResult := suppress.Filter(allAlerts, cfg.AllowRules, scoreContexts)
+		if len(filterResult.Suppressed) > 0 {
+			fmt.Fprintf(os.Stderr, "%d alert(s) suppressed by allow-list rules.\n", len(filterResult.Suppressed))
+			for _, s := range filterResult.Suppressed {
+				fmt.Fprintf(os.Stderr, "  [suppressed] %s@%s repointed (rule: %q)\n", s.Alert.Action, s.Alert.Tag, s.Reason)
+			}
+		}
+		allAlerts = filterResult.Allowed
+	}
+
+	// Emit all alerts (after mass repoint scoring and suppression)
 	var filteredAlerts []risk.Alert
 	for _, a := range allAlerts {
 		if risk.MeetsThreshold(a.Severity, cfg.Alerts.MinSeverity) {
