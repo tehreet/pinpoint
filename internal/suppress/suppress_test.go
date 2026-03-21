@@ -195,3 +195,152 @@ func TestSuppressedAlertsCounted(t *testing.T) {
 		t.Errorf("expected docker/build-push-action to pass through, got %s", result.Allowed[0].Action)
 	}
 }
+
+func TestSuppress_MultipleRulesMatch(t *testing.T) {
+	alerts := []risk.Alert{
+		makeAlert("actions/checkout", "v4", risk.SeverityLow),
+	}
+	rules := []config.AllowRule{
+		{
+			Repo:      "actions/*",
+			Condition: "any",
+			Reason:    "Repo glob match",
+		},
+		{
+			Actor:     "github-actions[bot]",
+			Condition: "any",
+			Reason:    "Actor match",
+		},
+	}
+	contexts := map[string]risk.ScoreContext{
+		"actions/checkout@v4": {CommitAuthor: "github-actions[bot]"},
+	}
+
+	result := Filter(alerts, rules, contexts)
+
+	// First match wins, not double-counted
+	if len(result.Suppressed) != 1 {
+		t.Errorf("expected exactly 1 suppressed (first match wins), got %d", len(result.Suppressed))
+	}
+	if len(result.Allowed) != 0 {
+		t.Errorf("expected 0 allowed, got %d", len(result.Allowed))
+	}
+	if len(result.Suppressed) == 1 && result.Suppressed[0].Reason != "Repo glob match" {
+		t.Errorf("expected first rule to match, got reason: %s", result.Suppressed[0].Reason)
+	}
+}
+
+func TestSuppress_RuleOrderDoesntMatter(t *testing.T) {
+	alertA := makeAlert("actions/checkout", "v4", risk.SeverityLow)
+	alertB := makeAlert("docker/build-push-action", "v5", risk.SeverityMedium)
+
+	rule1 := config.AllowRule{
+		Repo:      "actions/*",
+		Condition: "any",
+		Reason:    "GitHub actions",
+	}
+	rule2 := config.AllowRule{
+		Repo:      "docker/*",
+		Condition: "any",
+		Reason:    "Docker actions",
+	}
+	contexts := map[string]risk.ScoreContext{}
+
+	// Order 1: rule1, rule2
+	result1 := Filter([]risk.Alert{alertA, alertB}, []config.AllowRule{rule1, rule2}, contexts)
+	// Order 2: rule2, rule1
+	result2 := Filter([]risk.Alert{alertA, alertB}, []config.AllowRule{rule2, rule1}, contexts)
+
+	if len(result1.Suppressed) != 2 {
+		t.Errorf("order 1: expected 2 suppressed, got %d", len(result1.Suppressed))
+	}
+	if len(result2.Suppressed) != 2 {
+		t.Errorf("order 2: expected 2 suppressed, got %d", len(result2.Suppressed))
+	}
+	if len(result1.Allowed) != 0 {
+		t.Errorf("order 1: expected 0 allowed, got %d", len(result1.Allowed))
+	}
+	if len(result2.Allowed) != 0 {
+		t.Errorf("order 2: expected 0 allowed, got %d", len(result2.Allowed))
+	}
+}
+
+func TestSuppress_NoRules(t *testing.T) {
+	alerts := []risk.Alert{
+		makeAlert("actions/checkout", "v4", risk.SeverityLow),
+		makeAlert("docker/build-push-action", "v5", risk.SeverityMedium),
+		makeAlert("myorg/my-action", "v1", risk.SeverityCritical),
+	}
+	rules := []config.AllowRule{}
+	contexts := map[string]risk.ScoreContext{}
+
+	result := Filter(alerts, rules, contexts)
+
+	if len(result.Allowed) != 3 {
+		t.Errorf("expected 3 allowed with no rules, got %d", len(result.Allowed))
+	}
+	if len(result.Suppressed) != 0 {
+		t.Errorf("expected 0 suppressed with no rules, got %d", len(result.Suppressed))
+	}
+}
+
+func TestSuppress_AllSuppressed(t *testing.T) {
+	alerts := []risk.Alert{
+		makeAlert("actions/checkout", "v4", risk.SeverityLow),
+		makeAlert("actions/setup-go", "v5", risk.SeverityMedium),
+		makeAlert("actions/cache", "v3", risk.SeverityCritical),
+	}
+	rules := []config.AllowRule{
+		{
+			Repo:      "actions/*",
+			Condition: "any",
+			Reason:    "All GitHub actions trusted",
+		},
+	}
+	contexts := map[string]risk.ScoreContext{}
+
+	result := Filter(alerts, rules, contexts)
+
+	if len(result.Allowed) != 0 {
+		t.Errorf("expected 0 allowed, got %d", len(result.Allowed))
+	}
+	if len(result.Suppressed) != 3 {
+		t.Errorf("expected 3 suppressed, got %d", len(result.Suppressed))
+	}
+}
+
+func TestSuppress_CriticalNotSuppressed(t *testing.T) {
+	alerts := []risk.Alert{
+		{
+			Severity:    risk.SeverityCritical,
+			Type:        "MASS_REPOINT",
+			Action:      "actions/checkout",
+			Tag:         "v1.2.3",
+			PreviousSHA: "aaa111",
+			CurrentSHA:  "bbb222",
+			DetectedAt:  time.Now(),
+			Signals:     []string{"MASS_REPOINT"},
+		},
+	}
+	rules := []config.AllowRule{
+		{
+			Repo:      "actions/*",
+			Tags:      []string{"v*"},
+			Condition: "major_tag_advance",
+			Reason:    "Major tag advances are expected",
+		},
+	}
+	contexts := map[string]risk.ScoreContext{
+		"actions/checkout@v1.2.3": {IsDescendant: true},
+	}
+
+	result := Filter(alerts, rules, contexts)
+
+	// v1.2.3 is NOT a major version tag (major_tag_advance requires v\d+ pattern)
+	if len(result.Allowed) != 1 {
+		t.Errorf("expected 1 allowed (semver should NOT be suppressed by major_tag_advance), got %d", len(result.Allowed))
+	}
+	if len(result.Suppressed) != 0 {
+		t.Errorf("expected 0 suppressed, got %d", len(result.Suppressed))
+	}
+}

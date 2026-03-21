@@ -590,3 +590,407 @@ func TestFmtIntLarge(t *testing.T) {
 		t.Error("fmtInt returned empty string")
 	}
 }
+
+func TestAudit_RepoWithNoWorkflows(t *testing.T) {
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := map[string]interface{}{
+			"data": map[string]interface{}{
+				"rateLimit": map[string]interface{}{
+					"cost":      1,
+					"remaining": 4999,
+				},
+				"organization": map[string]interface{}{
+					"repositories": map[string]interface{}{
+						"totalCount": 1,
+						"pageInfo": map[string]interface{}{
+							"hasNextPage": false,
+							"endCursor":   "abc",
+						},
+						"nodes": []map[string]interface{}{
+							{
+								"name":       "empty-repo",
+								"isArchived": false,
+								"isFork":     false,
+								"defaultBranchRef": map[string]interface{}{
+									"name": "main",
+								},
+								"workflows": nil,
+							},
+						},
+					},
+				},
+			},
+		}
+		json.NewEncoder(w).Encode(resp)
+	}))
+	defer graphqlServer.Close()
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/actions/permissions"):
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"sha_pinning_required": false,
+				"allowed_actions":      "all",
+			})
+		default:
+			w.WriteHeader(404)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlClient := poller.NewGraphQLClient("")
+	graphqlClient.SetEndpoint(graphqlServer.URL)
+	restClient := poller.NewGitHubClient("")
+	restClient.SetBaseURL(restServer.URL)
+
+	result, err := RunAudit(context.Background(), Options{
+		Org:    "test-org",
+		Output: "report",
+	}, graphqlClient, restClient)
+	if err != nil {
+		t.Fatalf("RunAudit: %v", err)
+	}
+
+	if result.ReposWithWorkflows != 0 {
+		t.Errorf("ReposWithWorkflows = %d, want 0", result.ReposWithWorkflows)
+	}
+	if result.TotalRefs != 0 {
+		t.Errorf("TotalRefs = %d, want 0", result.TotalRefs)
+	}
+}
+
+func TestAudit_ArchivedReposSkipped(t *testing.T) {
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := map[string]interface{}{
+			"data": map[string]interface{}{
+				"rateLimit": map[string]interface{}{
+					"cost":      1,
+					"remaining": 4999,
+				},
+				"organization": map[string]interface{}{
+					"repositories": map[string]interface{}{
+						"totalCount": 2,
+						"pageInfo": map[string]interface{}{
+							"hasNextPage": false,
+							"endCursor":   "abc",
+						},
+						"nodes": []map[string]interface{}{
+							{
+								"name":             "archived-repo",
+								"isArchived":       true,
+								"isFork":           false,
+								"defaultBranchRef": nil,
+								"workflows":        nil,
+							},
+							{
+								"name":       "active-repo",
+								"isArchived": false,
+								"isFork":     false,
+								"defaultBranchRef": map[string]interface{}{
+									"name": "main",
+								},
+								"workflows": map[string]interface{}{
+									"entries": []map[string]interface{}{
+										{
+											"name": "ci.yml",
+											"object": map[string]interface{}{
+												"byteSize": 50,
+												"text":     "steps:\n  - uses: actions/checkout@v4\n",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		json.NewEncoder(w).Encode(resp)
+	}))
+	defer graphqlServer.Close()
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/releases"):
+			json.NewEncoder(w).Encode([]map[string]interface{}{})
+		case strings.Contains(r.URL.Path, "/actions/permissions"):
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"sha_pinning_required": false,
+				"allowed_actions":      "all",
+			})
+		default:
+			w.WriteHeader(404)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlClient := poller.NewGraphQLClient("")
+	graphqlClient.SetEndpoint(graphqlServer.URL)
+	restClient := poller.NewGitHubClient("")
+	restClient.SetBaseURL(restServer.URL)
+
+	result, err := RunAudit(context.Background(), Options{
+		Org:    "test-org",
+		Output: "report",
+	}, graphqlClient, restClient)
+	if err != nil {
+		t.Fatalf("RunAudit: %v", err)
+	}
+
+	if result.ArchivedSkipped != 1 {
+		t.Errorf("ArchivedSkipped = %d, want 1", result.ArchivedSkipped)
+	}
+	if result.ActiveRepos != 1 {
+		t.Errorf("ActiveRepos = %d, want 1", result.ActiveRepos)
+	}
+}
+
+func TestAudit_ForkedReposSkipped(t *testing.T) {
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := map[string]interface{}{
+			"data": map[string]interface{}{
+				"rateLimit": map[string]interface{}{
+					"cost":      1,
+					"remaining": 4999,
+				},
+				"organization": map[string]interface{}{
+					"repositories": map[string]interface{}{
+						"totalCount": 2,
+						"pageInfo": map[string]interface{}{
+							"hasNextPage": false,
+							"endCursor":   "abc",
+						},
+						"nodes": []map[string]interface{}{
+							{
+								"name":       "forked-repo",
+								"isArchived": false,
+								"isFork":     true,
+								"defaultBranchRef": map[string]interface{}{
+									"name": "main",
+								},
+								"workflows": nil,
+							},
+							{
+								"name":       "active-repo",
+								"isArchived": false,
+								"isFork":     false,
+								"defaultBranchRef": map[string]interface{}{
+									"name": "main",
+								},
+								"workflows": map[string]interface{}{
+									"entries": []map[string]interface{}{
+										{
+											"name": "ci.yml",
+											"object": map[string]interface{}{
+												"byteSize": 50,
+												"text":     "steps:\n  - uses: actions/checkout@v4\n",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		json.NewEncoder(w).Encode(resp)
+	}))
+	defer graphqlServer.Close()
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/releases"):
+			json.NewEncoder(w).Encode([]map[string]interface{}{})
+		case strings.Contains(r.URL.Path, "/actions/permissions"):
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"sha_pinning_required": false,
+				"allowed_actions":      "all",
+			})
+		default:
+			w.WriteHeader(404)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlClient := poller.NewGraphQLClient("")
+	graphqlClient.SetEndpoint(graphqlServer.URL)
+	restClient := poller.NewGitHubClient("")
+	restClient.SetBaseURL(restServer.URL)
+
+	result, err := RunAudit(context.Background(), Options{
+		Org:    "test-org",
+		Output: "report",
+	}, graphqlClient, restClient)
+	if err != nil {
+		t.Fatalf("RunAudit: %v", err)
+	}
+
+	if result.ForkedSkipped != 1 {
+		t.Errorf("ForkedSkipped = %d, want 1", result.ForkedSkipped)
+	}
+	if result.ActiveRepos != 1 {
+		t.Errorf("ActiveRepos = %d, want 1", result.ActiveRepos)
+	}
+}
+
+func TestAudit_UnprotectedWorkflowDetection(t *testing.T) {
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := map[string]interface{}{
+			"data": map[string]interface{}{
+				"rateLimit": map[string]interface{}{
+					"cost":      1,
+					"remaining": 4999,
+				},
+				"organization": map[string]interface{}{
+					"repositories": map[string]interface{}{
+						"totalCount": 1,
+						"pageInfo": map[string]interface{}{
+							"hasNextPage": false,
+							"endCursor":   "abc",
+						},
+						"nodes": []map[string]interface{}{
+							{
+								"name":       "my-repo",
+								"isArchived": false,
+								"isFork":     false,
+								"defaultBranchRef": map[string]interface{}{
+									"name": "main",
+								},
+								"workflows": map[string]interface{}{
+									"entries": []map[string]interface{}{
+										{
+											"name": "ci.yml",
+											"object": map[string]interface{}{
+												"byteSize": 80,
+												"text":     "steps:\n  - uses: actions/checkout@v4\n  - run: echo hello\n",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		json.NewEncoder(w).Encode(resp)
+	}))
+	defer graphqlServer.Close()
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/releases"):
+			json.NewEncoder(w).Encode([]map[string]interface{}{})
+		case strings.Contains(r.URL.Path, "/actions/permissions"):
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"sha_pinning_required": false,
+				"allowed_actions":      "all",
+			})
+		default:
+			w.WriteHeader(404)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlClient := poller.NewGraphQLClient("")
+	graphqlClient.SetEndpoint(graphqlServer.URL)
+	restClient := poller.NewGitHubClient("")
+	restClient.SetBaseURL(restServer.URL)
+
+	result, err := RunAudit(context.Background(), Options{
+		Org:    "test-org",
+		Output: "report",
+	}, graphqlClient, restClient)
+	if err != nil {
+		t.Fatalf("RunAudit: %v", err)
+	}
+
+	if result.WorkflowsWithoutGate != 1 {
+		t.Errorf("WorkflowsWithoutGate = %d, want 1", result.WorkflowsWithoutGate)
+	}
+	if result.WorkflowsWithGate != 0 {
+		t.Errorf("WorkflowsWithGate = %d, want 0", result.WorkflowsWithGate)
+	}
+}
+
+func TestAudit_ProtectedWorkflowDetection(t *testing.T) {
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := map[string]interface{}{
+			"data": map[string]interface{}{
+				"rateLimit": map[string]interface{}{
+					"cost":      1,
+					"remaining": 4999,
+				},
+				"organization": map[string]interface{}{
+					"repositories": map[string]interface{}{
+						"totalCount": 1,
+						"pageInfo": map[string]interface{}{
+							"hasNextPage": false,
+							"endCursor":   "abc",
+						},
+						"nodes": []map[string]interface{}{
+							{
+								"name":       "protected-repo",
+								"isArchived": false,
+								"isFork":     false,
+								"defaultBranchRef": map[string]interface{}{
+									"name": "main",
+								},
+								"workflows": map[string]interface{}{
+									"entries": []map[string]interface{}{
+										{
+											"name": "ci.yml",
+											"object": map[string]interface{}{
+												"byteSize": 120,
+												"text":     "steps:\n  - uses: actions/checkout@v4\n  - uses: tehreet/pinpoint@abc123\n  - run: echo hello\n",
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}
+		json.NewEncoder(w).Encode(resp)
+	}))
+	defer graphqlServer.Close()
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/releases"):
+			json.NewEncoder(w).Encode([]map[string]interface{}{})
+		case strings.Contains(r.URL.Path, "/actions/permissions"):
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"sha_pinning_required": false,
+				"allowed_actions":      "all",
+			})
+		default:
+			w.WriteHeader(404)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlClient := poller.NewGraphQLClient("")
+	graphqlClient.SetEndpoint(graphqlServer.URL)
+	restClient := poller.NewGitHubClient("")
+	restClient.SetBaseURL(restServer.URL)
+
+	result, err := RunAudit(context.Background(), Options{
+		Org:    "test-org",
+		Output: "report",
+	}, graphqlClient, restClient)
+	if err != nil {
+		t.Fatalf("RunAudit: %v", err)
+	}
+
+	if result.WorkflowsWithGate != 1 {
+		t.Errorf("WorkflowsWithGate = %d, want 1", result.WorkflowsWithGate)
+	}
+	if result.WorkflowsWithoutGate != 0 {
+		t.Errorf("WorkflowsWithoutGate = %d, want 0", result.WorkflowsWithoutGate)
+	}
+}

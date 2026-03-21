@@ -258,3 +258,111 @@ func TestEmptyResults(t *testing.T) {
 		t.Errorf("expected version 0.3.0, got %s", log.Runs[0].Tool.Driver.Version)
 	}
 }
+
+func TestSARIF_ScanWithZeroAlerts(t *testing.T) {
+	output, err := FormatScanSARIF([]risk.Alert{}, "0.4.0")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var log Log
+	if err := json.Unmarshal([]byte(output), &log); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+
+	if len(log.Runs) != 1 {
+		t.Fatalf("expected 1 run, got %d", len(log.Runs))
+	}
+
+	// Results should be an empty array, not null
+	if log.Runs[0].Results == nil {
+		t.Error("results should be empty array, not null (explicit empty slice)")
+	}
+	if len(log.Runs[0].Results) != 0 {
+		t.Errorf("expected 0 results, got %d", len(log.Runs[0].Results))
+	}
+}
+
+func TestSARIF_AuditWithAllClean(t *testing.T) {
+	trueVal := true
+	result := &audit.AuditResult{
+		Org: "clean-org",
+		UniqueActions: []audit.ActionSummary{
+			{
+				Repo:             "actions/checkout",
+				UsedInRepos:      10,
+				ImmutableRelease: &trueVal,
+				Risk:             "low",
+				Refs: []audit.RefSummary{
+					{Ref: "abc123abc123abc123abc123abc123abc123abc12345", Type: "sha", Count: 10},
+				},
+			},
+		},
+		// No unprotected workflows
+		UnprotectedWorkflows: nil,
+	}
+
+	output, err := FormatAuditSARIF(result, "0.3.0")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var log Log
+	if err := json.Unmarshal([]byte(output), &log); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+
+	// SHA-pinned + immutable releases + no unprotected workflows = 0 results
+	if len(log.Runs[0].Results) != 0 {
+		t.Errorf("expected 0 results for all-clean audit, got %d", len(log.Runs[0].Results))
+	}
+}
+
+func TestSARIF_RuleIDsUnique(t *testing.T) {
+	alerts := []risk.Alert{
+		{
+			Severity:    risk.SeverityCritical,
+			Type:        "TAG_REPOINTED",
+			Action:      "actions/checkout",
+			Tag:         "v4",
+			PreviousSHA: "aaa",
+			CurrentSHA:  "bbb",
+			DetectedAt:  time.Now(),
+			Signals:     []string{"MASS_REPOINT"},
+		},
+	}
+
+	output, err := FormatScanSARIF(alerts, "0.3.0")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var log Log
+	if err := json.Unmarshal([]byte(output), &log); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+
+	seen := make(map[string]bool)
+	for _, rule := range log.Runs[0].Tool.Driver.Rules {
+		if seen[rule.ID] {
+			t.Errorf("duplicate rule ID: %s", rule.ID)
+		}
+		seen[rule.ID] = true
+	}
+}
+
+func TestSARIF_VersionFromBuild(t *testing.T) {
+	output, err := FormatScanSARIF([]risk.Alert{}, "1.2.3-custom")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	var log Log
+	if err := json.Unmarshal([]byte(output), &log); err != nil {
+		t.Fatalf("invalid JSON: %v", err)
+	}
+
+	if log.Runs[0].Tool.Driver.Version != "1.2.3-custom" {
+		t.Errorf("expected driver version 1.2.3-custom, got %s", log.Runs[0].Tool.Driver.Version)
+	}
+}

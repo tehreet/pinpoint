@@ -7,6 +7,7 @@ package harness
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -297,4 +298,308 @@ func findProjectRoot(t *testing.T) string {
 		}
 		dir = parent
 	}
+}
+
+// CreateBulkTags creates N lightweight tags on a chain of commits.
+// Returns a map of tag name → commit SHA and the final commit SHA.
+func (h *TestHelper) CreateBulkTags(t *testing.T, repo string, tags []string, baseSHA, baseTree string) (map[string]string, string) {
+	t.Helper()
+	tagSHAs := make(map[string]string)
+	prevSHA := baseSHA
+	for _, tag := range tags {
+		commit := h.CreateCommit(t, repo, "Release "+tag, baseTree, []string{prevSHA})
+		h.CreateLightweightTag(t, repo, tag, commit)
+		tagSHAs[tag] = commit
+		prevSHA = commit
+	}
+	return tagSHAs, prevSHA
+}
+
+// CreateCommitWithAuthor creates a commit with custom author name, email, and date.
+func (h *TestHelper) CreateCommitWithAuthor(t *testing.T, repo, message, treeSHA string, parents []string, authorName, authorEmail, authorDate string) string {
+	t.Helper()
+	author := map[string]string{
+		"name":  authorName,
+		"email": authorEmail,
+		"date":  authorDate,
+	}
+	resp := h.apiPost(t, fmt.Sprintf("/repos/%s/%s/git/commits", h.org, repo),
+		map[string]interface{}{
+			"message":   message,
+			"tree":      treeSHA,
+			"parents":   parents,
+			"author":    author,
+			"committer": author,
+		})
+	return resp["sha"].(string)
+}
+
+// CreateFileContent creates a file via the Contents API (convenience for simple files).
+func (h *TestHelper) CreateFileContent(t *testing.T, repo, path, content, branch string) string {
+	t.Helper()
+	resp := h.apiPut(t, fmt.Sprintf("/repos/%s/%s/contents/%s", h.org, repo, path),
+		map[string]interface{}{
+			"message": "Create " + path,
+			"content": encodeBase64(content),
+			"branch":  branch,
+		})
+	commit := resp["commit"].(map[string]interface{})
+	return commit["sha"].(string)
+}
+
+// GetCommitTree returns the tree SHA for a given commit.
+func (h *TestHelper) GetCommitTree(t *testing.T, repo, commitSHA string) string {
+	t.Helper()
+	resp := h.apiGet(t, fmt.Sprintf("/repos/%s/%s/git/commits/%s", h.org, repo, commitSHA))
+	tree := resp["tree"].(map[string]interface{})
+	return tree["sha"].(string)
+}
+
+func (h *TestHelper) apiPut(t *testing.T, path string, body interface{}) map[string]interface{} {
+	t.Helper()
+	data, _ := json.Marshal(body)
+	req, _ := http.NewRequest("PUT", h.baseURL+path, bytes.NewReader(data))
+	req.Header.Set("Authorization", "Bearer "+h.token)
+	req.Header.Set("Accept", "application/vnd.github+json")
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := h.client.Do(req)
+	if err != nil {
+		t.Fatalf("API PUT %s: %v", path, err)
+	}
+	defer resp.Body.Close()
+	respBody, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode >= 300 {
+		t.Fatalf("API PUT %s returned %d: %s", path, resp.StatusCode, string(respBody))
+	}
+	var result map[string]interface{}
+	json.Unmarshal(respBody, &result)
+	return result
+}
+
+func (h *TestHelper) apiGet(t *testing.T, path string) map[string]interface{} {
+	t.Helper()
+	req, _ := http.NewRequest("GET", h.baseURL+path, nil)
+	req.Header.Set("Authorization", "Bearer "+h.token)
+	req.Header.Set("Accept", "application/vnd.github+json")
+	resp, err := h.client.Do(req)
+	if err != nil {
+		t.Fatalf("API GET %s: %v", path, err)
+	}
+	defer resp.Body.Close()
+	respBody, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode >= 300 {
+		t.Fatalf("API GET %s returned %d: %s", path, resp.StatusCode, string(respBody))
+	}
+	var result map[string]interface{}
+	json.Unmarshal(respBody, &result)
+	return result
+}
+
+func encodeBase64(s string) string {
+	return base64.StdEncoding.EncodeToString([]byte(s))
+}
+
+// RunPinpointGate builds and executes pinpoint gate, returning output and exit code.
+func RunPinpointGate(t *testing.T, manifestPath, repo, sha, workflowRef string) (string, int) {
+	t.Helper()
+	projectRoot := findProjectRoot(t)
+	token := os.Getenv("GITHUB_TOKEN")
+
+	binPath := filepath.Join(t.TempDir(), "pinpoint")
+	build := exec.Command("go", "build", "-o", binPath, "./cmd/pinpoint/")
+	build.Dir = projectRoot
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("Failed to build pinpoint: %v\n%s", err, string(out))
+	}
+
+	cmd := exec.Command(binPath, "gate",
+		"--manifest", manifestPath,
+		"--repo", repo,
+		"--sha", sha,
+		"--workflow-ref", workflowRef)
+	cmd.Env = append(os.Environ(), "GITHUB_TOKEN="+token)
+	cmd.Dir = projectRoot
+	out, err := cmd.CombinedOutput()
+	exitCode := 0
+	if err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			exitCode = exitErr.ExitCode()
+		} else {
+			t.Fatalf("Failed to run pinpoint gate: %v", err)
+		}
+	}
+	return string(out), exitCode
+}
+
+// RunPinpointAudit builds and executes pinpoint audit, returning output and exit code.
+func RunPinpointAudit(t *testing.T, org, outputFormat string) (string, int) {
+	t.Helper()
+	projectRoot := findProjectRoot(t)
+	token := os.Getenv("GITHUB_TOKEN")
+
+	binPath := filepath.Join(t.TempDir(), "pinpoint")
+	build := exec.Command("go", "build", "-o", binPath, "./cmd/pinpoint/")
+	build.Dir = projectRoot
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("Failed to build pinpoint: %v\n%s", err, string(out))
+	}
+
+	cmd := exec.Command(binPath, "audit",
+		"--org", org,
+		"--output", outputFormat,
+		"--skip-upstream")
+	cmd.Env = append(os.Environ(), "GITHUB_TOKEN="+token)
+	cmd.Dir = projectRoot
+	out, err := cmd.CombinedOutput()
+	exitCode := 0
+	if err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			exitCode = exitErr.ExitCode()
+		} else {
+			t.Fatalf("Failed to run pinpoint audit: %v", err)
+		}
+	}
+	return string(out), exitCode
+}
+
+// RunPinpointManifestVerify executes pinpoint manifest verify, returning output and exit code.
+func RunPinpointManifestVerify(t *testing.T, manifestPath string) (string, int) {
+	t.Helper()
+	return runPinpointManifestCmd(t, "verify", manifestPath, "")
+}
+
+// RunPinpointManifestRefresh executes pinpoint manifest refresh, returning output and exit code.
+func RunPinpointManifestRefresh(t *testing.T, manifestPath, workflowDir string) (string, int) {
+	t.Helper()
+	return runPinpointManifestCmd(t, "refresh", manifestPath, workflowDir)
+}
+
+func runPinpointManifestCmd(t *testing.T, subcmd, manifestPath, workflowDir string) (string, int) {
+	t.Helper()
+	projectRoot := findProjectRoot(t)
+	token := os.Getenv("GITHUB_TOKEN")
+
+	binPath := filepath.Join(t.TempDir(), "pinpoint")
+	build := exec.Command("go", "build", "-o", binPath, "./cmd/pinpoint/")
+	build.Dir = projectRoot
+	if out, err := build.CombinedOutput(); err != nil {
+		t.Fatalf("Failed to build pinpoint: %v\n%s", err, string(out))
+	}
+
+	args := []string{"manifest", subcmd, "--manifest", manifestPath}
+	if workflowDir != "" {
+		args = append(args, "--workflows", workflowDir)
+	}
+	cmd := exec.Command(binPath, args...)
+	cmd.Env = append(os.Environ(), "GITHUB_TOKEN="+token)
+	cmd.Dir = projectRoot
+	out, err := cmd.CombinedOutput()
+	exitCode := 0
+	if err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			exitCode = exitErr.ExitCode()
+		} else {
+			t.Fatalf("Failed to run pinpoint manifest %s: %v", subcmd, err)
+		}
+	}
+	return string(out), exitCode
+}
+
+// WriteManifestJSON writes a manifest file to the given path.
+func WriteManifestJSON(t *testing.T, path string, actions map[string]map[string]string) {
+	t.Helper()
+	type entry struct {
+		SHA        string `json:"sha"`
+		RecordedAt string `json:"recorded_at"`
+	}
+	manifest := struct {
+		Version     int                           `json:"version"`
+		GeneratedAt string                        `json:"generated_at"`
+		Actions     map[string]map[string]entry   `json:"actions"`
+	}{
+		Version:     1,
+		GeneratedAt: time.Now().UTC().Format(time.RFC3339),
+		Actions:     make(map[string]map[string]entry),
+	}
+	now := time.Now().UTC().Format(time.RFC3339)
+	for repo, tags := range actions {
+		manifest.Actions[repo] = make(map[string]entry)
+		for tag, sha := range tags {
+			manifest.Actions[repo][tag] = entry{SHA: sha, RecordedAt: now}
+		}
+	}
+	data, err := json.MarshalIndent(manifest, "", "  ")
+	if err != nil {
+		t.Fatalf("Failed to marshal manifest: %v", err)
+	}
+	if err := os.WriteFile(path, data, 0644); err != nil {
+		t.Fatalf("Failed to write manifest: %v", err)
+	}
+}
+
+// CommitGateFiles commits a workflow file and manifest to the repo so the gate can fetch them.
+// The workflow references the given action repo+tags, and the manifest maps tags to SHAs.
+// Returns the new HEAD SHA after the commit.
+func (h *TestHelper) CommitGateFiles(t *testing.T, repo string, actionRepo string, tagSHAs map[string]string) string {
+	t.Helper()
+
+	// Build workflow content referencing each tag
+	wfContent := "name: CI\non: push\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n"
+	for tag := range tagSHAs {
+		wfContent += fmt.Sprintf("      - uses: %s@%s\n", actionRepo, tag)
+	}
+
+	// Build manifest JSON
+	type entry struct {
+		SHA string `json:"sha"`
+	}
+	manifest := struct {
+		Version int                         `json:"version"`
+		Actions map[string]map[string]entry `json:"actions"`
+	}{
+		Version: 1,
+		Actions: map[string]map[string]entry{actionRepo: {}},
+	}
+	for tag, sha := range tagSHAs {
+		manifest.Actions[actionRepo][tag] = entry{SHA: sha}
+	}
+	manifestData, _ := json.MarshalIndent(manifest, "", "  ")
+
+	// Get current HEAD
+	headSHA := h.getRef(t, repo, "heads/main")
+	baseTree := h.GetCommitTree(t, repo, headSHA)
+
+	// Create blobs
+	wfBlob := h.CreateBlob(t, repo, wfContent)
+	mfBlob := h.CreateBlob(t, repo, string(manifestData))
+
+	// Create tree with both files
+	tree := h.CreateTree(t, repo, baseTree, map[string]string{
+		".github/workflows/ci.yml":  wfBlob,
+		".pinpoint-manifest.json":   mfBlob,
+	})
+
+	// Create commit and update branch
+	commitSHA := h.CreateCommit(t, repo, "Add gate files", tree, []string{headSHA})
+	h.UpdateBranch(t, repo, "main", commitSHA)
+	return commitSHA
+}
+
+// WriteMultiRepoConfig writes a pinpoint config for multiple repos with all tags.
+func WriteMultiRepoConfig(t *testing.T, repos map[string][]string) string {
+	t.Helper()
+	dir := t.TempDir()
+	path := filepath.Join(dir, "config.yml")
+
+	var content string
+	content = "actions:\n"
+	for repo, tags := range repos {
+		content += fmt.Sprintf("  - repo: %s\n    tags:\n", repo)
+		for _, tag := range tags {
+			content += fmt.Sprintf("      - %q\n", tag)
+		}
+	}
+	content += "alerts:\n  min_severity: low\n  stdout: true\nstore:\n  path: " + dir + "/state.json\n"
+	os.WriteFile(path, []byte(content), 0644)
+	return path
 }

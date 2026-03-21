@@ -960,3 +960,766 @@ jobs:
 		}
 	}
 }
+
+// Test: Workflow with only run: steps, no uses: directives.
+func TestGate_WorkflowWithOnlyRunSteps(t *testing.T) {
+	buf := silenceOutput(t)
+
+	wf := `name: Script Only
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "hello world"
+      - run: go test ./...
+      - run: make build
+`
+	manifest := `{"version":1,"actions":{}}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   "http://should-not-be-called",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if result.Verified != 0 {
+		t.Errorf("verified = %d, want 0", result.Verified)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+	output := buf.String()
+	if !strings.Contains(output, "no action references found") {
+		t.Errorf("expected 'no action references found' in output, got:\n%s", output)
+	}
+}
+
+// Test: Mixed pinned and unpinned actions.
+func TestGate_MixedPinnedAndUnpinned(t *testing.T) {
+	silenceOutput(t)
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@a824008efbb0f27efdc2560e1a50bde6cebcf823
+      - uses: actions/setup-go@b824008efbb0f27efdc2560e1a50bde6cebcf823
+      - uses: actions/upload-artifact@c824008efbb0f27efdc2560e1a50bde6cebcf823
+      - uses: docker/build-push-action@v5
+      - uses: docker/login-action@v3
+      - uses: some-org/deploy@main
+`
+	manifest := fmt.Sprintf(`{
+		"version": 1,
+		"generated_at": "2026-03-21T08:00:00Z",
+		"actions": {
+			"docker/build-push-action": {
+				"v5": {"sha": "%s"}
+			},
+			"docker/login-action": {
+				"v3": {"sha": "%s"}
+			}
+		}
+	}`, "aaa1234567890abc1234567890abc1234567890a", "bbb1234567890abc1234567890abc1234567890b")
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"docker/build-push-action": {"v5": "aaa1234567890abc1234567890abc1234567890a"},
+			"docker/login-action":      {"v3": "bbb1234567890abc1234567890abc1234567890b"},
+			"some-org/deploy":          {"main": "doesntmatter"},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if result.Verified != 2 {
+		t.Errorf("verified = %d, want 2", result.Verified)
+	}
+	if result.Skipped != 3 {
+		t.Errorf("skipped = %d, want 3", result.Skipped)
+	}
+	if len(result.Warnings) != 1 {
+		t.Errorf("warnings = %d, want 1 (branch-pinned)", len(result.Warnings))
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+}
+
+// Test: All branch-pinned actions with strict mode.
+func TestGate_AllBranchPinned_StrictMode(t *testing.T) {
+	silenceOutput(t)
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-go@develop
+      - uses: docker/build-push-action@master
+`
+	manifest := `{"version":1,"actions":{}}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"actions/checkout":         {"main": "aaa"},
+			"actions/setup-go":         {"develop": "bbb"},
+			"docker/build-push-action": {"master": "ccc"},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:           "owner/repo",
+		SHA:            "abc123",
+		WorkflowRef:    "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:   ".pinpoint-manifest.json",
+		APIURL:         restServer.URL,
+		GraphQLURL:     graphqlServer.URL,
+		FailOnUnpinned: true,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(result.Violations) != 3 {
+		t.Errorf("violations = %d, want 3", len(result.Violations))
+	}
+}
+
+// Test: Manifest older than 30 days triggers staleness warning.
+func TestGate_ManifestOlderThan30Days(t *testing.T) {
+	buf := silenceOutput(t)
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+`
+	manifest := `{
+		"version": 1,
+		"generated_at": "2025-01-01T00:00:00Z",
+		"actions": {
+			"actions/checkout": {
+				"v4": {"sha": "abc1234567890abc1234567890abc1234567890a"}
+			}
+		}
+	}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"actions/checkout": {"v4": "abc1234567890abc1234567890abc1234567890a"},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if result.Verified != 1 {
+		t.Errorf("verified = %d, want 1", result.Verified)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+	output := buf.String()
+	if !strings.Contains(output, "days old") {
+		t.Errorf("expected 'days old' warning in output, got:\n%s", output)
+	}
+}
+
+// Test: Invalid JSON in manifest returns parse error.
+func TestGate_ManifestInvalidJSON(t *testing.T) {
+	silenceOutput(t)
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+`
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse("this is { not valid json"))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	_, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   "http://unused",
+	})
+	if err == nil {
+		t.Fatal("expected error for invalid JSON manifest, got nil")
+	}
+	if !strings.Contains(err.Error(), "parse manifest") {
+		t.Errorf("error should contain 'parse manifest', got: %v", err)
+	}
+	if !strings.Contains(err.Error(), "Regenerate") {
+		t.Errorf("error should contain 'Regenerate', got: %v", err)
+	}
+}
+
+// Test: Large workflow with 50 actions all matching.
+func TestGate_LargeWorkflow_50Actions(t *testing.T) {
+	silenceOutput(t)
+
+	// Build workflow with 50 uses directives
+	var wfBuilder strings.Builder
+	wfBuilder.WriteString("name: CI\non: push\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n")
+	for i := 0; i < 50; i++ {
+		fmt.Fprintf(&wfBuilder, "      - uses: org%d/action%d@v1\n", i, i)
+	}
+	wf := wfBuilder.String()
+
+	// Build manifest with all 50 actions
+	actions := make(map[string]map[string]ManifestEntry)
+	graphqlRepos := make(map[string]map[string]string)
+	for i := 0; i < 50; i++ {
+		key := fmt.Sprintf("org%d/action%d", i, i)
+		sha := fmt.Sprintf("%040x", i+1)
+		actions[key] = map[string]ManifestEntry{
+			"v1": {SHA: sha},
+		}
+		graphqlRepos[key] = map[string]string{"v1": sha}
+	}
+	manifestObj := Manifest{Version: 1, Actions: actions}
+	manifestBytes, _ := json.Marshal(manifestObj)
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(string(manifestBytes)))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(graphqlRepos)
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if result.Verified != 50 {
+		t.Errorf("verified = %d, want 50", result.Verified)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+}
+
+// Test: PR event fetches manifest from base ref.
+func TestGate_PREvent_ManifestFromBaseRef(t *testing.T) {
+	silenceOutput(t)
+
+	goodSHA := "abc1234567890abc1234567890abc1234567890a"
+	evilSHA := "evil234567890abc1234567890abc1234567890a"
+
+	wf := `name: CI
+on: pull_request
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+`
+	goodManifest := fmt.Sprintf(`{"version":1,"actions":{"actions/checkout":{"v4":{"sha":"%s"}}}}`, goodSHA)
+	evilManifest := fmt.Sprintf(`{"version":1,"actions":{"actions/checkout":{"v4":{"sha":"%s"}}}}`, evilSHA)
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ref := r.URL.Query().Get("ref")
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			if ref == "main" {
+				fmt.Fprint(w, buildContentResponse(goodManifest))
+			} else {
+				fmt.Fprint(w, buildContentResponse(evilManifest))
+			}
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"actions/checkout": {"v4": goodSHA},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "mergecommitsha",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+		EventName:    "pull_request",
+		BaseRef:      "main",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("PR event: violations = %d, want 0", len(result.Violations))
+	}
+	if result.Verified != 1 {
+		t.Errorf("PR event: verified = %d, want 1", result.Verified)
+	}
+}
+
+// Test: Push event uses poisoned manifest (no base ref protection).
+func TestGate_PREvent_PoisonedManifest(t *testing.T) {
+	silenceOutput(t)
+
+	goodSHA := "abc1234567890abc1234567890abc1234567890a"
+	evilSHA := "evil234567890abc1234567890abc1234567890a"
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+`
+	evilManifest := fmt.Sprintf(`{"version":1,"actions":{"actions/checkout":{"v4":{"sha":"%s"}}}}`, evilSHA)
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			// Always serve evil manifest (no base ref override)
+			fmt.Fprint(w, buildContentResponse(evilManifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"actions/checkout": {"v4": goodSHA},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+		EventName:    "push",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(result.Violations) != 1 {
+		t.Fatalf("push event: violations = %d, want 1", len(result.Violations))
+	}
+	v := result.Violations[0]
+	if v.ExpectedSHA != evilSHA {
+		t.Errorf("expected SHA = %q, want %q", v.ExpectedSHA, evilSHA)
+	}
+	if v.ActualSHA != goodSHA {
+		t.Errorf("actual SHA = %q, want %q", v.ActualSHA, goodSHA)
+	}
+}
+
+// Test: Reusable workflow ref is verified alongside regular actions.
+func TestGate_ReusableWorkflow_Nested(t *testing.T) {
+	silenceOutput(t)
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: myorg/shared/.github/workflows/build.yml@v2
+`
+	manifest := `{
+		"version": 1,
+		"actions": {
+			"actions/checkout": {
+				"v4": {"sha": "abc1234567890abc1234567890abc1234567890a"}
+			},
+			"myorg/shared": {
+				"v2": {"sha": "def4567890abc1234567890abc1234567890abcd"}
+			}
+		}
+	}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"actions/checkout": {"v4": "abc1234567890abc1234567890abc1234567890a"},
+			"myorg/shared":    {"v2": "def4567890abc1234567890abc1234567890abcd"},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if result.Verified != 2 {
+		t.Errorf("verified = %d, want 2", result.Verified)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+}
+
+// Test: GraphQL partial failure — one repo inaccessible.
+func TestGate_GraphQLPartialFailure(t *testing.T) {
+	silenceOutput(t)
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: private/deleted-repo@v1
+      - uses: docker/build-push-action@v5
+`
+	manifest := `{
+		"version": 1,
+		"actions": {
+			"actions/checkout": {
+				"v4": {"sha": "abc1234567890abc1234567890abc1234567890a"}
+			},
+			"private/deleted-repo": {
+				"v1": {"sha": "fff1234567890abc1234567890abc1234567890f"}
+			},
+			"docker/build-push-action": {
+				"v5": {"sha": "789abc1234567890abc1234567890abc12345678"}
+			}
+		}
+	}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	// GraphQL returns data for checkout and docker, but not private/deleted-repo
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Build response with only 2 repos, omitting private/deleted-repo
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"actions/checkout":         {"v4": "abc1234567890abc1234567890abc1234567890a"},
+			"docker/build-push-action": {"v5": "789abc1234567890abc1234567890abc12345678"},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if result.Verified != 2 {
+		t.Errorf("verified = %d, want 2", result.Verified)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+	// Should have a warning about the inaccessible repo
+	foundWarning := false
+	for _, w := range result.Warnings {
+		if w.Action == "private/deleted-repo" {
+			foundWarning = true
+			break
+		}
+	}
+	if !foundWarning {
+		t.Errorf("expected warning for inaccessible repo private/deleted-repo, warnings: %+v", result.Warnings)
+	}
+}
+
+// Test: Tag deleted on remote — present in manifest but absent from GraphQL tags.
+func TestGate_TagDeletedOnRemote(t *testing.T) {
+	buf := silenceOutput(t)
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+`
+	manifest := `{
+		"version": 1,
+		"actions": {
+			"actions/checkout": {
+				"v4": {"sha": "abc1234567890abc1234567890abc1234567890a"}
+			}
+		}
+	}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	// GraphQL returns the repo but only with v3, not v4
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"actions/checkout": {"v3": "old1234567890abc1234567890abc1234567890o"},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+	output := buf.String()
+	if !strings.Contains(output, "tag not found on remote") {
+		t.Errorf("expected 'tag not found on remote' warning, got:\n%s", output)
+	}
+}
+
+// Test: Empty manifest actions — warnings without fail-on-missing, violations with it.
+func TestGate_EmptyManifestActions(t *testing.T) {
+	silenceOutput(t)
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+`
+	manifest := `{"version":1,"actions":{}}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"actions/checkout": {"v4": "abc1234567890abc1234567890abc1234567890a"},
+			"actions/setup-go": {"v5": "def4567890abc1234567890abc1234567890abcd"},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	// Without --fail-on-missing: warnings only
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(result.Warnings) != 2 {
+		t.Errorf("without fail-on-missing: warnings = %d, want 2", len(result.Warnings))
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("without fail-on-missing: violations = %d, want 0", len(result.Violations))
+	}
+
+	// With --fail-on-missing: violations
+	silenceOutput(t)
+	result, err = RunGate(context.Background(), GateOptions{
+		Repo:          "owner/repo",
+		SHA:           "abc123",
+		WorkflowRef:   "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:  ".pinpoint-manifest.json",
+		APIURL:        restServer.URL,
+		GraphQLURL:    graphqlServer.URL,
+		FailOnMissing: true,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(result.Violations) != 2 {
+		t.Errorf("with fail-on-missing: violations = %d, want 2", len(result.Violations))
+	}
+}

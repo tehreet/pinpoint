@@ -348,3 +348,304 @@ func TestRefreshMissingManifest(t *testing.T) {
 		t.Error("expected non-empty error message")
 	}
 }
+
+func TestRefresh_TagDeletedOnRemote(t *testing.T) {
+	dir := t.TempDir()
+
+	m := &Manifest{
+		Version: 1,
+		Actions: map[string]map[string]ManifestEntry{
+			"actions/checkout": {
+				"v3": {SHA: "old123"},
+			},
+		},
+	}
+	manifestPath := writeManifest(t, dir, m)
+
+	// GraphQL returns only v4 for actions/checkout — v3 is gone
+	ts := httptest.NewServer(graphqlHandler(map[string]map[string]string{
+		"actions_checkout": {"v4": "new456"},
+	}))
+	defer ts.Close()
+
+	client := poller.NewGraphQLClient("")
+	client.SetEndpoint(ts.URL)
+
+	result, err := Refresh(context.Background(), manifestPath, "", false, client)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if result.Missing != 1 {
+		t.Errorf("expected 1 missing, got %d", result.Missing)
+	}
+
+	// Should have a missing_tag change
+	found := false
+	for _, c := range result.Changes {
+		if c.Type == "missing_tag" && c.Action == "actions/checkout" && c.Tag == "v3" {
+			found = true
+			if c.OldSHA != "old123" {
+				t.Errorf("expected OldSHA old123, got %s", c.OldSHA)
+			}
+		}
+	}
+	if !found {
+		t.Error("expected a missing_tag change for actions/checkout@v3")
+	}
+
+	// Entry should still be in the manifest on disk (don't delete data)
+	reloaded, err := LoadManifest(manifestPath)
+	if err != nil {
+		t.Fatalf("failed to reload manifest: %v", err)
+	}
+	if _, ok := reloaded.Actions["actions/checkout"]["v3"]; !ok {
+		t.Error("v3 entry should still be in the manifest on disk")
+	}
+}
+
+func TestRefresh_NewRepoDiscovered(t *testing.T) {
+	dir := t.TempDir()
+
+	m := &Manifest{
+		Version: 1,
+		Actions: map[string]map[string]ManifestEntry{
+			"actions/checkout": {
+				"v4": {SHA: "34e1148e"},
+			},
+		},
+	}
+	manifestPath := writeManifest(t, dir, m)
+
+	// Create a workflow dir with ci.yml using both actions/checkout@v4 and docker/build-push-action@v5
+	workflowDir := filepath.Join(dir, "workflows")
+	if err := os.MkdirAll(workflowDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	workflow := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/build-push-action@v5
+`
+	if err := os.WriteFile(filepath.Join(workflowDir, "ci.yml"), []byte(workflow), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	ts := httptest.NewServer(graphqlHandler(map[string]map[string]string{
+		"actions_checkout":         {"v4": "34e1148e"},
+		"docker_build_push_action": {"v5": "ca052bb1"},
+	}))
+	defer ts.Close()
+
+	client := poller.NewGraphQLClient("")
+	client.SetEndpoint(ts.URL)
+
+	result, err := Refresh(context.Background(), manifestPath, workflowDir, true, client)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if result.Added < 1 {
+		t.Errorf("expected Added >= 1, got %d", result.Added)
+	}
+
+	// Verify docker/build-push-action@v5 is in the manifest on disk
+	reloaded, err := LoadManifest(manifestPath)
+	if err != nil {
+		t.Fatalf("failed to reload manifest: %v", err)
+	}
+	entry, ok := reloaded.Actions["docker/build-push-action"]["v5"]
+	if !ok {
+		t.Fatal("docker/build-push-action@v5 not found in manifest after discover")
+	}
+	if entry.SHA != "ca052bb1" {
+		t.Errorf("expected SHA ca052bb1, got %s", entry.SHA)
+	}
+}
+
+func TestRefresh_ConcurrentSHAChange(t *testing.T) {
+	dir := t.TempDir()
+
+	m := &Manifest{
+		Version: 1,
+		Actions: map[string]map[string]ManifestEntry{
+			"actions/checkout": {
+				"v4": {SHA: "old_sha"},
+			},
+		},
+	}
+	manifestPath := writeManifest(t, dir, m)
+
+	// GraphQL always returns "new_sha" for v4
+	ts := httptest.NewServer(graphqlHandler(map[string]map[string]string{
+		"actions_checkout": {"v4": "new_sha"},
+	}))
+	defer ts.Close()
+
+	client := poller.NewGraphQLClient("")
+	client.SetEndpoint(ts.URL)
+
+	// First: Verify detects drift
+	verifyResult, err := Verify(context.Background(), manifestPath, client)
+	if err != nil {
+		t.Fatalf("first verify: %v", err)
+	}
+	if verifyResult.Updated != 1 {
+		t.Errorf("first verify: expected 1 updated (drift), got %d", verifyResult.Updated)
+	}
+
+	// Second: Refresh updates the manifest
+	refreshResult, err := Refresh(context.Background(), manifestPath, "", false, client)
+	if err != nil {
+		t.Fatalf("refresh: %v", err)
+	}
+	if refreshResult.Updated != 1 {
+		t.Errorf("refresh: expected 1 updated, got %d", refreshResult.Updated)
+	}
+
+	// Third: Verify again — no drift now
+	verifyResult2, err := Verify(context.Background(), manifestPath, client)
+	if err != nil {
+		t.Fatalf("second verify: %v", err)
+	}
+	if verifyResult2.Unchanged != 1 {
+		t.Errorf("second verify: expected 1 unchanged, got %d", verifyResult2.Unchanged)
+	}
+	if verifyResult2.Updated != 0 {
+		t.Errorf("second verify: expected 0 updated, got %d", verifyResult2.Updated)
+	}
+}
+
+func TestVerify_ExitCodeThree(t *testing.T) {
+	dir := t.TempDir()
+
+	m := &Manifest{
+		Version: 1,
+		Actions: map[string]map[string]ManifestEntry{
+			"actions/checkout": {
+				"v4": {SHA: "original"},
+			},
+		},
+	}
+	manifestPath := writeManifest(t, dir, m)
+
+	// Return a different SHA to cause drift
+	ts := httptest.NewServer(graphqlHandler(map[string]map[string]string{
+		"actions_checkout": {"v4": "drifted1"},
+	}))
+	defer ts.Close()
+
+	client := poller.NewGraphQLClient("")
+	client.SetEndpoint(ts.URL)
+
+	result, err := Verify(context.Background(), manifestPath, client)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	// In the CLI, exit code 3 is signaled when Updated+Missing > 0
+	if result.Updated+result.Missing <= 0 {
+		t.Errorf("expected Updated+Missing > 0 (exit code 3 condition), got Updated=%d Missing=%d",
+			result.Updated, result.Missing)
+	}
+}
+
+func TestInit_CreatesFiles(t *testing.T) {
+	dir := t.TempDir()
+	manifestPath := filepath.Join(dir, ".pinpoint-manifest.json")
+
+	m := &Manifest{
+		Version: 1,
+		Actions: map[string]map[string]ManifestEntry{
+			"actions/checkout": {
+				"v4": {SHA: "abc123"},
+			},
+		},
+	}
+
+	if err := SaveManifest(manifestPath, m); err != nil {
+		t.Fatalf("SaveManifest: %v", err)
+	}
+
+	// Verify file exists
+	if _, err := os.Stat(manifestPath); os.IsNotExist(err) {
+		t.Fatal("manifest file was not created")
+	}
+
+	// Verify it's valid JSON by loading it back
+	loaded, err := LoadManifest(manifestPath)
+	if err != nil {
+		t.Fatalf("LoadManifest: %v", err)
+	}
+
+	if loaded.Version != 1 {
+		t.Errorf("expected version 1, got %d", loaded.Version)
+	}
+	entry, ok := loaded.Actions["actions/checkout"]["v4"]
+	if !ok {
+		t.Fatal("missing actions/checkout@v4")
+	}
+	if entry.SHA != "abc123" {
+		t.Errorf("expected SHA abc123, got %s", entry.SHA)
+	}
+}
+
+func TestRefresh_EmptyManifest(t *testing.T) {
+	dir := t.TempDir()
+
+	m := &Manifest{
+		Version: 1,
+		Actions: map[string]map[string]ManifestEntry{},
+	}
+	manifestPath := writeManifest(t, dir, m)
+
+	client := poller.NewGraphQLClient("")
+	// No server needed — empty manifest means no repos to query
+
+	// Without discover: 0 changes
+	result, err := Refresh(context.Background(), manifestPath, "", false, client)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if result.Unchanged+result.Updated+result.Added+result.Missing != 0 {
+		t.Errorf("expected 0 total changes, got unchanged=%d updated=%d added=%d missing=%d",
+			result.Unchanged, result.Updated, result.Added, result.Missing)
+	}
+
+	// With discover and a workflow dir
+	workflowDir := filepath.Join(dir, "workflows")
+	if err := os.MkdirAll(workflowDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	workflow := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+`
+	if err := os.WriteFile(filepath.Join(workflowDir, "ci.yml"), []byte(workflow), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	ts := httptest.NewServer(graphqlHandler(map[string]map[string]string{
+		"actions_checkout": {"v4": "resolved1"},
+	}))
+	defer ts.Close()
+
+	client2 := poller.NewGraphQLClient("")
+	client2.SetEndpoint(ts.URL)
+
+	result2, err := Refresh(context.Background(), manifestPath, workflowDir, true, client2)
+	if err != nil {
+		t.Fatalf("unexpected error with discover: %v", err)
+	}
+	if result2.Added < 1 {
+		t.Errorf("expected at least 1 added with discover, got %d", result2.Added)
+	}
+}
