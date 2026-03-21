@@ -23,6 +23,7 @@ import (
 	"github.com/tehreet/pinpoint/internal/manifest"
 	"github.com/tehreet/pinpoint/internal/poller"
 	"github.com/tehreet/pinpoint/internal/risk"
+	"github.com/tehreet/pinpoint/internal/sarif"
 	"github.com/tehreet/pinpoint/internal/store"
 )
 
@@ -67,10 +68,10 @@ func printUsage() {
 	fmt.Fprintf(os.Stderr, `pinpoint %s — GitHub Actions tag integrity monitor
 
 USAGE:
-  pinpoint scan      --config <path>  [--state <path>]  [--json]  [--rest]
+  pinpoint scan      --config <path>  [--state <path>]  [--json]  [--output sarif]  [--rest]
   pinpoint watch     --config <path>  [--state <path>]  [--interval 5m]  [--rest]
   pinpoint discover  --workflows <dir>
-  pinpoint audit     --org <name>  [--output report|config|manifest|json]  [--skip-upstream]
+  pinpoint audit     --org <name>  [--output report|config|manifest|json|sarif]  [--skip-upstream]
   pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]
   pinpoint manifest  <refresh|verify|init>  [options]
 
@@ -139,6 +140,7 @@ func cmdScan() {
 	}
 
 	jsonOutput := hasFlag("json")
+	sarifOutput := getFlag("output") == "sarif"
 	useREST := hasFlag("rest")
 
 	ctx := context.Background()
@@ -152,7 +154,7 @@ func cmdScan() {
 		fmt.Fprintf(os.Stderr, "Error loading state: %v\n", err)
 		os.Exit(1)
 	}
-	emitter := alert.NewEmitter(!jsonOutput, cfg.Alerts.SlackWebhook, cfg.Alerts.WebhookURL)
+	emitter := alert.NewEmitter(!jsonOutput && !sarifOutput, cfg.Alerts.SlackWebhook, cfg.Alerts.WebhookURL)
 
 	alerts, err := runScan(ctx, cfg, restClient, graphqlClient, stateStore, emitter, jsonOutput)
 	if err != nil {
@@ -163,6 +165,15 @@ func cmdScan() {
 	if err := stateStore.Save(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
 		os.Exit(1)
+	}
+
+	if sarifOutput {
+		sarifStr, err := sarif.FormatScanSARIF(alerts, version)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error formatting SARIF: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Print(sarifStr)
 	}
 
 	if len(alerts) > 0 {
@@ -302,10 +313,10 @@ Optional scope: admin:org (enables SHA pinning policy check)
 		output = "report"
 	}
 	switch output {
-	case "report", "config", "manifest", "json":
+	case "report", "config", "manifest", "json", "sarif":
 		// valid
 	default:
-		fmt.Fprintf(os.Stderr, "Error: invalid --output %q. Must be one of: report, config, manifest, json\n", output)
+		fmt.Fprintf(os.Stderr, "Error: invalid --output %q. Must be one of: report, config, manifest, json, sarif\n", output)
 		os.Exit(1)
 	}
 
@@ -360,6 +371,13 @@ Optional scope: admin:org (enables SHA pinning policy check)
 			os.Exit(1)
 		}
 		fmt.Print(jsonStr)
+	case "sarif":
+		sarifStr, err := sarif.FormatAuditSARIF(result, version)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error formatting SARIF: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Print(sarifStr)
 	}
 }
 
