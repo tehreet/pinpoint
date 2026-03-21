@@ -25,7 +25,12 @@ import (
 	"github.com/tehreet/pinpoint/internal/store"
 )
 
-const version = "0.1.0"
+// version is set at build time via ldflags.
+var (
+	version = "dev"
+	commit  = "unknown"
+	date    = "unknown"
+)
 
 func main() {
 	if len(os.Args) < 2 {
@@ -45,7 +50,7 @@ func main() {
 	case "gate":
 		cmdGate()
 	case "version":
-		fmt.Printf("pinpoint %s\n", version)
+		fmt.Printf("pinpoint %s (commit: %s, built: %s)\n", version, commit, date)
 	case "help", "-h", "--help":
 		printUsage()
 	default:
