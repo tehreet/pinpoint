@@ -738,3 +738,225 @@ jobs:
 		t.Errorf("output should mention SHA-pinned, got:\n%s", output)
 	}
 }
+
+// Test: Manifest Poisoning Prevention (Fix 1)
+func TestManifestPoisoningPrevention(t *testing.T) {
+	silenceOutput(t)
+
+	goodSHA := "abc1234567890abc1234567890abc1234567890a"
+	evilSHA := "evil234567890abc1234567890abc1234567890a"
+
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+`
+	goodManifest := fmt.Sprintf(`{"version":1,"actions":{"actions/checkout":{"v4":{"sha":"%s"}}}}`, goodSHA)
+	evilManifest := fmt.Sprintf(`{"version":1,"actions":{"actions/checkout":{"v4":{"sha":"%s"}}}}`, evilSHA)
+
+	// REST server that serves different manifests depending on ref query param
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ref := r.URL.Query().Get("ref")
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			if ref == "main" {
+				fmt.Fprint(w, buildContentResponse(goodManifest))
+			} else {
+				// merge commit SHA gets the evil manifest
+				fmt.Fprint(w, buildContentResponse(evilManifest))
+			}
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		resp := buildGraphQLResponse(map[string]map[string]string{
+			"actions/checkout": {"v4": goodSHA},
+		})
+		fmt.Fprint(w, resp)
+	}))
+	defer graphqlServer.Close()
+
+	// With PR event: should fetch manifest from base branch ("main"), SHA matches -> pass
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "mergecommitsha",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+		EventName:    "pull_request",
+		BaseRef:      "main",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("PR event with base branch manifest: expected 0 violations, got %d", len(result.Violations))
+	}
+	if result.Verified != 1 {
+		t.Errorf("PR event: verified = %d, want 1", result.Verified)
+	}
+
+	// Without PR event (push): fetches manifest at merge commit SHA (evil), evil SHA matches evil -> pass
+	// This proves the attack works without the fix.
+	silenceOutput(t)
+	result2, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "mergecommitsha",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   graphqlServer.URL,
+		EventName:    "push",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	// The evil manifest expects evilSHA, but actual is goodSHA -> violation
+	if len(result2.Violations) != 1 {
+		t.Errorf("push event with evil manifest: expected 1 violation (sha mismatch), got %d", len(result2.Violations))
+	}
+}
+
+// Test: Zero uses: directives (Fix 6)
+func TestZeroUsesDirectives(t *testing.T) {
+	buf := silenceOutput(t)
+
+	wf := `name: Script Only
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "hello"
+      - run: go build ./...
+`
+	manifest := `{"version":1,"actions":{}}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(wf))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".pinpoint-manifest.json",
+		APIURL:       restServer.URL,
+		GraphQLURL:   "http://should-not-be-called",
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if result.Verified != 0 {
+		t.Errorf("verified = %d, want 0", result.Verified)
+	}
+	if result.Skipped != 0 {
+		t.Errorf("skipped = %d, want 0", result.Skipped)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+	output := buf.String()
+	if !strings.Contains(output, "no action references found") {
+		t.Errorf("expected 'no action references found' message, got:\n%s", output)
+	}
+}
+
+// Test: Sub-path action ref (Fix 7)
+func TestSubPathActionRef(t *testing.T) {
+	owner, repo, ref, isWF, err := ParseActionRef("aws-actions/configure-aws-credentials/subdir@v4")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if owner != "aws-actions" || repo != "configure-aws-credentials" || ref != "v4" || isWF {
+		t.Errorf("got (%q, %q, %q, %v), want (aws-actions, configure-aws-credentials, v4, false)",
+			owner, repo, ref, isWF)
+	}
+}
+
+// Test: SHA with inline comment (Fix 7)
+func TestSHAWithInlineComment(t *testing.T) {
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+`
+	refs := ExtractUsesDirectives(wf)
+	if len(refs) != 1 {
+		t.Fatalf("expected 1 ref, got %d: %v", len(refs), refs)
+	}
+	expected := "actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5"
+	if refs[0] != expected {
+		t.Errorf("got %q, want %q", refs[0], expected)
+	}
+	// Verify it's classified as SHA-pinned
+	_, _, ref, _, err := ParseActionRef(refs[0])
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !shaRegexp.MatchString(ref) {
+		t.Errorf("expected SHA-pinned ref, got %q", ref)
+	}
+}
+
+// Test: Quoted uses values (Fix 7)
+func TestQuotedUsesValues(t *testing.T) {
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: 'actions/checkout@v4'
+      - uses: "actions/setup-go@v5"
+`
+	refs := ExtractUsesDirectives(wf)
+	if len(refs) != 2 {
+		t.Fatalf("expected 2 refs, got %d: %v", len(refs), refs)
+	}
+	if refs[0] != "actions/checkout@v4" {
+		t.Errorf("ref[0] = %q, want %q", refs[0], "actions/checkout@v4")
+	}
+	if refs[1] != "actions/setup-go@v5" {
+		t.Errorf("ref[1] = %q, want %q", refs[1], "actions/setup-go@v5")
+	}
+}
+
+// Test: Dynamic expression uses (Fix 7)
+func TestDynamicExpressionUses(t *testing.T) {
+	wf := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ${{ matrix.action }}
+`
+	refs := ExtractUsesDirectives(wf)
+	// The ${{ ... }} expression should not match the regex
+	for _, ref := range refs {
+		if strings.Contains(ref, "matrix") {
+			t.Errorf("dynamic expression should not be extracted, got %q", ref)
+		}
+	}
+}

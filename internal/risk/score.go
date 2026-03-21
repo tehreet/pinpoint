@@ -119,6 +119,20 @@ func Score(ctx ScoreContext) (Severity, []string) {
 		signals = append(signals, "MAJOR_TAG_ADVANCE: major version tag moved forward (routine)")
 	}
 
+	// SIZE_ANOMALY floor: if the entry point changed dramatically,
+	// no deduction should reduce this below CRITICAL.
+	hasSizeAnomaly := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "SIZE_ANOMALY") {
+			hasSizeAnomaly = true
+			break
+		}
+	}
+	if hasSizeAnomaly && score < 50 {
+		score = 50
+		signals = append(signals, "SCORE_FLOOR: SIZE_ANOMALY enforces minimum CRITICAL severity")
+	}
+
 	// Determine severity from score
 	severity := SeverityLow
 	if score >= 50 {

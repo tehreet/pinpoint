@@ -406,6 +406,9 @@ func cmdGate() {
 		graphqlURL = "https://api.github.com/graphql"
 	}
 
+	eventName := os.Getenv("GITHUB_EVENT_NAME")
+	baseRef := os.Getenv("GITHUB_BASE_REF")
+
 	opts := gate.GateOptions{
 		Repo:           repo,
 		SHA:            sha,
@@ -416,6 +419,8 @@ func cmdGate() {
 		GraphQLURL:     graphqlURL,
 		FailOnMissing:  hasFlag("fail-on-missing"),
 		FailOnUnpinned: hasFlag("fail-on-unpinned"),
+		EventName:      eventName,
+		BaseRef:        baseRef,
 	}
 
 	ctx := context.Background()

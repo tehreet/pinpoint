@@ -66,6 +66,8 @@ type GateOptions struct {
 	GraphQLURL     string // "https://api.github.com/graphql"
 	FailOnMissing  bool
 	FailOnUnpinned bool
+	EventName      string // "push", "pull_request", etc. From GITHUB_EVENT_NAME
+	BaseRef        string // "main", "develop", etc. From GITHUB_BASE_REF
 }
 
 var shaRegexp = regexp.MustCompile(`^[0-9a-f]{40}$`)
@@ -99,8 +101,21 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 		return nil, fmt.Errorf("fetch workflow file %q: %w\n\nEnsure GITHUB_TOKEN has contents:read permission and the workflow file exists at the specified commit.", workflowPath, err)
 	}
 
-	// Step 3: Fetch manifest
-	manifestContent, err := client.fetchFileContent(ctx, opts.Repo, opts.ManifestPath, opts.SHA)
+	// Step 3: Determine manifest ref
+	// For pull_request events, fetch manifest from base branch to prevent
+	// manifest poisoning via fork PRs (see spec 005, section 1.10).
+	manifestRef := opts.SHA
+	if isPullRequestEvent(opts.EventName) {
+		if opts.BaseRef == "" {
+			fmt.Fprintf(messageWriter, "⚠ Pull request detected but GITHUB_BASE_REF not set. Falling back to GITHUB_SHA for manifest.\n")
+		} else {
+			manifestRef = opts.BaseRef
+			fmt.Fprintf(messageWriter, "  ℹ Pull request detected. Fetching manifest from base branch %q (not PR merge commit).\n", opts.BaseRef)
+		}
+	}
+
+	// Step 4: Fetch manifest (using manifestRef, not necessarily opts.SHA)
+	manifestContent, err := client.fetchFileContent(ctx, opts.Repo, opts.ManifestPath, manifestRef)
 	if err != nil {
 		if isNotFound(err) {
 			if opts.FailOnMissing {
@@ -125,10 +140,27 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 		return nil, fmt.Errorf("parse manifest: %w\n\nThe manifest file at %s is not valid JSON. Regenerate with: pinpoint audit --org <name> --output manifest", err, opts.ManifestPath)
 	}
 
-	// Step 4: Extract action references from workflow
+	// Warn if manifest is stale
+	if manifest.GeneratedAt != "" {
+		if genTime, err := time.Parse(time.RFC3339, manifest.GeneratedAt); err == nil {
+			age := time.Since(genTime)
+			if age > 30*24*time.Hour {
+				days := int(age.Hours() / 24)
+				fmt.Fprintf(messageWriter, "  ⚠ Manifest is %d days old (generated %s). Consider regenerating:\n    pinpoint audit --org <name> --output manifest > .pinpoint-manifest.json\n", days, manifest.GeneratedAt)
+			}
+		}
+	}
+
+	// Step 5: Extract action references from workflow
 	rawRefs := ExtractUsesDirectives(string(wfContent))
 
-	// Step 5: Classify, parse, and deduplicate
+	if len(rawRefs) == 0 {
+		fmt.Fprintf(messageWriter, "pinpoint gate: no action references found in workflow. Nothing to verify.\n")
+		result.Duration = time.Since(start)
+		return result, nil
+	}
+
+	// Step 6: Classify, parse, and deduplicate
 	type actionRef struct {
 		Owner    string
 		Repo     string
@@ -167,7 +199,7 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 	totalRefs := len(tagRefs) + result.Skipped
 	fmt.Fprintf(messageWriter, "pinpoint gate: verifying %d action references against manifest...\n", totalRefs)
 
-	// Step 6: Resolve current tag SHAs via GraphQL (reuse existing poller)
+	// Step 7: Resolve current tag SHAs via GraphQL (reuse existing poller)
 	var tagMap map[string]map[string]string // repo → tag → sha
 	if len(repoSet) > 0 {
 		repos := make([]string, 0, len(repoSet))
@@ -180,6 +212,9 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 
 		fetchResults, err := graphqlClient.FetchTagsBatch(ctx, repos)
 		if err != nil {
+			if strings.Contains(err.Error(), "Could not resolve") {
+				return nil, fmt.Errorf("resolve tags: %w\n\nOne or more action repositories could not be accessed.\nIf using private actions, ensure GITHUB_TOKEN has read access to those repos,\nor use a PAT with the 'repo' scope.", err)
+			}
 			return nil, fmt.Errorf("resolve tags via GraphQL: %w\n\nEnsure GITHUB_TOKEN has read access to the action repositories.", err)
 		}
 
@@ -193,10 +228,30 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 				tagMap[repo][tag.Name] = tag.CommitSHA
 			}
 		}
+
+		// Check which requested repos are missing from results (inaccessible)
+		for _, repo := range repos {
+			if _, ok := fetchResults[repo]; !ok {
+				for i, ar := range tagRefs {
+					if ar.Owner+"/"+ar.Repo == repo {
+						result.Warnings = append(result.Warnings, Warning{
+							Action:  repo,
+							Ref:     ar.Ref,
+							Message: "repository not accessible (may be private or deleted)",
+						})
+						fmt.Fprintf(messageWriter, "  ⚠ %s@%s → repository not accessible. If private, ensure GITHUB_TOKEN has read access.\n", repo, ar.Ref)
+						tagRefs[i].Owner = "" // sentinel: mark as handled
+					}
+				}
+			}
+		}
 	}
 
-	// Step 7: Compare against manifest
+	// Step 8: Compare against manifest
 	for _, ar := range tagRefs {
+		if ar.Owner == "" {
+			continue // already handled as inaccessible
+		}
 		key := ar.Owner + "/" + ar.Repo
 
 		if ar.IsBranch {
@@ -437,6 +492,14 @@ func (c *httpClient) fetchFileContent(ctx context.Context, repo, path, sha strin
 	}
 
 	return decoded, nil
+}
+
+// isPullRequestEvent returns true for PR-like events where the manifest
+// should be fetched from the base branch to prevent manifest poisoning.
+func isPullRequestEvent(eventName string) bool {
+	return eventName == "pull_request" ||
+		eventName == "pull_request_target" ||
+		eventName == "merge_group"
 }
 
 // messageWriter is the destination for gate status messages.

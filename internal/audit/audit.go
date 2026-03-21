@@ -17,20 +17,23 @@ import (
 
 // AuditResult holds the complete audit output.
 type AuditResult struct {
-	Org                string
-	ScannedAt          time.Time
-	TotalRepos         int
-	ActiveRepos        int
-	ArchivedSkipped    int
-	ForkedSkipped      int
-	ReposWithWorkflows int
-	TotalWorkflowFiles int
-	TotalRefs          int
-	SHAPinned          int
-	TagPinned          int
-	BranchPinned       int
-	UniqueActions      []ActionSummary
-	OrgPolicy          *poller.OrgPolicy // nil if couldn't check
+	Org                  string
+	ScannedAt            time.Time
+	TotalRepos           int
+	ActiveRepos          int
+	ArchivedSkipped      int
+	ForkedSkipped        int
+	ReposWithWorkflows   int
+	TotalWorkflowFiles   int
+	TotalRefs            int
+	SHAPinned            int
+	TagPinned            int
+	BranchPinned         int
+	UniqueActions        []ActionSummary
+	OrgPolicy            *poller.OrgPolicy // nil if couldn't check
+	WorkflowsWithGate    int
+	WorkflowsWithoutGate int
+	UnprotectedWorkflows []string // "repo-name/.github/workflows/ci.yml"
 }
 
 // ActionSummary describes a unique upstream action's usage and risk.
@@ -143,6 +146,13 @@ func RunAudit(ctx context.Context, opts Options, graphqlClient *poller.GraphQLCl
 		repoActions := make(map[string]bool)
 
 		for _, wf := range repo.WorkflowFiles {
+			if hasGateStep(wf.Content) {
+				result.WorkflowsWithGate++
+			} else {
+				result.WorkflowsWithoutGate++
+				result.UnprotectedWorkflows = append(result.UnprotectedWorkflows, repo.Name+"/.github/workflows/"+wf.Name)
+			}
+
 			refs := extractRefs(wf.Content)
 			for _, ref := range refs {
 				result.TotalRefs++
@@ -255,6 +265,13 @@ func RunAudit(ctx context.Context, opts Options, graphqlClient *poller.GraphQLCl
 	}
 
 	return result, nil
+}
+
+// hasGateStep checks if a workflow contains a pinpoint gate step.
+func hasGateStep(content string) bool {
+	lower := strings.ToLower(content)
+	return strings.Contains(lower, "pinpoint gate") ||
+		strings.Contains(lower, "pinpoint@")
 }
 
 // extractRefs parses workflow content and returns all action references.
@@ -525,6 +542,23 @@ func FormatReport(r *AuditResult) string {
 	}
 	fmt.Fprintf(&b, "  4. Enable pinpoint monitoring for %d upstream actions\n", len(r.UniqueActions))
 	fmt.Fprintf(&b, "     -> Run: pinpoint audit --org %s --output config > .pinpoint.yml\n", r.Org)
+
+	// Unprotected workflows
+	if r.WorkflowsWithoutGate > 0 {
+		fmt.Fprintf(&b, "\nUNPROTECTED WORKFLOWS (no pinpoint gate detected):\n")
+		fmt.Fprintf(&b, "  %d of %d workflows have no gate step.\n",
+			r.WorkflowsWithoutGate, r.WorkflowsWithGate+r.WorkflowsWithoutGate)
+		limit := 20
+		if len(r.UnprotectedWorkflows) < limit {
+			limit = len(r.UnprotectedWorkflows)
+		}
+		for i := 0; i < limit; i++ {
+			fmt.Fprintf(&b, "  %s\n", r.UnprotectedWorkflows[i])
+		}
+		if len(r.UnprotectedWorkflows) > 20 {
+			fmt.Fprintf(&b, "  ... and %d more.\n", len(r.UnprotectedWorkflows)-20)
+		}
+	}
 
 	return b.String()
 }
