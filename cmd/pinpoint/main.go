@@ -53,8 +53,8 @@ func printUsage() {
 	fmt.Fprintf(os.Stderr, `pinpoint %s — GitHub Actions tag integrity monitor
 
 USAGE:
-  pinpoint scan      --config <path>  [--state <path>]  [--json]
-  pinpoint watch     --config <path>  [--state <path>]  [--interval 5m]
+  pinpoint scan      --config <path>  [--state <path>]  [--json]  [--rest]
+  pinpoint watch     --config <path>  [--state <path>]  [--interval 5m]  [--rest]
   pinpoint discover  --workflows <dir>
 
 COMMANDS:
@@ -65,6 +65,9 @@ COMMANDS:
 ENVIRONMENT:
   GITHUB_TOKEN     GitHub personal access token (recommended)
   PINPOINT_CONFIG  Default config path (overridden by --config)
+
+FLAGS:
+  --rest  Force REST API mode (default: GraphQL with REST fallback)
 
 `, version)
 }
@@ -116,9 +119,14 @@ func cmdScan() {
 	}
 
 	jsonOutput := hasFlag("json")
+	useREST := hasFlag("rest")
 
 	ctx := context.Background()
-	client := poller.NewGitHubClient(token)
+	restClient := poller.NewGitHubClient(token)
+	var graphqlClient *poller.GraphQLClient
+	if !useREST {
+		graphqlClient = poller.NewGraphQLClient(token)
+	}
 	stateStore, err := store.NewFileStore(statePath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error loading state: %v\n", err)
@@ -126,7 +134,7 @@ func cmdScan() {
 	}
 	emitter := alert.NewEmitter(!jsonOutput, cfg.Alerts.SlackWebhook, cfg.Alerts.WebhookURL)
 
-	alerts, err := runScan(ctx, cfg, client, stateStore, emitter, jsonOutput)
+	alerts, err := runScan(ctx, cfg, restClient, graphqlClient, stateStore, emitter, jsonOutput)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Scan error: %v\n", err)
 		os.Exit(1)
@@ -173,7 +181,12 @@ func cmdWatch() {
 	}
 
 	token := os.Getenv("GITHUB_TOKEN")
-	client := poller.NewGitHubClient(token)
+	useREST := hasFlag("rest")
+	restClient := poller.NewGitHubClient(token)
+	var graphqlClient *poller.GraphQLClient
+	if !useREST {
+		graphqlClient = poller.NewGraphQLClient(token)
+	}
 	stateStore, err := store.NewFileStore(statePath)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error loading state: %v\n", err)
@@ -193,11 +206,15 @@ func cmdWatch() {
 		cancel()
 	}()
 
-	fmt.Fprintf(os.Stderr, "pinpoint watching (interval: %s, actions: %d)\n", interval, len(cfg.Actions))
-	fmt.Fprintln(os.Stderr, "Press Ctrl+C to stop.\n")
+	mode := "GraphQL"
+	if useREST {
+		mode = "REST"
+	}
+	fmt.Fprintf(os.Stderr, "pinpoint watching (interval: %s, actions: %d, mode: %s)\n", interval, len(cfg.Actions), mode)
+	fmt.Fprintln(os.Stderr, "Press Ctrl+C to stop.")
 
 	// Initial scan
-	runScan(ctx, cfg, client, stateStore, emitter, false)
+	runScan(ctx, cfg, restClient, graphqlClient, stateStore, emitter, false)
 	stateStore.Save()
 
 	ticker := time.NewTicker(interval)
@@ -209,7 +226,7 @@ func cmdWatch() {
 			stateStore.Save()
 			return
 		case <-ticker.C:
-			runScan(ctx, cfg, client, stateStore, emitter, false)
+			runScan(ctx, cfg, restClient, graphqlClient, stateStore, emitter, false)
 			stateStore.Save()
 		}
 	}
@@ -240,35 +257,61 @@ func cmdDiscover() {
 }
 
 // runScan performs a single scan cycle across all configured actions.
-func runScan(ctx context.Context, cfg *config.Config, client *poller.GitHubClient, stateStore *store.FileStore, emitter *alert.Emitter, jsonOutput bool) ([]risk.Alert, error) {
+func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubClient, graphqlClient *poller.GraphQLClient, stateStore *store.FileStore, emitter *alert.Emitter, jsonOutput bool) ([]risk.Alert, error) {
 	var allAlerts []risk.Alert
 	batchChanges := make(map[string]int) // repo → count of changes this cycle
 
+	// Collect valid repos for batching
+	validActions := make([]config.ActionConfig, 0, len(cfg.Actions))
 	for _, actionCfg := range cfg.Actions {
 		if actionCfg.Discover || actionCfg.Repo == "" {
-			continue // discover-only entries handled separately
+			continue
 		}
-
 		parts := strings.SplitN(actionCfg.Repo, "/", 2)
 		if len(parts) != 2 {
 			fmt.Fprintf(os.Stderr, "Warning: invalid repo %q, skipping\n", actionCfg.Repo)
 			continue
 		}
-		owner, repo := parts[0], parts[1]
+		validActions = append(validActions, actionCfg)
+	}
 
-		actionState := stateStore.GetActionState(actionCfg.Repo)
+	// Fetch tags: GraphQL batch or REST per-repo
+	fetchResults := make(map[string]*poller.FetchResult)
 
-		result, err := client.FetchAllTags(ctx, owner, repo, actionState.RepoETag)
+	if graphqlClient != nil {
+		repos := make([]string, len(validActions))
+		for i, a := range validActions {
+			repos[i] = a.Repo
+		}
+
+		results, err := graphqlClient.FetchTagsBatch(ctx, repos)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error fetching %s: %v\n", actionCfg.Repo, err)
+			// Failover to REST
+			fmt.Fprintf(os.Stderr, "⚠ GraphQL unavailable (%v). Falling back to REST.\n", err)
+			fetchResults = fetchTagsREST(ctx, restClient, validActions, stateStore)
+		} else {
+			fetchResults = results
+		}
+	} else {
+		fetchResults = fetchTagsREST(ctx, restClient, validActions, stateStore)
+	}
+
+	for _, actionCfg := range validActions {
+		result, ok := fetchResults[actionCfg.Repo]
+		if !ok || result == nil {
 			continue
 		}
 
 		if result.NotModified {
-			continue // Nothing changed
+			continue // Nothing changed (REST ETag)
 		}
 
-		stateStore.SetRepoETag(actionCfg.Repo, result.ETag)
+		if result.ETag != "" {
+			stateStore.SetRepoETag(actionCfg.Repo, result.ETag)
+		}
+
+		parts := strings.SplitN(actionCfg.Repo, "/", 2)
+		owner, repo := parts[0], parts[1]
 
 		// Build set of current tags for deletion detection
 		currentTags := make(map[string]bool)
@@ -302,7 +345,7 @@ func runScan(ctx context.Context, cfg *config.Config, client *poller.GitHubClien
 				}
 
 				// Enrichment: check commit ancestry
-				isDesc, ahead, behind, err := client.CompareCommits(ctx, owner, repo, previousSHA, tag.CommitSHA)
+				isDesc, ahead, behind, err := restClient.CompareCommits(ctx, owner, repo, previousSHA, tag.CommitSHA)
 				if err == nil {
 					scoreCtx.IsDescendant = isDesc
 					scoreCtx.AheadBy = ahead
@@ -310,7 +353,7 @@ func runScan(ctx context.Context, cfg *config.Config, client *poller.GitHubClien
 				}
 
 				// Enrichment: commit info
-				commitInfo, err := client.GetCommitInfo(ctx, owner, repo, tag.CommitSHA)
+				commitInfo, err := restClient.GetCommitInfo(ctx, owner, repo, tag.CommitSHA)
 				if err == nil {
 					scoreCtx.CommitAuthor = commitInfo.AuthorName
 					scoreCtx.CommitEmail = commitInfo.AuthorEmail
@@ -319,8 +362,8 @@ func runScan(ctx context.Context, cfg *config.Config, client *poller.GitHubClien
 
 				// Enrichment: entry point size (check common paths)
 				for _, path := range []string{"entrypoint.sh", "dist/index.js", "action.yml"} {
-					oldSize, _ := client.GetFileSize(ctx, owner, repo, path, previousSHA)
-					newSize, _ := client.GetFileSize(ctx, owner, repo, path, tag.CommitSHA)
+					oldSize, _ := restClient.GetFileSize(ctx, owner, repo, path, previousSHA)
+					newSize, _ := restClient.GetFileSize(ctx, owner, repo, path, tag.CommitSHA)
 					if oldSize > 0 && newSize > 0 {
 						scoreCtx.EntryPointOld = oldSize
 						scoreCtx.EntryPointNew = newSize
@@ -365,6 +408,7 @@ func runScan(ctx context.Context, cfg *config.Config, client *poller.GitHubClien
 		if !actionCfg.AllTags {
 			for _, t := range actionCfg.Tags {
 				if !currentTags[t] {
+					actionState := stateStore.GetActionState(actionCfg.Repo)
 					if _, exists := actionState.Tags[t]; exists {
 						stateStore.RecordDeletedTag(actionCfg.Repo, t)
 						a := risk.Alert{
@@ -400,6 +444,24 @@ func runScan(ctx context.Context, cfg *config.Config, client *poller.GitHubClien
 	}
 
 	return allAlerts, nil
+}
+
+// fetchTagsREST fetches tags for each repo individually using the REST API.
+func fetchTagsREST(ctx context.Context, client *poller.GitHubClient, actions []config.ActionConfig, stateStore *store.FileStore) map[string]*poller.FetchResult {
+	results := make(map[string]*poller.FetchResult)
+	for _, actionCfg := range actions {
+		parts := strings.SplitN(actionCfg.Repo, "/", 2)
+		owner, repo := parts[0], parts[1]
+		actionState := stateStore.GetActionState(actionCfg.Repo)
+
+		result, err := client.FetchAllTags(ctx, owner, repo, actionState.RepoETag)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error fetching %s: %v\n", actionCfg.Repo, err)
+			continue
+		}
+		results[actionCfg.Repo] = result
+	}
+	return results
 }
 
 func truncate(s string, max int) string {
