@@ -34,6 +34,11 @@ func NewGraphQLClient(token string) *GraphQLClient {
 	}
 }
 
+// SetEndpoint overrides the GraphQL endpoint (for testing).
+func (c *GraphQLClient) SetEndpoint(endpoint string) {
+	c.endpoint = endpoint
+}
+
 type graphqlRequest struct {
 	Query string `json:"query"`
 }

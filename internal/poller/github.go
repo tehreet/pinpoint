@@ -40,6 +40,11 @@ func NewGitHubClient(token string) *GitHubClient {
 	}
 }
 
+// SetBaseURL overrides the base URL (for testing).
+func (c *GitHubClient) SetBaseURL(url string) {
+	c.baseURL = url
+}
+
 // TagRef represents a git tag reference from the GitHub API.
 type TagRef struct {
 	Ref    string `json:"ref"`
@@ -355,6 +360,82 @@ func (c *GitHubClient) GetRateLimit(ctx context.Context) (*RateLimitInfo, error)
 		Limit:     result.Rate.Limit,
 		ResetsAt:  time.Unix(result.Rate.Reset, 0),
 	}, nil
+}
+
+// OrgPolicy holds the GitHub Actions policy settings for an organization.
+type OrgPolicy struct {
+	SHAPinningRequired bool   `json:"sha_pinning_required"`
+	AllowedActions     string `json:"allowed_actions"`
+}
+
+// CheckImmutableRelease checks if the latest release of a repo is immutable.
+// Returns true/false, or nil if the repo has no releases.
+func (c *GitHubClient) CheckImmutableRelease(ctx context.Context, owner, repo string) (*bool, error) {
+	url := fmt.Sprintf("%s/repos/%s/%s/releases?per_page=1", c.baseURL, owner, repo)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("creating request: %w", err)
+	}
+	c.setHeaders(req)
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("fetching releases for %s/%s: %w", owner, repo, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("releases API returned %d for %s/%s: %s", resp.StatusCode, owner, repo, string(body))
+	}
+
+	var releases []struct {
+		Immutable bool `json:"immutable"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&releases); err != nil {
+		return nil, fmt.Errorf("decoding releases: %w", err)
+	}
+
+	if len(releases) == 0 {
+		return nil, nil
+	}
+
+	return &releases[0].Immutable, nil
+}
+
+// CheckOrgPolicy checks if the org has SHA pinning enforcement enabled.
+// Returns nil if the token doesn't have admin:org scope (403).
+func (c *GitHubClient) CheckOrgPolicy(ctx context.Context, org string) (*OrgPolicy, error) {
+	url := fmt.Sprintf("%s/orgs/%s/actions/permissions", c.baseURL, org)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("creating request: %w", err)
+	}
+	c.setHeaders(req)
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("checking org policy for %s: %w", org, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusNotFound {
+		return nil, nil
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("org policy API returned %d for %s: %s", resp.StatusCode, org, string(body))
+	}
+
+	var policy OrgPolicy
+	if err := json.NewDecoder(resp.Body).Decode(&policy); err != nil {
+		return nil, fmt.Errorf("decoding org policy: %w", err)
+	}
+
+	return &policy, nil
 }
 
 func (c *GitHubClient) setHeaders(req *http.Request) {

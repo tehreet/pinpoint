@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/tehreet/pinpoint/internal/alert"
+	"github.com/tehreet/pinpoint/internal/audit"
 	"github.com/tehreet/pinpoint/internal/config"
 	"github.com/tehreet/pinpoint/internal/discover"
 	"github.com/tehreet/pinpoint/internal/poller"
@@ -38,6 +39,8 @@ func main() {
 		cmdWatch()
 	case "discover":
 		cmdDiscover()
+	case "audit":
+		cmdAudit()
 	case "version":
 		fmt.Printf("pinpoint %s\n", version)
 	case "help", "-h", "--help":
@@ -56,11 +59,13 @@ USAGE:
   pinpoint scan      --config <path>  [--state <path>]  [--json]  [--rest]
   pinpoint watch     --config <path>  [--state <path>]  [--interval 5m]  [--rest]
   pinpoint discover  --workflows <dir>
+  pinpoint audit     --org <name>  [--output report|config|manifest|json]  [--skip-upstream]
 
 COMMANDS:
   scan       One-shot: poll all monitored actions and report changes
   watch      Continuous: poll on interval, alert on changes
   discover   Scan workflow files and output actions to monitor
+  audit      Scan an entire GitHub org and produce a security posture report
 
 ENVIRONMENT:
   GITHUB_TOKEN     GitHub personal access token (recommended)
@@ -253,6 +258,93 @@ func cmdDiscover() {
 
 	if hasFlag("config") {
 		fmt.Print(discover.GenerateConfig(refs))
+	}
+}
+
+func cmdAudit() {
+	org := getFlag("org")
+	if org == "" {
+		fmt.Fprintf(os.Stderr, "Error: --org is required.\n\nUsage: pinpoint audit --org <name> [--output report|config|manifest|json] [--skip-upstream]\n")
+		os.Exit(1)
+	}
+
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		fmt.Fprintf(os.Stderr, `Error: GITHUB_TOKEN is required for org audit.
+
+Set a token with read access to your organization's repositories:
+  export GITHUB_TOKEN=ghp_...
+
+Create a token at: https://github.com/settings/tokens
+Required scopes: repo (or read:org for public repos only)
+Optional scope: admin:org (enables SHA pinning policy check)
+`)
+		os.Exit(1)
+	}
+
+	output := getFlag("output")
+	if output == "" {
+		output = "report"
+	}
+	switch output {
+	case "report", "config", "manifest", "json":
+		// valid
+	default:
+		fmt.Fprintf(os.Stderr, "Error: invalid --output %q. Must be one of: report, config, manifest, json\n", output)
+		os.Exit(1)
+	}
+
+	skipUpstream := hasFlag("skip-upstream")
+
+	ctx := context.Background()
+	graphqlClient := poller.NewGraphQLClient(token)
+	restClient := poller.NewGitHubClient(token)
+
+	opts := audit.Options{
+		Org:          org,
+		Output:       output,
+		SkipUpstream: skipUpstream,
+		ProgressFunc: func(format string, args ...any) {
+			fmt.Fprintf(os.Stderr, format, args...)
+		},
+	}
+
+	result, err := audit.RunAudit(ctx, opts, graphqlClient, restClient)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Audit error: %v\n", err)
+		os.Exit(1)
+	}
+
+	switch output {
+	case "report":
+		fmt.Fprint(os.Stderr, audit.FormatReport(result))
+	case "config":
+		fmt.Print(audit.FormatConfig(result))
+	case "manifest":
+		// For manifest, we need to resolve tags for discovered actions
+		repos := make([]string, len(result.UniqueActions))
+		for i, a := range result.UniqueActions {
+			repos[i] = a.Repo
+		}
+		fmt.Fprintf(os.Stderr, "\nResolving tags for %d actions...\n", len(repos))
+		tagResults, err := graphqlClient.FetchTagsBatch(ctx, repos)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error resolving tags: %v\n", err)
+			os.Exit(1)
+		}
+		manifestStr, err := audit.FormatManifest(result, tagResults)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error formatting manifest: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Print(manifestStr)
+	case "json":
+		jsonStr, err := audit.FormatJSON(result)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error formatting JSON: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Print(jsonStr)
 	}
 }
 
