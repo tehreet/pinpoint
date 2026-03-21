@@ -529,39 +529,41 @@ Add a `/healthz` endpoint for liveness probes when running as a service.
 
 ## Complete Feature Roadmap
 
-### v0.1 (SHIPPED — what we built today)
-- CLI: scan, watch, discover
-- REST API poller with ETag caching
-- Annotated tag dereferencing
-- JSON state store
-- Risk scoring (mass repoint, off-branch, semver, size, backdated, self-hosted)
-- Stdout + Slack + webhook alerting
-- GPL-3.0
+### v0.1 (SHIPPED)
+- ✅ CLI: scan, watch, discover
+- ✅ REST API poller with ETag caching
+- ✅ Annotated tag dereferencing
+- ✅ JSON state store
+- ✅ Risk scoring (mass repoint, off-branch, semver, size, backdated, self-hosted)
+- ✅ Stdout + Slack + webhook alerting
+- ✅ GPL-3.0
 
-### v0.2 — Scale
-- GraphQL poller (batch 50 repos per query)
-- Tag-object SHA cache (eliminate redundant dereferencing)
+### v0.2 (SHIPPED)
+- ✅ GraphQL poller (batch 50 repos per query, auto-dereferences annotated tags)
+- ✅ `pinpoint audit` command (org-wide workflow scanning)
+- ✅ Manifest generation (.pinpoint-manifest.json)
+- ✅ Immutable release detection (flag actions with/without immutable releases)
+- ✅ GitHub SHA pinning policy detection
+- Tag-object SHA cache (eliminate redundant REST dereferencing)
 - Tiered polling (critical/standard/long-tail intervals)
 - SQLite state backend
-- `pinpoint audit` command (org-wide workflow scanning)
-- Manifest generation (.pinpoint-manifest.json)
-- False positive suppression (allow-lists for known bot accounts)
 - HMAC-signed state files
 
-### v0.3 — Gate
-- `pinpoint gate` composite action (pre-job verification)
-- Manifest verify/refresh commands
-- Org-level reusable workflow template
-- Warn mode and enforce mode
+### v0.3 (SHIPPED)
+- ✅ `pinpoint gate` (pre-job verification, inline in CI)
+- ✅ Manifest refresh/verify commands
+- ✅ `pinpoint manifest init` (bootstrap manifest + workflow templates)
+- ✅ SARIF output for GitHub Security tab integration
+- ✅ False positive suppression (allow-list rules with glob matching, conditions)
+- ✅ Org-level reusable workflow template (pinpoint-gate.yml, pinpoint-refresh.yml)
+- ✅ 72+ tests across all packages
+- Warn mode and enforce mode (gate currently enforce-only)
 - Integration with GitHub deployment protection rules
 
 ### v0.4 — Community
 - Community baseline ledger (top 500 actions, daily snapshots)
 - `pinpoint baseline contribute` command
-- Immutable release detection (flag actions with/without immutable releases)
-- GitHub SHA pinning policy detection
 - Tag ruleset detection
-- SARIF output for GitHub Security tab integration
 - Dependency graph integration
 
 ### v0.5 — Enterprise

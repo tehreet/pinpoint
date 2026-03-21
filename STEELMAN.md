@@ -23,56 +23,56 @@ sophisticated timing attacks — they're smash-and-grab. Pinpoint catches
 smash-and-grab. A nation-state actor who repoints for 90 seconds, waits for
 one CI run to trigger, and reverts? Pinpoint misses that completely.
 
-**Mitigation:** For repos you *do* own (internal actions), supplement polling
-with webhook-based detection. For third-party repos, this gap is the cost of
-not having SHA pinning. Pinpoint reduces the window from "forever" to "polling
-interval" — that's real value, but it's not zero.
+**Mitigation:** The gate (`pinpoint gate`) closes this gap for CI runs — it
+verifies tags at execution time, not at poll time. For continuous monitoring,
+supplement polling with webhook-based detection on repos you own. For
+third-party repos, the polling gap is the cost of not having SHA pinning.
 
 ---
 
-## 2. Scale: 2,000 Repos Will Hit You in Three Places
+## 2. Scale: API Costs at 2,000 Repos
 
 ### 2a. API Rate Limits
 
-GitHub's authenticated rate limit is 5,000 requests/hour. The `matching-refs`
-bulk endpoint returns all tags for a repo in one paginated call, so the
-baseline cost is 1 API call per repo per poll cycle. At 2,000 repos with a
-5-minute interval:
+**GraphQL (default):** Pinpoint batches 50 repos per GraphQL query at 1 point
+per batch. Monitoring 2,000 repos costs 40 points per poll cycle. At 5-minute
+intervals: 40 × 12 = 480 points/hour — under 10% of the 5,000 points/hour
+GraphQL budget. This scales comfortably.
+
+**REST (fallback):** The REST `matching-refs` endpoint costs 1 API call per
+repo per poll. At 2,000 repos with a 5-minute interval:
 
     2,000 repos × 12 polls/hour = 24,000 requests/hour
 
-That's 5x the rate limit. **Pinpoint cannot poll 2,000 repos every 5 minutes
-with a single token.**
+That's 5x the 5,000/hour REST rate limit. REST fallback does not scale to
+2,000 repos without tiered polling or multi-token support.
 
-ETag caching helps: repos where nothing has changed return `304 Not Modified`
-and don't count against the rate limit. In practice, the vast majority of
-repos won't change between polls. But the *first* baseline scan (before you
-have any ETags) hits all 2,000 repos, and any repos with active releases will
-invalidate their ETags regularly.
+ETag caching helps the REST path: repos where nothing has changed return
+`304 Not Modified` and don't count against the rate limit. In practice, >90%
+of repos won't change between polls. But the first baseline scan hits all
+repos, and ETag caching doesn't apply to GraphQL.
 
-**Real math for CoreWeave:**
-- 2,000 repos, 5-min interval, single PAT: broken.
-- 2,000 repos, 5-min interval, GitHub App installation token (15K/hour on
-  Enterprise): feasible but tight, leaves no headroom for enrichment calls.
-- 2,000 repos, staggered (200 repos per minute, full cycle every 10 min):
-  works, but detection latency is 10 min not 5.
-- Tiered polling: critical actions every 2 min, everything else every 30 min:
-  the right answer, but not implemented yet.
+**Real math for 2,000 repos (GraphQL):**
+- 2,000 repos, 5-min interval: 480 points/hour. No problem.
+- 2,000 repos, 2-min interval: 1,200 points/hour. Still fine.
+- Enrichment calls (compare, commit info, file size) are REST and add up.
+  Budget for ~500 REST calls/hour for enrichment at scale.
 
-### 2b. Annotated Tag Dereferencing Multiplies API Calls
+### 2b. Annotated Tag Dereferencing
 
-The `matching-refs` endpoint returns the ref SHA. For annotated tags, this
-points to a tag *object*, not the commit. Dereferencing requires a second API
-call per annotated tag. A repo with 200 annotated tags costs 201 API calls,
-not 1.
+**GraphQL auto-dereferences annotated tags** via `... on Tag { target { oid } }`
+in the query. No second API call needed. This problem is solved for the
+GraphQL path.
 
-Many popular actions (actions/checkout, docker/build-push-action) use annotated
-tags. At scale, this is the hidden multiplier that blows your rate budget.
+**REST fallback still has this issue.** The `matching-refs` endpoint returns
+the ref SHA for annotated tags, which points to a tag object, not the commit.
+Dereferencing requires a second API call per annotated tag. A repo with 200
+annotated tags costs 201 API calls, not 1. At scale on the REST path, this is
+the hidden multiplier that blows your rate budget.
 
-**Mitigation needed:** Cache the tag-object-SHA → commit-SHA mapping. Tag
-objects are immutable — once you've dereferenced a tag object SHA, the mapping
-never changes. This is not implemented yet but would eliminate repeat
-dereferencing entirely.
+**Mitigation:** Use GraphQL (the default). REST fallback is for environments
+where GraphQL is unavailable. Tag-object SHA caching (not yet implemented)
+would eliminate repeat dereferencing on the REST path.
 
 ### 2c. State File Size
 
@@ -86,7 +86,7 @@ writes it atomically on every save.
 
 **Mitigation needed:** SQLite backend for the `watch` command. The JSON
 file store is fine for <1,000 tags. Beyond that, switch to SQLite with indexed
-lookups. This is explicitly in the Phase 2 roadmap but is not built yet.
+lookups. This is explicitly in the roadmap but is not built yet.
 
 ---
 
@@ -128,9 +128,9 @@ low-severity alerts per day. If operators learn to ignore pinpoint alerts
 because they're always "just v4 moving forward," they'll also ignore the one
 alert that matters.
 
-The risk scoring tries to handle this (major version tag advancing to a
-descendant commit = low severity), but the heuristics are not battle-tested.
-Edge cases:
+The risk scoring handles the common cases (major version tag advancing to a
+descendant commit = low severity), and allow-list rules can suppress known-good
+patterns. But edge cases remain:
 
 - A maintainer force-pushes a tag to fix a bad release → semver repoint alert
   fires → it's legitimate.
@@ -139,15 +139,16 @@ Edge cases:
 - A repo migrates from lightweight to annotated tags → every tag changes its
   ref-level SHA even though the commit SHA is identical.
 
-**Mitigation needed:**
-- Allow-listing known-good tag movements by actor (e.g., "github-actions[bot]
-  is expected to move tags in this repo").
+**Current mitigations (implemented):**
+- Allow-list rules with glob matching, actor filtering, and conditions
+  (`major_tag_advance`, `descendant`, `release_within_5m`)
+- Suppressed alerts are logged and counted but don't trigger CI failure
+
+**Not yet implemented:**
 - Cooldown period: if a tag moves and a GitHub Release is created within 5
-  minutes by the same actor, suppress the alert.
+  minutes by the same actor, auto-suppress.
 - Tuning mode: run for a week in observation-only mode to establish a baseline
   of normal tag movement patterns before enabling alerts.
-
-None of this is implemented yet.
 
 ---
 
@@ -201,27 +202,68 @@ The warning is not implemented. External state stores are Phase 3.
 
 ---
 
-## 7. It Detects But Doesn't Prevent
+## 7. The Gate: Prevention Exists, With Its Own Limitations
 
-Pinpoint tells you a tag moved. It does not stop your pipeline from running the
-repointed code. By the time you read the Slack notification, open your laptop,
-and figure out which workflows to disable, hundreds of pipeline runs may have
-already executed the malicious action.
+The gate (`pinpoint gate`) runs as the first step in every workflow job. It
+fetches the workflow file from the GitHub API, extracts all `uses:` directives,
+resolves current tag SHAs via GraphQL, and compares them against the manifest.
+If any tag has been repointed, the job aborts before any untrusted code
+executes. This is real prevention, not just detection.
 
-The `scan` command returns exit code 2 on detection, which lets you use it as a
-CI gate — but only if you run pinpoint *before* every workflow that uses
-third-party actions. This doubles your CI time and means every workflow depends
-on pinpoint being available and fast.
+**But the gate has its own failure modes:**
 
-**Mitigation needed:**
-- A pre-job verification action that checks all subsequent actions against
-  known-good SHAs and aborts the job before any untrusted code runs. This is
-  the Phase 4 "fail-closed" mode. It's the most impactful feature pinpoint
-  could have, and it doesn't exist yet.
-- Webhook integration with GitHub's deployment protection rules to block
-  deployments when a tag change is detected.
-- Auto-PR to pin actions to SHAs when a repointing is detected (reactive, not
-  preventive, but limits ongoing exposure).
+**a) Chicken-and-egg: the gate itself must be SHA-pinned.** If you reference
+the gate as `tehreet/pinpoint@v1`, an attacker who compromises pinpoint can
+ship a gate that suppresses its own alerts. The gate step must be pinned to a
+commit SHA. This means at least one action in every workflow requires manual
+SHA management — the very thing pinpoint is supposed to avoid.
+
+**b) TOCTOU race condition.** The Actions runner downloads action code *before*
+the job starts. The gate verifies tags *during* the job. There is a time
+window between runner download and gate verification where a tag could be
+repointed. In practice this window is milliseconds to seconds, but it exists.
+A fail-closed pre-download hook (not available in GitHub Actions today) would
+eliminate this.
+
+**c) Stale manifest = blind gate.** The manifest is only as fresh as the last
+`pinpoint manifest refresh`. If nobody refreshes it, legitimate tag advances
+will cause the gate to fail (false positives) or — worse — the gate will
+verify against outdated SHAs while the real tags have moved to compromised
+commits that happen to differ from the manifest. The gate catches this as a
+mismatch, but operators may learn to ignore "stale manifest" failures.
+
+**d) Fork PR manifest poisoning.** If an attacker submits a PR from a fork
+that modifies `.pinpoint-manifest.json`, and the gate reads the manifest from
+the PR branch, the attacker controls what the gate considers "known good." The
+gate mitigates this by checking `GITHUB_EVENT_NAME` and `GITHUB_BASE_REF` to
+detect PR contexts, but this depends on correct environment variable
+propagation.
+
+---
+
+## 7a. Gate-Specific Limitations
+
+Beyond the gate's core failure modes, several classes of attacks are not
+covered:
+
+**Transitive dependency attacks.** The gate verifies the direct `uses:`
+references in your workflow. If `actions/checkout@v4` itself depends on
+another action or npm package that is compromised, the gate won't catch it.
+The gate operates at the action reference layer, not the dependency tree layer.
+
+**Dynamic action references.** Workflow files can construct action references
+dynamically using expressions: `uses: ${{ matrix.action }}@${{ matrix.version }}`.
+These are not statically parseable. The gate skips them and logs a warning.
+
+**Composite action internals.** A composite action can `uses:` other actions
+internally. The gate only verifies top-level `uses:` directives in your
+workflow file, not the transitive `uses:` inside composite actions.
+
+**Self-hosted runner binary verification.** The gate verifies that tags point
+to expected SHAs. It does not verify that the code actually downloaded to the
+runner matches those SHAs. On self-hosted runners with persistent tool caches,
+a previously compromised action binary could persist across runs. Future work:
+hash the on-disk action directory and compare against the expected commit tree.
 
 ---
 
@@ -232,9 +274,8 @@ adapt. The evasion techniques are not sophisticated:
 
 **a) Timing attacks:** Repoint the tag, wait for the target org's CI to trigger
 (e.g., right after a known cron job), revert the tag. If the revert happens
-within the polling interval, pinpoint sees nothing. If the attacker can observe
-the target's workflow run schedule (often visible in public repos), they can
-time the window precisely.
+within the polling interval, pinpoint's monitor sees nothing. The gate *does*
+catch this if it runs during the job — but only if the gate is present.
 
 **b) Gradual rotation:** Repoint one tag per day instead of 75 at once. Each
 individual event scores low (single tag, possibly still a descendant). The
@@ -298,22 +339,21 @@ If pinpoint crashes, hangs, or produces false negatives, your security posture
 silently degrades. If pinpoint produces false positives during an incident,
 it creates noise that distracts from the real problem.
 
-At CoreWeave's scale, the question isn't "does this tool work?" It's "what's
-the operational cost of running, maintaining, debugging, and trusting this tool
-across 2,000 repos, 24/7, with on-call coverage when it breaks?"
+**Where pinpoint stands today:** With the gate providing active prevention, the
+audit providing org-wide visibility, GraphQL batching eliminating the API cost
+wall, and 72+ tests covering the core paths, pinpoint is suitable for
+monitoring 200+ actions with active gate enforcement. It is not an MVP anymore.
 
-The honest answer: pinpoint as it exists today is an MVP suitable for
-monitoring 10-50 critical actions. It is not ready for 2,000-repo enterprise
-deployment without:
+The remaining gaps for enterprise deployment at 2,000+ repos are engineering
+tasks, not architectural limitations:
 
 1. Tiered polling with configurable priority levels
 2. SQLite or PostgreSQL state backend
-3. Tag-object SHA caching to eliminate redundant dereferencing
-4. Rate limit awareness with adaptive backoff
-5. A tuning/learning period for false positive suppression
-6. Monitoring of pinpoint itself (meta-monitoring / health checks)
-7. Proper observability: metrics, structured logging, alerting on scan failures
-8. Multi-token support (distribute API load across multiple credentials)
+3. Multi-token support (distribute API load across multiple credentials)
+4. Monitoring of pinpoint itself (meta-monitoring / health checks)
+5. Proper observability: metrics, structured logging, alerting on scan failures
+
+These are solvable. The architecture supports them. They just aren't built yet.
 
 ---
 
@@ -322,17 +362,16 @@ deployment without:
 **Pinpoint is:**
 - A meaningful improvement over the status quo (which is nothing)
 - Effective against the class of attacks we've actually seen (Trivy, tj-actions)
+- Both detection (monitor) AND prevention (gate) in a single binary
 - Low-cost, self-hostable, and honest about its threat model
-- A Layer 2 detection tool that complements SHA pinning (Layer 1) and
-  runtime EDR (Layer 3)
+- Suitable for monitoring 200+ actions with active gate enforcement
 
 **Pinpoint is not:**
 - A substitute for SHA pinning (prevention > detection, always)
 - Effective against patient, targeted adversaries who understand polling gaps
-- Ready for 2,000-repo enterprise deployment without significant additional
-  engineering
+- Coverage for transitive dependencies or composite action internals
 - A guarantee that you'll catch every supply chain attack
 
-**The right way to think about it:** Pinpoint is a smoke detector. It won't
-stop an arsonist, but it'll wake you up before the house burns down. Most
-houses don't have smoke detectors in the CI/CD room. That's the gap.
+**The right way to think about it:** Pinpoint is a smoke detector AND a
+circuit breaker. The monitor catches smash-and-grab attacks. The gate stops
+them from executing. Most CI/CD pipelines have neither. That's the gap.
