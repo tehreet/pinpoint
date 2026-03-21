@@ -1,0 +1,15 @@
+name: Test CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+      - uses: docker/build-push-action@v5
+      - uses: aquasecurity/trivy-action@0.35.0
+      - uses: actions/upload-artifact@a824008085750b8e136effc585c3cd6082bd575f
+      - uses: some-org/unknown-action@main
