@@ -41,9 +41,14 @@ func NewTestHelper(t *testing.T) *TestHelper {
 }
 
 // CreateRepo creates a public repo with a README in the test org.
+// If the repo already exists, it is deleted first to ensure clean state.
 // Returns the SHA of the initial commit on main.
 func (h *TestHelper) CreateRepo(t *testing.T, name string) string {
 	t.Helper()
+
+	// Delete if exists (ignore 404)
+	h.apiDelete(t, fmt.Sprintf("/repos/%s/%s", h.org, name))
+	time.Sleep(1 * time.Second)
 
 	// Create repo with auto-init (creates README + initial commit)
 	h.apiPost(t, fmt.Sprintf("/orgs/%s/repos", h.org), map[string]interface{}{
