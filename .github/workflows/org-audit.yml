@@ -1,8 +1,8 @@
 name: Org Audit
 on:
   schedule:
-    - cron: "0 8 * * *"  # Daily at 8am UTC
-  workflow_dispatch:      # Manual trigger
+    - cron: "0 8 * * *"
+  workflow_dispatch:
 
 jobs:
   audit:
@@ -11,32 +11,40 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3
+        with:
+          app-id: ${{ secrets.PINPOINT_APP_ID }}
+          private-key: ${{ secrets.PINPOINT_APP_PRIVATE_KEY }}
+          owner: pinpoint-testing
+          repositories: pinpoint
+
       - name: Download pinpoint
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          ASSET_URL=$(curl -sSL \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/pinpoint-testing/pinpoint/releases/tags/v0.5.0" \
+            | jq -r '.assets[] | select(.name=="pinpoint-linux-amd64") | .url')
+          curl -sSL \
+            -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/octet-stream" \
-            "https://api.github.com/repos/pinpoint-testing/pinpoint/releases/assets/$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/pinpoint-testing/pinpoint/releases/tags/v0.5.0" | jq -r ".assets[] | select(.name==\"pinpoint-linux-amd64\") | .id")" \
-            -o pinpoint
+            "$ASSET_URL" -o pinpoint
           chmod +x pinpoint
           ./pinpoint version
 
-      - name: Run org audit (report)
+      - name: Run org audit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./pinpoint audit --org pinpoint-testing --output report 2>&1 | tee audit-report.txt
+        run: |
+          ./pinpoint audit --org pinpoint-testing --output report 2>&1 | tee audit-report.txt
+          ./pinpoint audit --org pinpoint-testing --output json > audit.json 2>/dev/null
+          ./pinpoint audit --org pinpoint-testing --output sarif > audit.sarif 2>/dev/null
 
-      - name: Run org audit (JSON)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./pinpoint audit --org pinpoint-testing --output json > audit.json 2>/dev/null
-
-      - name: Run org audit (SARIF)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./pinpoint audit --org pinpoint-testing --output sarif > audit.sarif 2>/dev/null
-
-      - name: Upload audit results
-        uses: actions/upload-artifact@v4
+      - name: Upload results
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: pinpoint-audit-${{ github.run_id }}
           path: |
