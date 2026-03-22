@@ -10,6 +10,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
@@ -79,7 +80,7 @@ USAGE:
   pinpoint watch     --config <path>  [--state <path>]  [--interval 5m]  [--rest]
   pinpoint discover  --workflows <dir>
   pinpoint audit     --org <name>  [--output report|config|manifest|json|sarif]  [--skip-upstream]
-  pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]
+  pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]  [--integrity]  [--skip-transitive]
   pinpoint lock      [--lockfile <path>]  [--workflows <dir>]  [--verify]
   pinpoint verify    [--workflows <dir>]  [--output json]
   pinpoint manifest  <refresh|verify|init>  [options]
@@ -398,7 +399,7 @@ func cmdGate() {
 		repo = os.Getenv("GITHUB_REPOSITORY")
 	}
 	if repo == "" {
-		fmt.Fprintf(os.Stderr, "Error: --repo is required (or set GITHUB_REPOSITORY).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned]\n")
+		fmt.Fprintf(os.Stderr, "Error: --repo is required (or set GITHUB_REPOSITORY).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--skip-transitive]\n")
 		os.Exit(1)
 	}
 
@@ -407,7 +408,7 @@ func cmdGate() {
 		sha = os.Getenv("GITHUB_SHA")
 	}
 	if sha == "" {
-		fmt.Fprintf(os.Stderr, "Error: --sha is required (or set GITHUB_SHA).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned]\n")
+		fmt.Fprintf(os.Stderr, "Error: --sha is required (or set GITHUB_SHA).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--skip-transitive]\n")
 		os.Exit(1)
 	}
 
@@ -416,7 +417,7 @@ func cmdGate() {
 		workflowRef = os.Getenv("GITHUB_WORKFLOW_REF")
 	}
 	if workflowRef == "" {
-		fmt.Fprintf(os.Stderr, "Error: --workflow-ref is required (or set GITHUB_WORKFLOW_REF).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned]\n")
+		fmt.Fprintf(os.Stderr, "Error: --workflow-ref is required (or set GITHUB_WORKFLOW_REF).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--skip-transitive]\n")
 		os.Exit(1)
 	}
 
@@ -457,6 +458,8 @@ func cmdGate() {
 		FailOnMissing:          failOnMissingExplicit,
 		FailOnMissingExplicit:  failOnMissingExplicit,
 		FailOnUnpinned:         hasFlag("fail-on-unpinned"),
+		Integrity:              hasFlag("integrity"),
+		SkipTransitive:         hasFlag("skip-transitive"),
 		EventName:              eventName,
 		BaseRef:                baseRef,
 	}
@@ -1023,7 +1026,12 @@ func cmdLock() {
 	}
 
 	if hasFlag("list") {
-		fmt.Fprintln(os.Stderr, "TODO: --list")
+		m, err := manifest.LoadManifest(lockfile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+		manifest.PrintDependencyTree(m, lockfile, os.Stdout)
 		return
 	}
 
@@ -1075,11 +1083,27 @@ func cmdLock() {
 		}
 	}
 
+	apiURL := os.Getenv("GITHUB_API_URL")
+	if apiURL == "" {
+		apiURL = "https://api.github.com"
+	}
+	graphqlURL := os.Getenv("GITHUB_GRAPHQL_URL")
+	if graphqlURL == "" {
+		graphqlURL = "https://api.github.com/graphql"
+	}
+
 	client := poller.NewGraphQLClient(token)
 	ctx := context.Background()
 	fmt.Fprintf(os.Stderr, "Generating lockfile (%s)...\n", outputPath)
 
-	result, err := manifest.Refresh(ctx, outputPath, workflowDir, true, client)
+	iOpts := &manifest.IntegrityOptions{
+		HTTPClient: &http.Client{Timeout: 60 * time.Second},
+		BaseURL:    apiURL,
+		GraphQLURL: graphqlURL,
+		Token:      token,
+	}
+
+	result, err := manifest.Refresh(ctx, outputPath, workflowDir, true, client, iOpts)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)

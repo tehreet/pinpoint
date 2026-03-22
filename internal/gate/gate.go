@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	manifestpkg "github.com/tehreet/pinpoint/internal/manifest"
 	"github.com/tehreet/pinpoint/internal/poller"
 )
 
@@ -51,8 +52,20 @@ type Manifest struct {
 
 // ManifestEntry holds a single tag→SHA mapping.
 type ManifestEntry struct {
-	SHA        string `json:"sha"`
-	RecordedAt string `json:"recorded_at,omitempty"`
+	SHA          string          `json:"sha"`
+	Integrity    string          `json:"integrity,omitempty"`
+	RecordedAt   string          `json:"recorded_at,omitempty"`
+	Type         string          `json:"type,omitempty"`
+	Dependencies []TransitiveDep `json:"dependencies,omitempty"`
+}
+
+// TransitiveDep represents a dependency discovered in a composite action.
+type TransitiveDep struct {
+	Action       string          `json:"action"`
+	Ref          string          `json:"ref"`
+	Integrity    string          `json:"integrity,omitempty"`
+	Type         string          `json:"type,omitempty"`
+	Dependencies []TransitiveDep `json:"dependencies"`
 }
 
 // GateOptions holds configuration for the gate check.
@@ -67,6 +80,8 @@ type GateOptions struct {
 	FailOnMissing         bool
 	FailOnMissingExplicit bool   // true if --fail-on-missing was explicitly passed
 	FailOnUnpinned        bool
+	Integrity             bool   // opt-in: re-download tarballs and verify SHA-256 integrity
+	SkipTransitive        bool   // skip transitive dependency verification
 	EventName             string // "push", "pull_request", etc. From GITHUB_EVENT_NAME
 	BaseRef               string // "main", "develop", etc. From GITHUB_BASE_REF
 }
@@ -373,6 +388,36 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 		} else {
 			result.Verified++
 			fmt.Fprintf(messageWriter, "  ✓ %s@%s → %s... (matches manifest)\n", key, ar.Ref, currentSHA[:7])
+
+			// Integrity verification (opt-in): re-download tarball and verify SHA-256
+			if opts.Integrity && manifestEntry.Integrity != "" {
+				integrityHash, err := manifestpkg.DownloadAndHash(ctx, client.http, opts.APIURL, opts.Token, ar.Owner, ar.Repo, currentSHA)
+				if err != nil {
+					fmt.Fprintf(messageWriter, "    ⚠ integrity check failed: %v\n", err)
+				} else if integrityHash != manifestEntry.Integrity {
+					result.Violations = append(result.Violations, Violation{
+						Action:      key,
+						Tag:         ar.Ref,
+						ExpectedSHA: manifestEntry.Integrity,
+						ActualSHA:   integrityHash,
+					})
+					fmt.Fprintf(messageWriter, "    ✗ Content integrity mismatch: tarball hash changed for %s@%s\n", key, ar.Ref)
+					fmt.Fprintf(messageWriter, "      EXPECTED: %s\n", manifestEntry.Integrity)
+					fmt.Fprintf(messageWriter, "      ACTUAL:   %s\n", integrityHash)
+				} else {
+					fmt.Fprintf(messageWriter, "    ✓ integrity verified (sha256 match)\n")
+				}
+			}
+
+			// Transitive dependency verification
+			if !opts.SkipTransitive && len(manifestEntry.Dependencies) > 0 {
+				deps, _, err := manifestpkg.ResolveTransitiveDeps(ctx, client.http, opts.APIURL, opts.GraphQLURL, opts.Token, key, currentSHA, 0)
+				if err != nil {
+					fmt.Fprintf(messageWriter, "    ⚠ transitive check failed: %v\n", err)
+				} else {
+					checkTransitiveDeps(result, manifestEntry.Dependencies, deps, key, ar.Ref)
+				}
+			}
 		}
 	}
 
@@ -530,6 +575,30 @@ func isPullRequestEvent(eventName string) bool {
 	return eventName == "pull_request" ||
 		eventName == "pull_request_target" ||
 		eventName == "merge_group"
+}
+
+// checkTransitiveDeps compares expected transitive deps against discovered ones.
+func checkTransitiveDeps(result *GateResult, expected []TransitiveDep, discovered []manifestpkg.TransitiveDep, action, tag string) {
+	// Build map of expected deps by action
+	expectedMap := make(map[string]TransitiveDep)
+	for _, dep := range expected {
+		expectedMap[dep.Action] = dep
+	}
+
+	// Check for changed or new deps
+	for _, dep := range discovered {
+		if exp, ok := expectedMap[dep.Action]; ok {
+			if dep.Ref != exp.Ref {
+				result.Violations = append(result.Violations, Violation{
+					Action:      action,
+					Tag:         tag,
+					ExpectedSHA: exp.Ref,
+					ActualSHA:   dep.Ref,
+				})
+				fmt.Fprintf(messageWriter, "    ✗ Transitive dependency changed: %s was %s now %s\n", dep.Action, exp.Ref[:7], dep.Ref[:7])
+			}
+		}
+	}
 }
 
 // messageWriter is the destination for gate status messages.

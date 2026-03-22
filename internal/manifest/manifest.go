@@ -7,8 +7,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/tehreet/pinpoint/internal/discover"
@@ -24,8 +27,20 @@ type Manifest struct {
 
 // ManifestEntry holds a single tag→SHA mapping.
 type ManifestEntry struct {
-	SHA        string `json:"sha"`
-	RecordedAt string `json:"recorded_at,omitempty"`
+	SHA          string          `json:"sha"`
+	Integrity    string          `json:"integrity,omitempty"`
+	RecordedAt   string          `json:"recorded_at,omitempty"`
+	Type         string          `json:"type,omitempty"`
+	Dependencies []TransitiveDep `json:"dependencies,omitempty"`
+}
+
+// TransitiveDep represents a dependency discovered in a composite action.
+type TransitiveDep struct {
+	Action       string          `json:"action"`
+	Ref          string          `json:"ref"`
+	Integrity    string          `json:"integrity,omitempty"`
+	Type         string          `json:"type,omitempty"`
+	Dependencies []TransitiveDep `json:"dependencies"`
 }
 
 // Change describes a single modification found during refresh/verify.
@@ -45,6 +60,16 @@ type RefreshResult struct {
 	Added     int
 	Missing   int
 	Changes   []Change
+}
+
+// IntegrityOptions controls whether integrity hashing and transitive
+// dependency resolution are performed during refresh.
+// Pass nil to skip integrity (SHA-only lockfile, version 1).
+type IntegrityOptions struct {
+	HTTPClient *http.Client
+	BaseURL    string // e.g. "https://api.github.com"
+	GraphQLURL string
+	Token      string
 }
 
 // LoadManifest reads and parses a manifest file from disk.
@@ -89,7 +114,12 @@ func SaveManifest(path string, m *Manifest) error {
 
 // Refresh updates an existing manifest in-place by resolving current tag SHAs.
 // If discover is true, it also scans workflowDir for new action references.
-func Refresh(ctx context.Context, manifestPath string, workflowDir string, doDiscover bool, client *poller.GraphQLClient) (*RefreshResult, error) {
+// If integrityOpts is non-nil, tarball integrity hashes and transitive deps are computed.
+func Refresh(ctx context.Context, manifestPath string, workflowDir string, doDiscover bool, client *poller.GraphQLClient, integrityOpts ...*IntegrityOptions) (*RefreshResult, error) {
+	var iOpts *IntegrityOptions
+	if len(integrityOpts) > 0 {
+		iOpts = integrityOpts[0]
+	}
 	m, err := LoadManifest(manifestPath)
 	if err != nil {
 		return nil, err
@@ -204,12 +234,141 @@ func Refresh(ctx context.Context, manifestPath string, workflowDir string, doDis
 		}
 	}
 
+	// Compute integrity hashes and transitive deps if requested
+	if iOpts != nil {
+		m.Version = 2
+
+		// Collect all unique action+SHA pairs for batch tarball hashing
+		var actionRefs []ActionRef
+		seen := make(map[string]bool)
+		for _, repo := range repos {
+			tags := m.Actions[repo]
+			for _, entry := range tags {
+				if entry.SHA == "" {
+					continue
+				}
+				parts := strings.SplitN(repo, "/", 2)
+				if len(parts) != 2 {
+					continue
+				}
+				key := repo + "@" + entry.SHA
+				if !seen[key] {
+					seen[key] = true
+					actionRefs = append(actionRefs, ActionRef{
+						Owner: parts[0],
+						Repo:  parts[1],
+						SHA:   entry.SHA,
+					})
+				}
+			}
+		}
+
+		// Batch download and hash all tarballs concurrently
+		hashResults := DownloadAndHashBatch(ctx, iOpts.HTTPClient, iOpts.BaseURL, iOpts.Token, actionRefs)
+
+		// Apply integrity hashes and resolve transitive deps
+		for _, repo := range repos {
+			tags := m.Actions[repo]
+			for tag, entry := range tags {
+				if entry.SHA == "" {
+					continue
+				}
+
+				// Look up integrity hash from batch results
+				key := repo + "@" + entry.SHA
+				if hr, ok := hashResults[key]; ok && hr.Err == nil {
+					entry.Integrity = hr.Integrity
+				}
+
+				// Resolve transitive deps and action type
+				deps, actionType, err := ResolveTransitiveDeps(ctx, iOpts.HTTPClient, iOpts.BaseURL, iOpts.GraphQLURL, iOpts.Token, repo, entry.SHA, 0)
+				if err == nil {
+					entry.Type = actionType
+					entry.Dependencies = deps
+				}
+
+				tags[tag] = entry
+			}
+		}
+	}
+
 	// Write updated manifest
 	if err := SaveManifest(manifestPath, m); err != nil {
 		return nil, err
 	}
 
 	return result, nil
+}
+
+// PrintDependencyTree prints the lockfile dependency tree to the given writer.
+func PrintDependencyTree(m *Manifest, lockfilePath string, w io.Writer) {
+	// Count actions and transitive deps
+	totalActions := 0
+	totalTransitive := 0
+	for _, tags := range m.Actions {
+		for _, entry := range tags {
+			totalActions++
+			totalTransitive += countTransitiveDeps(entry.Dependencies)
+		}
+	}
+
+	fmt.Fprintf(w, "%s (%d actions, %d transitive)\n\n", lockfilePath, totalActions, totalTransitive)
+
+	// Collect and sort action+tag pairs
+	type actionTag struct {
+		action string
+		tag    string
+		entry  ManifestEntry
+	}
+	var items []actionTag
+	for action, tags := range m.Actions {
+		for tag, entry := range tags {
+			items = append(items, actionTag{action, tag, entry})
+		}
+	}
+	sort.Slice(items, func(i, j int) bool {
+		if items[i].action != items[j].action {
+			return items[i].action < items[j].action
+		}
+		return items[i].tag < items[j].tag
+	})
+
+	for _, item := range items {
+		sha := item.entry.SHA
+		if len(sha) > 7 {
+			sha = sha[:7]
+		}
+		actionType := item.entry.Type
+		if actionType == "" {
+			actionType = "unknown"
+		}
+		fmt.Fprintf(w, "%s@%s (%s...) [%s]\n", item.action, item.tag, sha, actionType)
+		printDeps(w, item.entry.Dependencies, "  ")
+	}
+}
+
+func printDeps(w io.Writer, deps []TransitiveDep, indent string) {
+	for _, dep := range deps {
+		ref := dep.Ref
+		if len(ref) > 7 {
+			ref = ref[:7]
+		}
+		depType := dep.Type
+		if depType == "" {
+			depType = "unknown"
+		}
+		// Extract tag from ref if it looks like a version, otherwise use SHA
+		fmt.Fprintf(w, "%s└── %s (%s...) [%s]\n", indent, dep.Action, ref, depType)
+		printDeps(w, dep.Dependencies, indent+"    ")
+	}
+}
+
+func countTransitiveDeps(deps []TransitiveDep) int {
+	count := len(deps)
+	for _, dep := range deps {
+		count += countTransitiveDeps(dep.Dependencies)
+	}
+	return count
 }
 
 // Verify checks if the manifest matches current live tag SHAs without modifying it.
