@@ -27,20 +27,22 @@ type Manifest struct {
 
 // ManifestEntry holds a single tag→SHA mapping.
 type ManifestEntry struct {
-	SHA          string          `json:"sha"`
-	Integrity    string          `json:"integrity,omitempty"`
-	RecordedAt   string          `json:"recorded_at,omitempty"`
-	Type         string          `json:"type,omitempty"`
-	Dependencies []TransitiveDep `json:"dependencies,omitempty"`
+	SHA           string          `json:"sha"`
+	Integrity     string          `json:"integrity,omitempty"`
+	DiskIntegrity string          `json:"disk_integrity,omitempty"`
+	RecordedAt    string          `json:"recorded_at,omitempty"`
+	Type          string          `json:"type,omitempty"`
+	Dependencies  []TransitiveDep `json:"dependencies,omitempty"`
 }
 
 // TransitiveDep represents a dependency discovered in a composite action.
 type TransitiveDep struct {
-	Action       string          `json:"action"`
-	Ref          string          `json:"ref"`
-	Integrity    string          `json:"integrity,omitempty"`
-	Type         string          `json:"type,omitempty"`
-	Dependencies []TransitiveDep `json:"dependencies"`
+	Action        string          `json:"action"`
+	Ref           string          `json:"ref"`
+	Integrity     string          `json:"integrity,omitempty"`
+	DiskIntegrity string          `json:"disk_integrity,omitempty"`
+	Type          string          `json:"type,omitempty"`
+	Dependencies  []TransitiveDep `json:"dependencies"`
 }
 
 // Change describes a single modification found during refresh/verify.
@@ -66,10 +68,11 @@ type RefreshResult struct {
 // dependency resolution are performed during refresh.
 // Pass nil to skip integrity (SHA-only lockfile, version 1).
 type IntegrityOptions struct {
-	HTTPClient *http.Client
-	BaseURL    string // e.g. "https://api.github.com"
-	GraphQLURL string
-	Token      string
+	HTTPClient        *http.Client
+	BaseURL           string // e.g. "https://api.github.com"
+	GraphQLURL        string
+	Token             string
+	SkipDiskIntegrity bool // when true, only compute tarball integrity (no tree hash)
 }
 
 // LoadManifest reads and parses a manifest file from disk.
@@ -264,7 +267,28 @@ func Refresh(ctx context.Context, manifestPath string, workflowDir string, doDis
 		}
 
 		// Batch download and hash all tarballs concurrently
-		hashResults := DownloadAndHashBatch(ctx, iOpts.HTTPClient, iOpts.BaseURL, iOpts.Token, actionRefs)
+		// Use dual-hash (tarball + tree) unless SkipDiskIntegrity is set
+		type hashEntry struct {
+			integrity     string
+			diskIntegrity string
+		}
+		hashMap := make(map[string]hashEntry)
+
+		if iOpts.SkipDiskIntegrity {
+			results := DownloadAndHashBatch(ctx, iOpts.HTTPClient, iOpts.BaseURL, iOpts.Token, actionRefs)
+			for key, hr := range results {
+				if hr.Err == nil {
+					hashMap[key] = hashEntry{integrity: hr.Integrity}
+				}
+			}
+		} else {
+			results := DownloadExtractAndTreeHashBatch(ctx, iOpts.HTTPClient, iOpts.BaseURL, iOpts.Token, actionRefs)
+			for key, hr := range results {
+				if hr.Err == nil {
+					hashMap[key] = hashEntry{integrity: hr.Integrity, diskIntegrity: hr.DiskIntegrity}
+				}
+			}
+		}
 
 		// Apply integrity hashes and resolve transitive deps
 		for _, repo := range repos {
@@ -276,8 +300,9 @@ func Refresh(ctx context.Context, manifestPath string, workflowDir string, doDis
 
 				// Look up integrity hash from batch results
 				key := repo + "@" + entry.SHA
-				if hr, ok := hashResults[key]; ok && hr.Err == nil {
-					entry.Integrity = hr.Integrity
+				if he, ok := hashMap[key]; ok {
+					entry.Integrity = he.integrity
+					entry.DiskIntegrity = he.diskIntegrity
 				}
 
 				// Resolve transitive deps and action type

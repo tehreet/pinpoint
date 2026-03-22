@@ -11,10 +11,12 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
 
+	"github.com/tehreet/pinpoint/internal/integrity"
 	manifestpkg "github.com/tehreet/pinpoint/internal/manifest"
 	"github.com/tehreet/pinpoint/internal/poller"
 )
@@ -52,20 +54,22 @@ type Manifest struct {
 
 // ManifestEntry holds a single tag→SHA mapping.
 type ManifestEntry struct {
-	SHA          string          `json:"sha"`
-	Integrity    string          `json:"integrity,omitempty"`
-	RecordedAt   string          `json:"recorded_at,omitempty"`
-	Type         string          `json:"type,omitempty"`
-	Dependencies []TransitiveDep `json:"dependencies,omitempty"`
+	SHA           string          `json:"sha"`
+	Integrity     string          `json:"integrity,omitempty"`
+	DiskIntegrity string          `json:"disk_integrity,omitempty"`
+	RecordedAt    string          `json:"recorded_at,omitempty"`
+	Type          string          `json:"type,omitempty"`
+	Dependencies  []TransitiveDep `json:"dependencies,omitempty"`
 }
 
 // TransitiveDep represents a dependency discovered in a composite action.
 type TransitiveDep struct {
-	Action       string          `json:"action"`
-	Ref          string          `json:"ref"`
-	Integrity    string          `json:"integrity,omitempty"`
-	Type         string          `json:"type,omitempty"`
-	Dependencies []TransitiveDep `json:"dependencies"`
+	Action        string          `json:"action"`
+	Ref           string          `json:"ref"`
+	Integrity     string          `json:"integrity,omitempty"`
+	DiskIntegrity string          `json:"disk_integrity,omitempty"`
+	Type          string          `json:"type,omitempty"`
+	Dependencies  []TransitiveDep `json:"dependencies"`
 }
 
 // GateOptions holds configuration for the gate check.
@@ -82,6 +86,8 @@ type GateOptions struct {
 	FailOnUnpinned        bool
 	Integrity             bool   // opt-in: re-download tarballs and verify SHA-256 integrity
 	SkipTransitive        bool   // skip transitive dependency verification
+	OnDisk                bool   // verify on-disk action content against lockfile
+	ActionsDir            string // override for actions cache path
 	EventName             string // "push", "pull_request", etc. From GITHUB_EVENT_NAME
 	BaseRef               string // "main", "develop", etc. From GITHUB_BASE_REF
 }
@@ -417,6 +423,85 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 				} else {
 					checkTransitiveDeps(result, manifestEntry.Dependencies, deps, key, ar.Ref)
 				}
+			}
+		}
+	}
+
+	// On-disk verification: hash files the runner actually downloaded
+	if opts.OnDisk {
+		actionsDir := opts.ActionsDir
+		if actionsDir == "" {
+			runnerWorkspace := os.Getenv("RUNNER_WORKSPACE")
+			if runnerWorkspace == "" {
+				return nil, fmt.Errorf("on-disk verification requires a GitHub Actions runner environment.\n" +
+					"  Set RUNNER_WORKSPACE or use --actions-dir to specify the actions cache path.\n" +
+					"  On GitHub-hosted runners: /home/runner/work/_actions\n" +
+					"  On self-hosted runners: {runner_root}/_work/_actions")
+			}
+			actionsDir = filepath.Join(filepath.Dir(runnerWorkspace), "_actions")
+		}
+
+		fmt.Fprintf(messageWriter, "  On-disk verification (actions dir: %s)\n", actionsDir)
+
+		for _, ar := range tagRefs {
+			if ar.Owner == "" {
+				continue
+			}
+			key := ar.Owner + "/" + ar.Repo
+
+			manifestAction, ok := manifest.Actions[key]
+			if !ok {
+				continue
+			}
+			manifestEntry, ok := manifestAction[ar.Ref]
+			if !ok {
+				continue
+			}
+
+			// Check for disk_integrity field
+			if manifestEntry.DiskIntegrity == "" {
+				result.Warnings = append(result.Warnings, Warning{
+					Action:  key,
+					Ref:     ar.Ref,
+					Message: "disk_integrity not recorded",
+				})
+				fmt.Fprintf(messageWriter, "    ⚠ %s@%s → disk_integrity not recorded. Regenerate lockfile with: pinpoint lock\n", key, ar.Ref)
+				continue
+			}
+
+			// Construct expected path
+			actionPath := filepath.Join(actionsDir, ar.Owner, ar.Repo, ar.Ref)
+			if _, err := os.Stat(actionPath); os.IsNotExist(err) {
+				result.Warnings = append(result.Warnings, Warning{
+					Action:  key,
+					Ref:     ar.Ref,
+					Message: fmt.Sprintf("action not found on disk (expected at %s)", actionPath),
+				})
+				fmt.Fprintf(messageWriter, "    ⚠ %s@%s → not found on disk at %s\n", key, ar.Ref, actionPath)
+				continue
+			}
+
+			computed, err := integrity.ComputeTreeHash(actionPath)
+			if err != nil {
+				fmt.Fprintf(messageWriter, "    ⚠ %s@%s → on-disk hash failed: %v\n", key, ar.Ref, err)
+				continue
+			}
+
+			if computed != manifestEntry.DiskIntegrity {
+				result.Violations = append(result.Violations, Violation{
+					Action:      key,
+					Tag:         ar.Ref,
+					ExpectedSHA: manifestEntry.DiskIntegrity,
+					ActualSHA:   computed,
+				})
+				fmt.Fprintf(messageWriter, "    ✗ ON-DISK INTEGRITY MISMATCH: %s@%s\n", key, ar.Ref)
+				fmt.Fprintf(messageWriter, "      Expected: %s\n", manifestEntry.DiskIntegrity)
+				fmt.Fprintf(messageWriter, "      Actual:   %s\n", computed)
+				fmt.Fprintf(messageWriter, "      Path:     %s\n", actionPath)
+				fmt.Fprintf(messageWriter, "      The code on disk does not match what was recorded in the lockfile.\n")
+				fmt.Fprintf(messageWriter, "      This could indicate tampering, a stale cache, or a supply chain compromise.\n")
+			} else {
+				fmt.Fprintf(messageWriter, "    ✓ %s@%s → on-disk integrity verified\n", key, ar.Ref)
 			}
 		}
 	}

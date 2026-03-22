@@ -80,8 +80,8 @@ USAGE:
   pinpoint watch     --config <path>  [--state <path>]  [--interval 5m]  [--rest]
   pinpoint discover  --workflows <dir>
   pinpoint audit     --org <name>  [--output report|config|manifest|json|sarif]  [--skip-upstream]
-  pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]  [--integrity]  [--skip-transitive]
-  pinpoint lock      [--lockfile <path>]  [--workflows <dir>]  [--verify]
+  pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]  [--integrity]  [--on-disk]  [--actions-dir <path>]  [--skip-transitive]
+  pinpoint lock      [--lockfile <path>]  [--workflows <dir>]  [--verify]  [--skip-disk-integrity]
   pinpoint verify    [--workflows <dir>]  [--output json]
   pinpoint manifest  <refresh|verify|init>  [options]
 
@@ -399,7 +399,7 @@ func cmdGate() {
 		repo = os.Getenv("GITHUB_REPOSITORY")
 	}
 	if repo == "" {
-		fmt.Fprintf(os.Stderr, "Error: --repo is required (or set GITHUB_REPOSITORY).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--skip-transitive]\n")
+		fmt.Fprintf(os.Stderr, "Error: --repo is required (or set GITHUB_REPOSITORY).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--on-disk] [--actions-dir <path>] [--skip-transitive]\n")
 		os.Exit(1)
 	}
 
@@ -408,7 +408,7 @@ func cmdGate() {
 		sha = os.Getenv("GITHUB_SHA")
 	}
 	if sha == "" {
-		fmt.Fprintf(os.Stderr, "Error: --sha is required (or set GITHUB_SHA).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--skip-transitive]\n")
+		fmt.Fprintf(os.Stderr, "Error: --sha is required (or set GITHUB_SHA).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--on-disk] [--actions-dir <path>] [--skip-transitive]\n")
 		os.Exit(1)
 	}
 
@@ -417,7 +417,7 @@ func cmdGate() {
 		workflowRef = os.Getenv("GITHUB_WORKFLOW_REF")
 	}
 	if workflowRef == "" {
-		fmt.Fprintf(os.Stderr, "Error: --workflow-ref is required (or set GITHUB_WORKFLOW_REF).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--skip-transitive]\n")
+		fmt.Fprintf(os.Stderr, "Error: --workflow-ref is required (or set GITHUB_WORKFLOW_REF).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--on-disk] [--actions-dir <path>] [--skip-transitive]\n")
 		os.Exit(1)
 	}
 
@@ -460,6 +460,8 @@ func cmdGate() {
 		FailOnUnpinned:         hasFlag("fail-on-unpinned"),
 		Integrity:              hasFlag("integrity"),
 		SkipTransitive:         hasFlag("skip-transitive"),
+		OnDisk:                 hasFlag("on-disk"),
+		ActionsDir:             getFlag("actions-dir"),
 		EventName:              eventName,
 		BaseRef:                baseRef,
 	}
@@ -1097,10 +1099,11 @@ func cmdLock() {
 	fmt.Fprintf(os.Stderr, "Generating lockfile (%s)...\n", outputPath)
 
 	iOpts := &manifest.IntegrityOptions{
-		HTTPClient: &http.Client{Timeout: 60 * time.Second},
-		BaseURL:    apiURL,
-		GraphQLURL: graphqlURL,
-		Token:      token,
+		HTTPClient:        &http.Client{Timeout: 60 * time.Second},
+		BaseURL:           apiURL,
+		GraphQLURL:        graphqlURL,
+		Token:             token,
+		SkipDiskIntegrity: hasFlag("skip-disk-integrity"),
 	}
 
 	result, err := manifest.Refresh(ctx, outputPath, workflowDir, true, client, iOpts)

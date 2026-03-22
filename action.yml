@@ -16,6 +16,14 @@ inputs:
     description: 'Fail if any action uses a mutable ref (tag/branch)'
     required: false
     default: 'false'
+  on-disk:
+    description: 'Verify on-disk action content against lockfile (eliminates TOCTOU race conditions, recommended for security-sensitive workflows)'
+    required: false
+    default: 'false'
+  integrity:
+    description: 'Re-download and verify tarball content hashes (slower, use for periodic audits)'
+    required: false
+    default: 'false'
   version:
     description: 'Pinpoint version to use'
     required: false
@@ -47,6 +55,7 @@ runs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ github.token }}
+        RUNNER_WORKSPACE: ${{ runner.workspace }}
       run: |
         ARGS="--manifest ${{ inputs.manifest }}"
         if [ "${{ inputs.fail-on-missing }}" = "true" ]; then
@@ -54,6 +63,12 @@ runs:
         fi
         if [ "${{ inputs.fail-on-unpinned }}" = "true" ]; then
           ARGS="$ARGS --fail-on-unpinned"
+        fi
+        if [ "${{ inputs.on-disk }}" = "true" ]; then
+          ARGS="$ARGS --on-disk"
+        fi
+        if [ "${{ inputs.integrity }}" = "true" ]; then
+          ARGS="$ARGS --integrity"
         fi
 
         "${{ runner.temp }}/pinpoint" gate $ARGS
