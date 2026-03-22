@@ -42,7 +42,7 @@ runs:
           aarch64|arm64) ARCH="arm64" ;;
         esac
         BINARY="pinpoint-${OS}-${ARCH}"
-        URL="https://github.com/pinpoint-testing/pinpoint/releases/download/v${VERSION}/${BINARY}"
+        URL="https://github.com/tehreet/pinpoint/releases/download/v${VERSION}/${BINARY}"
 
         curl -sSL "$URL" -o "${{ runner.temp }}/pinpoint"
         curl -sSL "${URL}.sha256" -o "${{ runner.temp }}/pinpoint.sha256"
