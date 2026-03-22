@@ -1,0 +1,55 @@
+name: Org Audit
+on:
+  schedule:
+    - cron: "0 8 * * *"  # Daily at 8am UTC
+  workflow_dispatch:      # Manual trigger
+
+jobs:
+  audit:
+    name: Org-wide security posture
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Download pinpoint
+        run: |
+          curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/octet-stream" \
+            "https://api.github.com/repos/pinpoint-testing/pinpoint/releases/assets/$(curl -sSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/pinpoint-testing/pinpoint/releases/tags/v0.5.0" | jq -r ".assets[] | select(.name==\"pinpoint-linux-amd64\") | .id")" \
+            -o pinpoint
+          chmod +x pinpoint
+          ./pinpoint version
+
+      - name: Run org audit (report)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./pinpoint audit --org pinpoint-testing --output report 2>&1 | tee audit-report.txt
+
+      - name: Run org audit (JSON)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./pinpoint audit --org pinpoint-testing --output json > audit.json 2>/dev/null
+
+      - name: Run org audit (SARIF)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./pinpoint audit --org pinpoint-testing --output sarif > audit.sarif 2>/dev/null
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: pinpoint-audit-${{ github.run_id }}
+          path: |
+            audit-report.txt
+            audit.json
+            audit.sarif
+          retention-days: 90
+
+      - name: Summary
+        run: |
+          echo "## Pinpoint Org Audit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          cat audit-report.txt >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
