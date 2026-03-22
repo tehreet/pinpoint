@@ -374,13 +374,14 @@ func TestMissingManifest(t *testing.T) {
 
 	// With --fail-on-missing: violation
 	result, err = RunGate(context.Background(), GateOptions{
-		Repo:          "owner/repo",
-		SHA:           "abc123",
-		WorkflowRef:   "owner/repo/.github/workflows/ci.yml@refs/heads/main",
-		ManifestPath:  ".pinpoint-manifest.json",
-		APIURL:        restServer.URL,
-		GraphQLURL:    "http://unused",
-		FailOnMissing: true,
+		Repo:                  "owner/repo",
+		SHA:                   "abc123",
+		WorkflowRef:           "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:          ".pinpoint-manifest.json",
+		APIURL:                restServer.URL,
+		GraphQLURL:            "http://unused",
+		FailOnMissing:         true,
+		FailOnMissingExplicit: true,
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -446,13 +447,14 @@ func TestActionNotInManifest(t *testing.T) {
 
 	// With --fail-on-missing: violations for missing actions
 	result, err = RunGate(context.Background(), GateOptions{
-		Repo:          "owner/repo",
-		SHA:           "abc123",
-		WorkflowRef:   "owner/repo/.github/workflows/ci.yml@refs/heads/main",
-		ManifestPath:  ".pinpoint-manifest.json",
-		APIURL:        restServer.URL,
-		GraphQLURL:    graphqlServer.URL,
-		FailOnMissing: true,
+		Repo:                  "owner/repo",
+		SHA:                   "abc123",
+		WorkflowRef:           "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:          ".pinpoint-manifest.json",
+		APIURL:                restServer.URL,
+		GraphQLURL:            graphqlServer.URL,
+		FailOnMissing:         true,
+		FailOnMissingExplicit: true,
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -1708,13 +1710,14 @@ jobs:
 	// With --fail-on-missing: violations
 	silenceOutput(t)
 	result, err = RunGate(context.Background(), GateOptions{
-		Repo:          "owner/repo",
-		SHA:           "abc123",
-		WorkflowRef:   "owner/repo/.github/workflows/ci.yml@refs/heads/main",
-		ManifestPath:  ".pinpoint-manifest.json",
-		APIURL:        restServer.URL,
-		GraphQLURL:    graphqlServer.URL,
-		FailOnMissing: true,
+		Repo:                  "owner/repo",
+		SHA:                   "abc123",
+		WorkflowRef:           "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:          ".pinpoint-manifest.json",
+		APIURL:                restServer.URL,
+		GraphQLURL:            graphqlServer.URL,
+		FailOnMissing:         true,
+		FailOnMissingExplicit: true,
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

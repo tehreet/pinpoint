@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -53,6 +54,8 @@ func main() {
 		cmdAudit()
 	case "gate":
 		cmdGate()
+	case "lock":
+		cmdLock()
 	case "verify":
 		cmdVerify()
 	case "manifest":
@@ -77,6 +80,7 @@ USAGE:
   pinpoint discover  --workflows <dir>
   pinpoint audit     --org <name>  [--output report|config|manifest|json|sarif]  [--skip-upstream]
   pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]
+  pinpoint lock      [--lockfile <path>]  [--workflows <dir>]  [--verify]
   pinpoint verify    [--workflows <dir>]  [--output json]
   pinpoint manifest  <refresh|verify|init>  [options]
 
@@ -86,6 +90,7 @@ COMMANDS:
   discover   Scan workflow files and output actions to monitor
   audit      Scan an entire GitHub org and produce a security posture report
   gate       Pre-execution: verify action tag integrity before CI runs
+  lock       Generate or update .github/actions-lock.json
   verify     Retroactive: check current dependencies for signs of tampering
   manifest   Manage the pinpoint manifest (refresh, verify, init)
 
@@ -416,8 +421,11 @@ func cmdGate() {
 	}
 
 	manifestPath := getFlag("manifest")
+	failOnMissingExplicit := hasFlag("fail-on-missing")
 	if manifestPath == "" {
-		manifestPath = ".pinpoint-manifest.json"
+		// Gate runs in CI and fetches via API, not local disk.
+		// Default to new lockfile path; the gate will try legacy as fallback.
+		manifestPath = manifest.DefaultLockfilePath
 	}
 
 	token := os.Getenv("GITHUB_TOKEN")
@@ -439,17 +447,18 @@ func cmdGate() {
 	baseRef := os.Getenv("GITHUB_BASE_REF")
 
 	opts := gate.GateOptions{
-		Repo:           repo,
-		SHA:            sha,
-		WorkflowRef:    workflowRef,
-		ManifestPath:   manifestPath,
-		Token:          token,
-		APIURL:         apiURL,
-		GraphQLURL:     graphqlURL,
-		FailOnMissing:  hasFlag("fail-on-missing"),
-		FailOnUnpinned: hasFlag("fail-on-unpinned"),
-		EventName:      eventName,
-		BaseRef:        baseRef,
+		Repo:                   repo,
+		SHA:                    sha,
+		WorkflowRef:            workflowRef,
+		ManifestPath:           manifestPath,
+		Token:                  token,
+		APIURL:                 apiURL,
+		GraphQLURL:             graphqlURL,
+		FailOnMissing:          failOnMissingExplicit,
+		FailOnMissingExplicit:  failOnMissingExplicit,
+		FailOnUnpinned:         hasFlag("fail-on-unpinned"),
+		EventName:              eventName,
+		BaseRef:                baseRef,
 	}
 
 	ctx := context.Background()
@@ -909,14 +918,14 @@ func cmdManifestVerify() {
 }
 
 func cmdManifestInit() {
-	manifestPath := ".pinpoint-manifest.json"
+	manifestPath := manifest.DefaultLockfilePath
 	refreshPath := ".github/workflows/pinpoint-refresh.yml"
 	gatePath := ".github/workflows/pinpoint-gate.yml"
 
 	// Check for existing files
 	for _, path := range []string{manifestPath, refreshPath, gatePath} {
 		if _, err := os.Stat(path); err == nil {
-			fmt.Fprintf(os.Stderr, "File already exists: %s\nRemove it first or use 'pinpoint manifest refresh' to update.\n", path)
+			fmt.Fprintf(os.Stderr, "File already exists: %s\nRemove it first or use 'pinpoint lock' to update.\n", path)
 			os.Exit(1)
 		}
 	}
@@ -954,10 +963,154 @@ func cmdManifestInit() {
 
 	fmt.Fprintf(os.Stderr, `
 Next steps:
-  1. Populate the manifest:  pinpoint manifest refresh --manifest %s --workflows .github/workflows/ --discover
+  1. Populate the lockfile:  pinpoint lock
   2. Commit all three files
-  3. The refresh workflow will run weekly to keep the manifest current
-`, manifestPath)
+  3. The refresh workflow will run weekly to keep the lockfile current
+`)
+}
+
+func cmdLock() {
+	lockfile := getFlag("lockfile")
+	isLegacy := false
+	if lockfile == "" {
+		lockfile, isLegacy = manifest.ResolveLockfilePath(".")
+	}
+
+	workflowDir := getFlag("workflows")
+	if workflowDir == "" {
+		workflowDir = ".github/workflows"
+	}
+
+	if hasFlag("verify") {
+		// Delegate to manifest verify logic using the resolved lockfile path
+		token := os.Getenv("GITHUB_TOKEN")
+		if token == "" {
+			fmt.Fprintln(os.Stderr, "Warning: GITHUB_TOKEN not set. API rate limits will be very low (60/hour).\nSet GITHUB_TOKEN for authenticated access (5000 requests/hour).")
+		}
+
+		client := poller.NewGraphQLClient(token)
+		ctx := context.Background()
+		fmt.Fprintf(os.Stderr, "Verifying lockfile (%s)...\n", lockfile)
+
+		result, err := manifest.Verify(ctx, lockfile, client)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+
+		total := result.Unchanged + result.Updated + result.Missing
+		drifted := result.Updated + result.Missing
+
+		for _, c := range result.Changes {
+			switch c.Type {
+			case "updated":
+				fmt.Fprintf(os.Stderr, "  ✗ %s@%s: DRIFTED\n", c.Action, c.Tag)
+				fmt.Fprintf(os.Stderr, "    lockfile: %s\n", shortSHA(c.OldSHA))
+				fmt.Fprintf(os.Stderr, "    current:  %s  (resolved just now)\n", shortSHA(c.NewSHA))
+			case "missing_tag":
+				fmt.Fprintf(os.Stderr, "  ✗ %s@%s: TAG MISSING (was %s)\n", c.Action, c.Tag, shortSHA(c.OldSHA))
+			}
+		}
+
+		if drifted == 0 {
+			fmt.Fprintf(os.Stderr, "\n✓ All %d tags match lockfile.\n", total)
+		} else {
+			fmt.Fprintf(os.Stderr, "\n✗ Lockfile drift detected: %d of %d tags have changed.\n", drifted, total)
+			fmt.Fprintf(os.Stderr, "  Run: pinpoint lock\n")
+			os.Exit(3)
+		}
+		return
+	}
+
+	if hasFlag("list") {
+		fmt.Fprintln(os.Stderr, "TODO: --list")
+		return
+	}
+
+	// Default: refresh/generate lockfile with discover=true
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		fmt.Fprintln(os.Stderr, "Warning: GITHUB_TOKEN not set. API rate limits will be very low (60/hour).\nSet GITHUB_TOKEN for authenticated access (5000 requests/hour).")
+	}
+
+	// The lock command always writes to .github/actions-lock.json unless --lockfile overrides.
+	outputPath := lockfile
+	if getFlag("lockfile") == "" {
+		outputPath = filepath.Join(".", manifest.DefaultLockfilePath)
+	}
+
+	// If the resolved path was legacy but output is the new path, read from legacy first
+	if isLegacy && outputPath == filepath.Join(".", manifest.DefaultLockfilePath) {
+		fmt.Fprintf(os.Stderr, "ℹ Migrating from %s to %s\n", manifest.LegacyManifestPath, manifest.DefaultLockfilePath)
+		// Copy legacy manifest content to new location so Refresh reads existing entries
+		if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating directory: %v\n", err)
+			os.Exit(1)
+		}
+		data, err := os.ReadFile(lockfile)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error reading legacy manifest: %v\n", err)
+			os.Exit(1)
+		}
+		if err := os.WriteFile(outputPath, data, 0644); err != nil {
+			fmt.Fprintf(os.Stderr, "Error writing lockfile: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		// Ensure .github/ directory exists
+		if err := os.MkdirAll(filepath.Dir(outputPath), 0755); err != nil {
+			fmt.Fprintf(os.Stderr, "Error creating directory: %v\n", err)
+			os.Exit(1)
+		}
+		// If lockfile doesn't exist yet, create an empty one so Refresh can read it
+		if _, err := os.Stat(outputPath); os.IsNotExist(err) {
+			m := &manifest.Manifest{
+				Version: 1,
+				Actions: make(map[string]map[string]manifest.ManifestEntry),
+			}
+			if err := manifest.SaveManifest(outputPath, m); err != nil {
+				fmt.Fprintf(os.Stderr, "Error creating lockfile: %v\n", err)
+				os.Exit(1)
+			}
+		}
+	}
+
+	client := poller.NewGraphQLClient(token)
+	ctx := context.Background()
+	fmt.Fprintf(os.Stderr, "Generating lockfile (%s)...\n", outputPath)
+
+	result, err := manifest.Refresh(ctx, outputPath, workflowDir, true, client)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Print per-change details
+	for _, c := range result.Changes {
+		switch c.Type {
+		case "updated":
+			fmt.Fprintf(os.Stderr, "  %s@%s: UPDATED %s → %s\n", c.Action, c.Tag, shortSHA(c.OldSHA), shortSHA(c.NewSHA))
+		case "added":
+			source := ""
+			if c.Source != "" {
+				source = fmt.Sprintf(" (from %s)", c.Source)
+			}
+			fmt.Fprintf(os.Stderr, "  + %s@%s: NEW%s\n", c.Action, c.Tag, source)
+		case "missing_tag":
+			fmt.Fprintf(os.Stderr, "  ! %s@%s: WARNING tag no longer exists on remote\n", c.Action, c.Tag)
+		}
+	}
+
+	totalActions := result.Unchanged + result.Updated + result.Added
+	fmt.Fprintf(os.Stderr, "\n✓ Lockfile written: %s (%d actions)\n", outputPath, totalActions)
+
+	if isLegacy && outputPath == filepath.Join(".", manifest.DefaultLockfilePath) {
+		fmt.Fprintf(os.Stderr, "ℹ You can now remove %s\n", manifest.LegacyManifestPath)
+	}
+
+	if result.Updated > 0 || result.Added > 0 {
+		os.Exit(3)
+	}
 }
 
 func shortSHA(sha string) string {

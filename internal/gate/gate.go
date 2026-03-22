@@ -57,17 +57,18 @@ type ManifestEntry struct {
 
 // GateOptions holds configuration for the gate check.
 type GateOptions struct {
-	Repo           string // "owner/repo"
-	SHA            string // commit SHA
-	WorkflowRef    string // "owner/repo/.github/workflows/ci.yml@refs/heads/main"
-	ManifestPath   string // ".pinpoint-manifest.json"
-	Token          string
-	APIURL         string // "https://api.github.com"
-	GraphQLURL     string // "https://api.github.com/graphql"
-	FailOnMissing  bool
-	FailOnUnpinned bool
-	EventName      string // "push", "pull_request", etc. From GITHUB_EVENT_NAME
-	BaseRef        string // "main", "develop", etc. From GITHUB_BASE_REF
+	Repo                  string // "owner/repo"
+	SHA                   string // commit SHA
+	WorkflowRef           string // "owner/repo/.github/workflows/ci.yml@refs/heads/main"
+	ManifestPath          string // ".github/actions-lock.json" (default) or ".pinpoint-manifest.json" (legacy)
+	Token                 string
+	APIURL                string // "https://api.github.com"
+	GraphQLURL            string // "https://api.github.com/graphql"
+	FailOnMissing         bool
+	FailOnMissingExplicit bool   // true if --fail-on-missing was explicitly passed
+	FailOnUnpinned        bool
+	EventName             string // "push", "pull_request", etc. From GITHUB_EVENT_NAME
+	BaseRef               string // "main", "develop", etc. From GITHUB_BASE_REF
 }
 
 var shaRegexp = regexp.MustCompile(`^[0-9a-f]{40}$`)
@@ -115,10 +116,30 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 	}
 
 	// Step 4: Fetch manifest (using manifestRef, not necessarily opts.SHA)
+	isLegacy := false
 	manifestContent, err := client.fetchFileContent(ctx, opts.Repo, opts.ManifestPath, manifestRef)
+	if err != nil && isNotFound(err) {
+		// Try legacy path fallback if using the new default lockfile path
+		if opts.ManifestPath == ".github/actions-lock.json" {
+			legacyPath := ".pinpoint-manifest.json"
+			legacyContent, legacyErr := client.fetchFileContent(ctx, opts.Repo, legacyPath, manifestRef)
+			if legacyErr == nil {
+				fmt.Fprintf(messageWriter, "ℹ Using legacy manifest path %s\n  Migrate with: pinpoint lock\n", legacyPath)
+				manifestContent = legacyContent
+				opts.ManifestPath = legacyPath
+				isLegacy = true
+				err = nil
+			}
+		}
+	}
 	if err != nil {
 		if isNotFound(err) {
-			if opts.FailOnMissing {
+			// Determine effective FailOnMissing: new lockfile path enforces by default
+			effectiveFailOnMissing := opts.FailOnMissing
+			if !opts.FailOnMissingExplicit && opts.ManifestPath == ".github/actions-lock.json" {
+				effectiveFailOnMissing = true
+			}
+			if effectiveFailOnMissing {
 				result.Violations = append(result.Violations, Violation{
 					Action:      "manifest",
 					Tag:         opts.ManifestPath,
@@ -128,11 +149,20 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 				result.Duration = time.Since(start)
 				return result, nil
 			}
-			fmt.Fprintf(messageWriter, "⚠ No manifest found at %s, skipping verification. Generate one with: pinpoint audit --org <name> --output manifest\n", opts.ManifestPath)
+			fmt.Fprintf(messageWriter, "⚠ No manifest found at %s, skipping verification. Generate one with: pinpoint lock\n", opts.ManifestPath)
 			result.Duration = time.Since(start)
 			return result, nil
 		}
 		return nil, fmt.Errorf("fetch manifest %q: %w", opts.ManifestPath, err)
+	}
+
+	// Apply FailOnMissing default based on lockfile path
+	if !opts.FailOnMissingExplicit {
+		if isLegacy || opts.ManifestPath != ".github/actions-lock.json" {
+			opts.FailOnMissing = false
+		} else {
+			opts.FailOnMissing = true
+		}
 	}
 
 	var manifest Manifest

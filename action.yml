@@ -5,9 +5,9 @@ branding:
   color: 'red'
 inputs:
   manifest:
-    description: 'Path to manifest file in the repository'
+    description: 'Path to lockfile (default: auto-detect .github/actions-lock.json or .pinpoint-manifest.json)'
     required: false
-    default: '.pinpoint-manifest.json'
+    default: '.github/actions-lock.json'
   fail-on-missing:
     description: 'Fail if an action reference is not in the manifest'
     required: false
