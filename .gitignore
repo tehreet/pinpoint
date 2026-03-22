@@ -17,6 +17,10 @@ vendor/
 *.swp
 *~
 
+# Prompt/journal scratch files
+PROMPT-*.md
+journal-*.md
+
 # OS
 .DS_Store
 Thumbs.db

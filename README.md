@@ -4,59 +4,51 @@ GitHub Actions tag integrity monitor. Detects and prevents supply chain
 attacks that repoint action version tags to malicious commits.
 
 Built in response to the [Trivy supply chain attack](https://github.com/aquasecurity/trivy/discussions/10425) of March 2026,
-where 75 tags were force-pushed to credential-stealing commits across 10,000+ dependent workflows.
+where 75 tags were force-pushed to credential-stealing commits across 10,000+
+dependent workflows.
 
 ## The Problem
 
 GitHub Actions uses mutable git tags as version references. When you write
 `uses: actions/checkout@v4`, you're trusting that `v4` still points to the
 same commit it did yesterday. Anyone with write access can silently repoint it
-to a malicious commit. 95%+ of the ecosystem uses tags, not SHA pins. The
-Trivy and tj-actions attacks exploited exactly this.
+to a malicious commit.
 
-## What Pinpoint Does
+[98% of workflows don't pin to SHAs](https://www.legitsecurity.com/blog/github-actions-security-risks) (Legit Security, 2025).
+Even among the [top 100 security projects on GitHub, only 3% properly pin everything](https://www.paloaltonetworks.com/blog/prisma-cloud/github-actions-supply-chain-vulnerabilities/) (Alvarez, 2025).
+The Trivy and tj-actions attacks exploited exactly this.
 
-**Detection:** Monitors tag→SHA mappings for upstream actions. Alerts when
-tags are repointed, with risk scoring that distinguishes routine major-version
-advances from supply chain attacks.
-
-**Prevention:** The gate (`pinpoint gate`) runs as the first step in your CI
-job. It verifies every action's tag against a known-good manifest before any
-untrusted code executes. Mismatch = job aborts.
+SHA pinning alone doesn't solve the problem. Composite actions can internally
+reference unpinned actions — your workflow is pinned, but the action you pinned
+pulls in unverified transitive dependencies.
 
 ## Quick Start
 
-### Install
-
 ```bash
+# Install
 go install github.com/tehreet/pinpoint/cmd/pinpoint@latest
+
+# Generate lockfile
+cd your-repo
+pinpoint lock
+
+# Commit
+git add .github/actions-lock.json
+git commit -m "Add actions lockfile"
+
+# See your dependency tree
+pinpoint lock --list
 ```
 
-Or download a binary from [Releases](https://github.com/tehreet/pinpoint/releases).
-
-### Discover Your Actions
-
-```bash
-pinpoint discover --workflows .github/workflows/
-```
-
-### Generate a Manifest
-
-```bash
-export GITHUB_TOKEN=ghp_...
-pinpoint audit --org your-org --output manifest > .pinpoint-manifest.json
-```
-
-### Add the Gate to Your Workflow
+Add the gate to your workflow:
 
 ```yaml
 steps:
-  - uses: tehreet/pinpoint@SHA_HERE  # Always SHA-pin the gate itself
+  - uses: tehreet/pinpoint@SHA_HERE
     with:
-      manifest: .pinpoint-manifest.json
-
+      on-disk: true  # recommended: verify what the runner actually downloaded
   - uses: actions/checkout@v4
-  # ... your steps run only if all tags verified
+  # ... your steps run only after integrity verification
 ```
 
 ### Continuous Monitoring
@@ -67,36 +59,68 @@ pinpoint watch --config .pinpoint.yml --interval 5m
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| `pinpoint scan` | One-shot: poll all monitored actions, report changes |
-| `pinpoint watch` | Continuous: poll on interval, alert on changes |
+| Command | What it does |
+|---------|--------------|
+| `pinpoint lock` | Generate .github/actions-lock.json with SHA, integrity hash, type, and transitive deps |
+| `pinpoint lock --list` | Show the full dependency tree including transitive deps |
+| `pinpoint lock --verify` | Check lockfile against live tags without modifying |
+| `pinpoint gate` | Pre-execution integrity verification (3 API calls, <2s) |
+| `pinpoint gate --on-disk` | Verify what the runner actually downloaded (+28ms, zero API calls) |
+| `pinpoint gate --integrity` | Re-download tarballs and verify SHA-256 hashes (periodic audit mode) |
+| `pinpoint scan` | One-shot: poll all monitored actions, report tag changes with risk scoring |
+| `pinpoint watch` | Continuous monitoring on interval |
 | `pinpoint discover` | Find actions in local workflow files |
 | `pinpoint audit --org <name>` | Org-wide security posture scan |
-| `pinpoint gate` | Pre-execution integrity verification |
-| `pinpoint manifest refresh` | Update manifest with current tag SHAs |
-| `pinpoint manifest verify` | Check manifest against live tags (read-only) |
-| `pinpoint manifest init` | Bootstrap manifest + workflow files |
+| `pinpoint verify` | Retroactive integrity check (works day-one, no baseline needed) |
 
-## Gate: How It Works
+## Lockfile Format
 
-The gate runs as the first step in your CI job. It fetches the workflow file
-that triggered the run from the GitHub API, extracts all `uses:` directives,
-resolves current tag SHAs via GraphQL, and compares them against your
-`.pinpoint-manifest.json`. If any tag has been repointed, the job fails before
-any untrusted code reaches the runner. Typical overhead: 3 API calls, <2
-seconds.
-
-## Audit: Org-Wide Visibility
-
-```bash
-pinpoint audit --org your-org
+```json
+{
+  "version": 2,
+  "generated": "2026-03-20T12:00:00Z",
+  "actions": {
+    "actions/checkout@v4": {
+      "sha": "11bd71901bbe5b1630ceea73d27597364c9af683",
+      "integrity": "sha256-abc123...",
+      "disk_integrity": "sha256-def456...",
+      "type": "annotated",
+      "dependencies": {
+        "actions/toolkit@v1": {
+          "sha": "f1d2d2f924e986ac86fdf7b36c94bcdf32beec15",
+          "integrity": "sha256-ghi789..."
+        }
+      }
+    }
+  }
+}
 ```
 
-One command scans every repo in your org. It discovers all action dependencies,
-classifies each reference (SHA-pinned, tag-pinned, branch-pinned), checks
-upstream immutable release status, and reports your org's overall pinning
-posture. Output formats: human report, YAML config, JSON manifest, SARIF.
+| Field | Meaning |
+|-------|---------|
+| `sha` | The commit SHA the tag pointed to at lock time |
+| `integrity` | SHA-256 hash of the tarball downloaded from GitHub |
+| `disk_integrity` | SHA-256 hash of the extracted action directory tree |
+| `type` | Tag type: `lightweight` or `annotated` |
+| `dependencies` | Transitive `uses:` references found inside composite actions |
+
+## Gate Verification Levels
+
+Three levels, from fastest to most thorough:
+
+1. **SHA-only (default)**: Tag→SHA matches lockfile. 3 API calls, <2 seconds.
+   Catches tag repointing.
+
+2. **On-disk (`--on-disk`)**: Hashes what the runner actually downloaded at
+   `_actions/`. +28ms disk I/O, zero additional API calls. Catches TOCTOU
+   races, cache poisoning, disk tampering. Recommended for security-sensitive
+   workflows.
+
+3. **Integrity (`--integrity`)**: Re-downloads tarballs from GitHub, recomputes
+   SHA-256. +3-5s. For periodic audits, not every CI run.
+
+These are independent flags. Use `--on-disk` for daily CI, `--integrity` as a
+weekly cron.
 
 ## Risk Scoring
 
@@ -115,13 +139,43 @@ Not every tag movement is malicious. Pinpoint scores each event:
 
 Score ≥50 = CRITICAL, ≥20 = MEDIUM, <20 = LOW.
 
+## Verify: Day-One Integrity Check
+
+`pinpoint verify` performs retroactive integrity checks without needing a prior
+baseline. Run it right now on any repo — no setup required.
+
+Four signals:
+
+- **Release SHA match**: Compares the release object's tag commit to the
+  current tag SHA. A mismatch means the tag moved after the release was cut.
+- **GPG signature continuity**: Flags if a previously-signed action stops
+  publishing signed commits.
+- **Chronology check**: Catches backdated commits — a commit authored months
+  ago but tagged today is suspicious.
+- **Advisory database**: Cross-references against known compromised actions.
+
+This doesn't guarantee the current state is clean, but it surfaces the most
+common indicators of compromise.
+
+## Real-World Findings
+
+Scanning real repos with pinpoint revealed:
+
+- 3 popular actions with GPG signing discontinuities: `aws-actions/configure-aws-credentials`, `hashicorp/setup-terraform`, `golangci/golangci-lint-action`
+- Grafana pins shared workflows to `@main` (branch-pinned, mutable)
+- Repos still referencing known-compromised tj-actions and reviewdog versions over a year after the attack
+- Kubernetes: 139 workflows with zero gate protection
+
 ## Scale
 
 | Metric | Value |
 |--------|-------|
 | 142 repos, 7,736 tags | 3 GraphQL points, 34 seconds |
-| 2,000 repos (full poll cycle) | 40 GraphQL points |
-| Gate per CI run | 2 REST + 1 GraphQL call, <2 seconds |
+| Gate per CI run (SHA-only) | 3 API calls, <2 seconds |
+| Gate per CI run (on-disk) | 3 API calls + 28ms disk I/O |
+| Lock (15 actions, parallel) | ~15 seconds, 16MB RSS |
+| Org audit (277 repos) | 6 points, <2 minutes |
+| GraphQL wall | ~20,000 repos at 5-min intervals |
 
 GraphQL batches 50 repos per query at 1 point each. The 5,000 points/hour
 budget supports continuous monitoring of thousands of repos.
@@ -170,8 +224,12 @@ Output scan or audit results in SARIF format for GitHub's Security tab:
 ## Limitations
 
 See [STEELMAN.md](STEELMAN.md) for a brutally honest assessment of what
-pinpoint can and cannot do, including polling gaps, gate TOCTOU races,
-adversarial evasion techniques, and scale constraints.
+pinpoint can and cannot do.
+
+## Stats
+
+151 tests. 15,000+ lines of Go. Single binary, one dependency
+(`gopkg.in/yaml.v3`). GPL-3.0.
 
 ## License
 

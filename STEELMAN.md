@@ -225,6 +225,14 @@ repointed. In practice this window is milliseconds to seconds, but it exists.
 A fail-closed pre-download hook (not available in GitHub Actions today) would
 eliminate this.
 
+**Update (v0.5.0):** The `--on-disk` flag mitigates this. When enabled, the
+gate hashes the actual files at `_actions/{owner}/{repo}/{ref}/` and compares
+against the lockfile's `disk_integrity` field. This verifies what the runner
+downloaded, not what the API claims. The TOCTOU window still exists between
+runner download and gate execution, but on-disk verification catches any case
+where the downloaded content doesn't match the lockfile, regardless of what
+the tag currently points to.
+
 **c) Stale manifest = blind gate.** The manifest is only as fresh as the last
 `pinpoint manifest refresh`. If nobody refreshes it, legitimate tag advances
 will cause the gate to fail (false positives) or — worse — the gate will
@@ -251,6 +259,12 @@ references in your workflow. If `actions/checkout@v4` itself depends on
 another action or npm package that is compromised, the gate won't catch it.
 The gate operates at the action reference layer, not the dependency tree layer.
 
+**Update (v0.5.0):** The lockfile now resolves transitive dependencies. For
+composite actions, pinpoint fetches the action.yml, discovers inner `uses:`
+directives, and includes the full dependency tree in the lockfile with their
+own SHAs and integrity hashes. `pinpoint lock --list` displays the tree. The
+gate verifies transitive deps haven't changed.
+
 **Dynamic action references.** Workflow files can construct action references
 dynamically using expressions: `uses: ${{ matrix.action }}@${{ matrix.version }}`.
 These are not statically parseable. The gate skips them and logs a warning.
@@ -259,11 +273,16 @@ These are not statically parseable. The gate skips them and logs a warning.
 internally. The gate only verifies top-level `uses:` directives in your
 workflow file, not the transitive `uses:` inside composite actions.
 
+**Update (v0.5.0):** Addressed. See transitive dependency resolution above.
+
 **Self-hosted runner binary verification.** The gate verifies that tags point
 to expected SHAs. It does not verify that the code actually downloaded to the
 runner matches those SHAs. On self-hosted runners with persistent tool caches,
-a previously compromised action binary could persist across runs. Future work:
-hash the on-disk action directory and compare against the expected commit tree.
+a previously compromised action binary could persist across runs.
+
+**Update (v0.5.0):** Implemented. `pinpoint gate --on-disk` hashes the action
+content at `_actions/` and compares against `disk_integrity` in the lockfile.
+This catches stale caches, tampered files, and MITM on self-hosted runners.
 
 ---
 
@@ -325,7 +344,15 @@ malicious state as "known good."
   the GitHub Releases page and whether releases were created by expected
   maintainers.
 
-The community dataset and verify command are not implemented.
+The community dataset is not implemented.
+
+**Update (v0.5.0):** The `pinpoint verify` command addresses the bootstrapping
+problem. It performs four retroactive checks without needing a prior baseline:
+release SHA matching (compares the release object's tag commit to the current
+tag SHA), GPG signature continuity (flags if signing stopped), chronology
+validation (catches backdated commits), and advisory database lookup. This
+doesn't guarantee the current state is clean, but it surfaces the most common
+indicators of compromise.
 
 ---
 
@@ -341,8 +368,8 @@ it creates noise that distracts from the real problem.
 
 **Where pinpoint stands today:** With the gate providing active prevention, the
 audit providing org-wide visibility, GraphQL batching eliminating the API cost
-wall, and 72+ tests covering the core paths, pinpoint is suitable for
-monitoring 200+ actions with active gate enforcement. It is not an MVP anymore.
+wall, and 151 tests covering the core paths, pinpoint is suitable for
+monitoring 2,000+ repos with active gate enforcement. It is not an MVP anymore.
 
 The remaining gaps for enterprise deployment at 2,000+ repos are engineering
 tasks, not architectural limitations:
@@ -364,12 +391,13 @@ These are solvable. The architecture supports them. They just aren't built yet.
 - Effective against the class of attacks we've actually seen (Trivy, tj-actions)
 - Both detection (monitor) AND prevention (gate) in a single binary
 - Low-cost, self-hostable, and honest about its threat model
-- Suitable for monitoring 200+ actions with active gate enforcement
+- Content integrity verification (SHA-256 tarball hashes + on-disk tree hashing)
+- Transitive dependency resolution for composite actions
+- Suitable for monitoring 2,000+ repos with active gate enforcement
 
 **Pinpoint is not:**
 - A substitute for SHA pinning (prevention > detection, always)
 - Effective against patient, targeted adversaries who understand polling gaps
-- Coverage for transitive dependencies or composite action internals
 - A guarantee that you'll catch every supply chain attack
 
 **The right way to think about it:** Pinpoint is a smoke detector AND a
