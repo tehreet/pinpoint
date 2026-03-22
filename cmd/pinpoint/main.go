@@ -26,6 +26,7 @@ import (
 	"github.com/tehreet/pinpoint/internal/sarif"
 	"github.com/tehreet/pinpoint/internal/store"
 	"github.com/tehreet/pinpoint/internal/suppress"
+	"github.com/tehreet/pinpoint/internal/verify"
 )
 
 // version is set at build time via ldflags.
@@ -52,6 +53,8 @@ func main() {
 		cmdAudit()
 	case "gate":
 		cmdGate()
+	case "verify":
+		cmdVerify()
 	case "manifest":
 		cmdManifest()
 	case "version":
@@ -74,6 +77,7 @@ USAGE:
   pinpoint discover  --workflows <dir>
   pinpoint audit     --org <name>  [--output report|config|manifest|json|sarif]  [--skip-upstream]
   pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]
+  pinpoint verify    [--workflows <dir>]  [--output json]
   pinpoint manifest  <refresh|verify|init>  [options]
 
 COMMANDS:
@@ -82,6 +86,7 @@ COMMANDS:
   discover   Scan workflow files and output actions to monitor
   audit      Scan an entire GitHub org and produce a security posture report
   gate       Pre-execution: verify action tag integrity before CI runs
+  verify     Retroactive: check current dependencies for signs of tampering
   manifest   Manage the pinpoint manifest (refresh, verify, init)
 
 ENVIRONMENT:
@@ -463,6 +468,85 @@ func cmdGate() {
 
 	fmt.Fprintf(os.Stderr, "\n✓ All action integrity checks passed (%d verified, %d skipped, 0 violations) in %s\n",
 		result.Verified, result.Skipped, result.Duration.Round(time.Millisecond))
+}
+
+func cmdVerify() {
+	workflowDir := getFlag("workflows")
+	if workflowDir == "" {
+		workflowDir = ".github/workflows"
+	}
+
+	outputFormat := getFlag("output")
+	jsonOutput := outputFormat == "json"
+
+	token := os.Getenv("GITHUB_TOKEN")
+	if token == "" {
+		fmt.Fprintln(os.Stderr, "Warning: GITHUB_TOKEN not set. API rate limits will be very low (60/hour).\nSet GITHUB_TOKEN for authenticated access (5000 requests/hour).")
+	}
+
+	// Discover actions from workflow files
+	refs, err := discover.FromWorkflowDir(workflowDir)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error scanning workflows in %s: %v\n\nMake sure the directory exists and contains .yml/.yaml workflow files.\n", workflowDir, err)
+		os.Exit(1)
+	}
+
+	if len(refs) == 0 {
+		fmt.Fprintf(os.Stderr, "No GitHub Action references found in %s.\n\nMake sure your workflow files contain 'uses:' directives.\n", workflowDir)
+		os.Exit(0)
+	}
+
+	// Build unique action inputs (dedup by repo+tag)
+	seen := make(map[string]bool)
+	var actions []verify.ActionInput
+	for _, ref := range refs {
+		key := ref.Full() + "@" + ref.Ref
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		actions = append(actions, verify.ActionInput{
+			Repo: ref.Full(),
+			Tag:  ref.Ref,
+		})
+	}
+
+	fmt.Fprintf(os.Stderr, "pinpoint verify: checking %d action dependencies...\n", len(actions))
+
+	graphqlEndpoint := os.Getenv("GITHUB_GRAPHQL_URL")
+	if graphqlEndpoint == "" {
+		graphqlEndpoint = "https://api.github.com/graphql"
+	}
+	restEndpoint := os.Getenv("GITHUB_API_URL")
+	if restEndpoint == "" {
+		restEndpoint = "https://api.github.com"
+	}
+
+	ctx := context.Background()
+	result, err := verify.Verify(ctx, actions, verify.VerifyOptions{
+		Token:           token,
+		GraphQLEndpoint: graphqlEndpoint,
+		RESTEndpoint:    restEndpoint,
+	})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Verify error: %v\n", err)
+		os.Exit(1)
+	}
+
+	if jsonOutput {
+		jsonStr, err := verify.FormatJSON(result)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error formatting JSON: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Print(jsonStr)
+	} else {
+		fmt.Fprint(os.Stderr, verify.FormatText(result))
+	}
+
+	if result.Failed > 0 {
+		os.Exit(2)
+	}
 }
 
 // runScan performs a single scan cycle across all configured actions.
