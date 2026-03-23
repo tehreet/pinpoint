@@ -417,8 +417,12 @@ func cmdGate() {
 	if workflowRef == "" {
 		workflowRef = os.Getenv("GITHUB_WORKFLOW_REF")
 	}
-	if workflowRef == "" {
-		fmt.Fprintf(os.Stderr, "Error: --workflow-ref is required (or set GITHUB_WORKFLOW_REF).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--on-disk] [--actions-dir <path>] [--skip-transitive]\n")
+	allWorkflows := hasFlag("all-workflows")
+	if !allWorkflows && os.Getenv("PINPOINT_GATE_ALL_WORKFLOWS") == "true" {
+		allWorkflows = true
+	}
+	if workflowRef == "" && !allWorkflows {
+		fmt.Fprintf(os.Stderr, "Error: --workflow-ref is required (or set GITHUB_WORKFLOW_REF), unless --all-workflows is set.\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--on-disk] [--actions-dir <path>] [--skip-transitive] [--all-workflows]\n")
 		os.Exit(1)
 	}
 
@@ -475,6 +479,7 @@ func cmdGate() {
 		ActionsDir:             getFlag("actions-dir"),
 		EventName:              eventName,
 		BaseRef:                baseRef,
+		AllWorkflows:           allWorkflows,
 	}
 
 	ctx := context.Background()
