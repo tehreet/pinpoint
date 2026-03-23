@@ -47,6 +47,11 @@ type ScoreContext struct {
 	ReleaseExists   bool
 	SelfHosted      bool
 	BatchSize       int    // Number of tags repointed in same polling interval
+	ParentSHA       string    // SHA of the new commit's first parent
+	ParentDate      time.Time // Date of the parent commit
+	WasGPGSigned    bool   // Was the commit GPG-signed at lock time?
+	IsGPGSigned     bool   // Is the current commit GPG-signed?
+	VerifiedSigner  string // e.g. "web-flow" — who signed the original
 }
 
 var (
@@ -75,6 +80,16 @@ func Score(ctx ScoreContext) (Severity, []string) {
 		signals = append(signals, "OFF_BRANCH: new commit is not a descendant of previous commit")
 	}
 
+	// Commit date precedes its parent commit's date (fabricated metadata)
+	if !ctx.ParentDate.IsZero() && ctx.CommitDate.Before(ctx.ParentDate) {
+		score += 70
+		signals = append(signals, formatSignal(
+			"IMPOSSIBLE_TIMESTAMP: commit dated %s but parent dated %s (child predates parent)",
+			ctx.CommitDate.Format("2006-01-02"),
+			ctx.ParentDate.Format("2006-01-02"),
+		))
+	}
+
 	// Entry point size changed >50%
 	if ctx.EntryPointOld > 0 && ctx.EntryPointNew > 0 {
 		ratio := float64(ctx.EntryPointNew) / float64(ctx.EntryPointOld)
@@ -95,6 +110,12 @@ func Score(ctx ScoreContext) (Severity, []string) {
 	if time.Since(ctx.CommitDate) > 30*24*time.Hour {
 		score += 40
 		signals = append(signals, "BACKDATED_COMMIT: commit date is >30 days old")
+	}
+
+	// GPG signature was present at lock time but absent now
+	if ctx.WasGPGSigned && !ctx.IsGPGSigned {
+		score += 45
+		signals = append(signals, "SIGNATURE_DROPPED: commit was GPG-signed at lock time, replacement is unsigned")
 	}
 
 	// === MEDIUM SIGNALS ===
@@ -165,6 +186,8 @@ func formatSignal(format string, args ...interface{}) string {
 			result = strings.Replace(result, "%.0f%%", strings.TrimRight(strings.TrimRight(formatFloat(v), "0"), ".")+"%", 1)
 		case int64:
 			result = strings.Replace(result, "%d", formatInt(v), 1)
+		case string:
+			result = strings.Replace(result, "%s", v, 1)
 		}
 	}
 	return result

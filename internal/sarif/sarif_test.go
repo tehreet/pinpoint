@@ -188,9 +188,9 @@ func TestSARIFSchema(t *testing.T) {
 		t.Errorf("expected informationUri %s, got %s", informationURI, log.Runs[0].Tool.Driver.InformationURI)
 	}
 
-	// Verify all 5 rules are present
-	if len(log.Runs[0].Tool.Driver.Rules) != 5 {
-		t.Errorf("expected 5 rules, got %d", len(log.Runs[0].Tool.Driver.Rules))
+	// Verify all 6 rules are present
+	if len(log.Runs[0].Tool.Driver.Rules) != 6 {
+		t.Errorf("expected 6 rules, got %d", len(log.Runs[0].Tool.Driver.Rules))
 	}
 
 	expectedRules := map[string]bool{
@@ -199,6 +199,7 @@ func TestSARIFSchema(t *testing.T) {
 		"pinpoint/branch-pinned":       false,
 		"pinpoint/no-immutable-release": false,
 		"pinpoint/no-gate":             false,
+		"PNPT-TRIGGER-001":            false,
 	}
 	for _, rule := range log.Runs[0].Tool.Driver.Rules {
 		if _, ok := expectedRules[rule.ID]; !ok {
@@ -248,9 +249,9 @@ func TestEmptyResults(t *testing.T) {
 		t.Errorf("expected 0 results, got %d", len(log.Runs[0].Results))
 	}
 
-	// Should still have all 5 rules
-	if len(log.Runs[0].Tool.Driver.Rules) != 5 {
-		t.Errorf("expected 5 rules even with no results, got %d", len(log.Runs[0].Tool.Driver.Rules))
+	// Should still have all 6 rules
+	if len(log.Runs[0].Tool.Driver.Rules) != 6 {
+		t.Errorf("expected 6 rules even with no results, got %d", len(log.Runs[0].Tool.Driver.Rules))
 	}
 
 	// Verify version is passed through

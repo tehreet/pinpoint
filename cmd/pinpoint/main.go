@@ -666,6 +666,16 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 					scoreCtx.CommitAuthor = commitInfo.AuthorName
 					scoreCtx.CommitEmail = commitInfo.AuthorEmail
 					scoreCtx.CommitDate = commitInfo.CommitDate
+					scoreCtx.IsGPGSigned = commitInfo.GPGVerified
+
+					// Conditional parent fetch: only when BACKDATED_COMMIT would fire
+					if time.Since(commitInfo.CommitDate) > 30*24*time.Hour && commitInfo.ParentSHA != "" {
+						parentInfo, parentErr := restClient.GetCommitInfo(ctx, owner, repo, commitInfo.ParentSHA)
+						if parentErr == nil {
+							scoreCtx.ParentSHA = commitInfo.ParentSHA
+							scoreCtx.ParentDate = parentInfo.CommitDate
+						}
+					}
 				}
 
 				// Enrichment: entry point size (check common paths)

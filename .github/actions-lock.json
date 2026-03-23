@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "generated_at": "2026-03-21T13:00:00Z",
+  "generated_by": "manual test",
+  "actions": {
+    "actions/checkout": {
+      "v4": {
+        "sha": "34e114876b0b11c390a56381ad16ebd13914f8d5",
+        "recorded_at": "2026-03-21T13:00:00Z"
+      }
+    },
+    "actions/setup-go": {
+      "v5": {
+        "sha": "40f1582b2485089dde7abd97c1529aa768e1baff",
+        "recorded_at": "2026-03-21T13:00:00Z"
+      }
+    },
+    "docker/build-push-action": {
+      "v5": {
+        "sha": "ca052bb54ab0790a636c9b5f226502c73d547a25",
+        "recorded_at": "2026-03-21T13:00:00Z"
+      }
+    },
+    "aquasecurity/trivy-action": {
+      "0.35.0": {
+        "sha": "57a97c7e7821a5776cebc9bb87c984fa69cba8f1",
+        "recorded_at": "2026-03-21T13:00:00Z"
+      }
+    }
+  }
+}

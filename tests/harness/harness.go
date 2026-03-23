@@ -15,6 +15,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -28,10 +29,7 @@ type TestHelper struct {
 
 func NewTestHelper(t *testing.T) *TestHelper {
 	t.Helper()
-	token := os.Getenv("GITHUB_TOKEN")
-	if token == "" {
-		t.Fatal("GITHUB_TOKEN required for integration tests")
-	}
+	token := MintAppToken(t)
 	return &TestHelper{
 		token:   token,
 		org:     "pinpoint-testing",
@@ -607,4 +605,77 @@ func WriteMultiRepoConfig(t *testing.T, repos map[string][]string) string {
 	content += "alerts:\n  min_severity: low\n  stdout: true\nstore:\n  path: " + dir + "/state.json\n"
 	os.WriteFile(path, []byte(content), 0644)
 	return path
+}
+
+// writeConfig writes a minimal pinpoint config for a single repo with the given tags.
+func writeConfig(t *testing.T, repo string, tags []string) string {
+	t.Helper()
+	dir := t.TempDir()
+	path := filepath.Join(dir, "config.yml")
+
+	var tagList string
+	for _, tag := range tags {
+		tagList += fmt.Sprintf("      - %q\n", tag)
+	}
+
+	content := fmt.Sprintf(`actions:
+  - repo: %s
+    tags:
+%s
+alerts:
+  min_severity: low
+  stdout: true
+store:
+  path: %s/state.json
+`, repo, tagList, dir)
+
+	os.WriteFile(path, []byte(content), 0644)
+	return path
+}
+
+// assertContains checks that output contains the expected substring.
+func assertContains(t *testing.T, output, substr string) {
+	t.Helper()
+	if !strings.Contains(output, substr) {
+		t.Errorf("Expected output to contain %q, got:\n%s", substr, output)
+	}
+}
+
+// deleteAllTags lists all tag refs on a repo and deletes each one.
+func (h *TestHelper) deleteAllTags(t *testing.T, repo string) {
+	t.Helper()
+	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/repos/%s/%s/git/refs/tags",
+		h.baseURL, h.org, repo), nil)
+	req.Header.Set("Authorization", "Bearer "+h.token)
+	req.Header.Set("Accept", "application/vnd.github+json")
+	resp, err := h.client.Do(req)
+	if err != nil {
+		t.Fatalf("Failed to list tags for %s: %v", repo, err)
+	}
+	defer resp.Body.Close()
+
+	// 404 means no tags exist — that's fine
+	if resp.StatusCode == 404 {
+		return
+	}
+
+	var refs []struct {
+		Ref string `json:"ref"`
+	}
+	json.NewDecoder(resp.Body).Decode(&refs)
+
+	for _, ref := range refs {
+		// ref.Ref is "refs/tags/v1.0.0" — extract tag name
+		tag := strings.TrimPrefix(ref.Ref, "refs/tags/")
+		h.DeleteTag(t, repo, tag)
+	}
+}
+
+// repoName extracts the repo name from a "org/repo" string.
+func repoName(fullRepo string) string {
+	parts := strings.SplitN(fullRepo, "/", 2)
+	if len(parts) == 2 {
+		return parts[1]
+	}
+	return fullRepo
 }

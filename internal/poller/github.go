@@ -239,11 +239,14 @@ func (c *GitHubClient) CompareCommits(ctx context.Context, owner, repo, oldSHA, 
 
 // GetCommitInfo retrieves metadata about a specific commit.
 type CommitInfo struct {
-	SHA        string    `json:"sha"`
-	AuthorName string
+	SHA         string    `json:"sha"`
+	AuthorName  string
 	AuthorEmail string
-	CommitDate time.Time
-	Message    string
+	CommitDate  time.Time
+	Message     string
+	ParentSHA   string // First parent SHA, empty if root commit
+	GPGVerified bool   // Whether the commit has a verified GPG signature
+	GPGSigner   string // Committer login when GPG-verified
 }
 
 func (c *GitHubClient) GetCommitInfo(ctx context.Context, owner, repo, sha string) (*CommitInfo, error) {
@@ -273,20 +276,40 @@ func (c *GitHubClient) GetCommitInfo(ctx context.Context, owner, repo, sha strin
 				Email string    `json:"email"`
 				Date  time.Time `json:"date"`
 			} `json:"author"`
-			Message string `json:"message"`
+			Committer struct {
+				Date time.Time `json:"date"`
+			} `json:"committer"`
+			Message      string `json:"message"`
+			Verification struct {
+				Verified bool `json:"verified"`
+			} `json:"verification"`
 		} `json:"commit"`
+		Parents []struct {
+			SHA string `json:"sha"`
+		} `json:"parents"`
+		Committer *struct {
+			Login string `json:"login"`
+		} `json:"committer"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {
 		return nil, err
 	}
 
-	return &CommitInfo{
+	info := &CommitInfo{
 		SHA:         raw.SHA,
 		AuthorName:  raw.Commit.Author.Name,
 		AuthorEmail: raw.Commit.Author.Email,
-		CommitDate:  raw.Commit.Author.Date,
+		CommitDate:  raw.Commit.Committer.Date,
 		Message:     raw.Commit.Message,
-	}, nil
+		GPGVerified: raw.Commit.Verification.Verified,
+	}
+	if len(raw.Parents) > 0 {
+		info.ParentSHA = raw.Parents[0].SHA
+	}
+	if raw.Committer != nil && raw.Commit.Verification.Verified {
+		info.GPGSigner = raw.Committer.Login
+	}
+	return info, nil
 }
 
 // GetFileSize retrieves the size of a file at a specific ref.

@@ -30,6 +30,8 @@ type ManifestEntry struct {
 	SHA           string          `json:"sha"`
 	Integrity     string          `json:"integrity,omitempty"`
 	DiskIntegrity string          `json:"disk_integrity,omitempty"`
+	GPGSigned     *bool           `json:"gpg_signed,omitempty"`
+	GPGSigner     string          `json:"gpg_signer,omitempty"`
 	RecordedAt    string          `json:"recorded_at,omitempty"`
 	Type          string          `json:"type,omitempty"`
 	Dependencies  []TransitiveDep `json:"dependencies,omitempty"`

@@ -34,6 +34,7 @@ type AuditResult struct {
 	WorkflowsWithGate    int
 	WorkflowsWithoutGate int
 	UnprotectedWorkflows []string // "repo-name/.github/workflows/ci.yml"
+	DangerousTriggers    []DangerousTriggerFinding
 }
 
 // ActionSummary describes a unique upstream action's usage and risk.
@@ -178,6 +179,14 @@ func RunAudit(ctx context.Context, opts Options, graphqlClient *poller.GraphQLCl
 				actionRepos[action] = make(map[string]bool)
 			}
 			actionRepos[action][repo.Name] = true
+		}
+	}
+
+	// Phase 2.5: Detect dangerous triggers
+	for _, repo := range activeRepos {
+		for _, wf := range repo.WorkflowFiles {
+			findings := DetectDangerousTriggers(repo.Name, wf.Name, wf.Content)
+			result.DangerousTriggers = append(result.DangerousTriggers, findings...)
 		}
 	}
 
@@ -531,6 +540,23 @@ func FormatReport(r *AuditResult) string {
 		}
 	}
 
+	// Dangerous triggers
+	if len(r.DangerousTriggers) > 0 {
+		b.WriteString("\nDANGEROUS WORKFLOW TRIGGERS:\n")
+		for _, f := range r.DangerousTriggers {
+			var icon string
+			switch f.Risk {
+			case "critical":
+				icon = "CRITICAL"
+			case "high":
+				icon = "HIGH"
+			default:
+				icon = "MEDIUM"
+			}
+			fmt.Fprintf(&b, "  %-8s  %s/%s    %s\n", icon, f.Repo, f.WorkflowFile, f.Reason)
+		}
+	}
+
 	// Recommendations
 	b.WriteString("\nRECOMMENDATIONS:\n")
 	if r.OrgPolicy == nil || !r.OrgPolicy.SHAPinningRequired {
@@ -731,8 +757,9 @@ func FormatJSON(r *AuditResult) (string, error) {
 			TagPinned    int `json:"tag_pinned"`
 			BranchPinned int `json:"branch_pinned"`
 		} `json:"references"`
-		UniqueActions []actionOut `json:"unique_actions"`
-		OrgPolicy     policyOut   `json:"org_policy"`
+		UniqueActions     []actionOut             `json:"unique_actions"`
+		DangerousTriggers []DangerousTriggerFinding `json:"dangerous_triggers,omitempty"`
+		OrgPolicy         policyOut               `json:"org_policy"`
 	}{}
 
 	output.Org = r.Org
@@ -762,6 +789,8 @@ func FormatJSON(r *AuditResult) (string, error) {
 		}
 		output.UniqueActions = append(output.UniqueActions, ao)
 	}
+
+	output.DangerousTriggers = r.DangerousTriggers
 
 	if r.OrgPolicy != nil {
 		output.OrgPolicy = policyOut{

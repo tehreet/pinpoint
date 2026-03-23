@@ -168,6 +168,216 @@ func TestScore_ZeroBatchSize(t *testing.T) {
 	}
 }
 
+// === Spec 019: IMPOSSIBLE_TIMESTAMP tests ===
+
+func TestImpossibleTimestamp(t *testing.T) {
+	// Child dated 2022, parent dated 2026 → +70, signal present
+	sev, signals := Score(ScoreContext{
+		TagName:    "v1.2.3",
+		CommitDate: time.Date(2022, 6, 15, 0, 0, 0, 0, time.UTC),
+		ParentDate: time.Date(2026, 3, 19, 0, 0, 0, 0, time.UTC),
+		ParentSHA:  "abc123",
+	})
+	if sev != SeverityCritical {
+		t.Errorf("expected CRITICAL, got %s", sev)
+	}
+	found := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "IMPOSSIBLE_TIMESTAMP") {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected IMPOSSIBLE_TIMESTAMP signal, got: %v", signals)
+	}
+}
+
+func TestNormalTimestampOrder(t *testing.T) {
+	// Child dated 2026-03-20, parent dated 2026-03-19 → no signal
+	_, signals := Score(ScoreContext{
+		TagName:    "v1",
+		CommitDate: time.Now(),
+		ParentDate: time.Now().Add(-24 * time.Hour),
+		ParentSHA:  "abc123",
+		IsDescendant: true,
+		ReleaseExists: true,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "IMPOSSIBLE_TIMESTAMP") {
+			t.Errorf("IMPOSSIBLE_TIMESTAMP should not fire for normal order, got: %v", signals)
+		}
+	}
+}
+
+func TestSameDate(t *testing.T) {
+	// Child and parent same date → no signal
+	now := time.Now()
+	_, signals := Score(ScoreContext{
+		TagName:    "v1",
+		CommitDate: now,
+		ParentDate: now,
+		ParentSHA:  "abc123",
+		IsDescendant: true,
+		ReleaseExists: true,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "IMPOSSIBLE_TIMESTAMP") {
+			t.Errorf("IMPOSSIBLE_TIMESTAMP should not fire for same date, got: %v", signals)
+		}
+	}
+}
+
+func TestNoParent(t *testing.T) {
+	// ParentDate is zero → no signal (root commits are fine)
+	_, signals := Score(ScoreContext{
+		TagName:    "v1",
+		CommitDate: time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC),
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "IMPOSSIBLE_TIMESTAMP") {
+			t.Errorf("IMPOSSIBLE_TIMESTAMP should not fire with zero ParentDate, got: %v", signals)
+		}
+	}
+}
+
+func TestImpossibleWithBackdated(t *testing.T) {
+	// Both IMPOSSIBLE_TIMESTAMP and BACKDATED_COMMIT fire independently, scores stack
+	sev, signals := Score(ScoreContext{
+		TagName:    "v1.2.3",
+		CommitDate: time.Date(2022, 6, 15, 0, 0, 0, 0, time.UTC),
+		ParentDate: time.Date(2026, 3, 19, 0, 0, 0, 0, time.UTC),
+		ParentSHA:  "abc123",
+	})
+	if sev != SeverityCritical {
+		t.Errorf("expected CRITICAL, got %s", sev)
+	}
+	hasImpossible := false
+	hasBackdated := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "IMPOSSIBLE_TIMESTAMP") {
+			hasImpossible = true
+		}
+		if strings.HasPrefix(s, "BACKDATED_COMMIT") {
+			hasBackdated = true
+		}
+	}
+	if !hasImpossible || !hasBackdated {
+		t.Errorf("expected both IMPOSSIBLE_TIMESTAMP and BACKDATED_COMMIT, got: %v", signals)
+	}
+}
+
+func TestTrivyFullReplay(t *testing.T) {
+	// All signals fire together, total score >400
+	sev, signals := Score(ScoreContext{
+		BatchSize:     76,
+		IsDescendant:  false,
+		AheadBy:       0,
+		EntryPointOld: 1000,
+		EntryPointNew: 5000,
+		TagName:       "v0.18.0",
+		CommitDate:    time.Date(2022, 6, 15, 0, 0, 0, 0, time.UTC),
+		ParentDate:    time.Date(2026, 3, 19, 0, 0, 0, 0, time.UTC),
+		ParentSHA:     "57a97c7e",
+		ReleaseExists: false,
+		SelfHosted:    false,
+		WasGPGSigned:  true,
+		IsGPGSigned:   false,
+	})
+	if sev != SeverityCritical {
+		t.Errorf("expected CRITICAL, got %s", sev)
+	}
+	expected := []string{
+		"MASS_REPOINT", "OFF_BRANCH", "IMPOSSIBLE_TIMESTAMP",
+		"SIZE_ANOMALY", "SEMVER_REPOINT", "BACKDATED_COMMIT",
+		"SIGNATURE_DROPPED", "NO_RELEASE",
+	}
+	for _, prefix := range expected {
+		found := false
+		for _, s := range signals {
+			if strings.HasPrefix(s, prefix) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			t.Errorf("missing signal %s in %v", prefix, signals)
+		}
+	}
+	if len(signals) < 8 {
+		t.Errorf("expected at least 8 signals, got %d: %v", len(signals), signals)
+	}
+}
+
+// === Spec 017: SIGNATURE_DROPPED tests ===
+
+func TestSignatureDropped(t *testing.T) {
+	sev, signals := Score(ScoreContext{
+		TagName:      "v1.2.3",
+		WasGPGSigned: true,
+		IsGPGSigned:  false,
+		IsDescendant: false,
+	})
+	if sev != SeverityCritical {
+		t.Errorf("expected CRITICAL, got %s", sev)
+	}
+	found := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "SIGNATURE_DROPPED") {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected SIGNATURE_DROPPED signal, got: %v", signals)
+	}
+}
+
+func TestSignatureStillSigned(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:      "v1",
+		WasGPGSigned: true,
+		IsGPGSigned:  true,
+		IsDescendant: true,
+		ReleaseExists: true,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "SIGNATURE_DROPPED") {
+			t.Errorf("SIGNATURE_DROPPED should not fire when both signed, got: %v", signals)
+		}
+	}
+}
+
+func TestSignatureNeverSigned(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:      "v1",
+		WasGPGSigned: false,
+		IsGPGSigned:  false,
+		IsDescendant: true,
+		ReleaseExists: true,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "SIGNATURE_DROPPED") {
+			t.Errorf("SIGNATURE_DROPPED should not fire when both unsigned, got: %v", signals)
+		}
+	}
+}
+
+func TestSignatureLockfileNoData(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:      "v1",
+		WasGPGSigned: false,
+		IsGPGSigned:  true,
+		IsDescendant: true,
+		ReleaseExists: true,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "SIGNATURE_DROPPED") {
+			t.Errorf("SIGNATURE_DROPPED should not fire when lockfile had no data, got: %v", signals)
+		}
+	}
+}
+
 func TestScore_ExactlyFiveBatchSize(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		BatchSize: 5,

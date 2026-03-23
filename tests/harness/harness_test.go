@@ -7,8 +7,6 @@ package harness
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -236,34 +234,4 @@ func TestScenario_SizeChange(t *testing.T) {
 	assertContains(t, output, "SIZE_ANOMALY")
 }
 
-func writeConfig(t *testing.T, repo string, tags []string) string {
-	t.Helper()
-	dir := t.TempDir()
-	path := filepath.Join(dir, "config.yml")
-
-	var tagList string
-	for _, tag := range tags {
-		tagList += fmt.Sprintf("      - %q\n", tag)
-	}
-
-	content := fmt.Sprintf(`actions:
-  - repo: %s
-    tags:
-%s
-alerts:
-  min_severity: low
-  stdout: true
-store:
-  path: %s/state.json
-`, repo, tagList, dir)
-
-	os.WriteFile(path, []byte(content), 0644)
-	return path
-}
-
-func assertContains(t *testing.T, output, substr string) {
-	t.Helper()
-	if !strings.Contains(output, substr) {
-		t.Errorf("Expected output to contain %q, got:\n%s", substr, output)
-	}
-}
+// writeConfig and assertContains are defined in harness.go

@@ -147,6 +147,14 @@ var rules = []Rule{
 		DefaultConfiguration: Configuration{Level: "warning"},
 		HelpURI:          informationURI + "#gate",
 	},
+	{
+		ID:               "PNPT-TRIGGER-001",
+		ShortDescription: Message{Text: "Dangerous pull_request_target trigger"},
+		FullDescription:  Message{Text: "Workflow uses pull_request_target which runs with write tokens on external PRs. This is the root cause of both the tj-actions and Trivy supply chain attacks."},
+		DefaultConfiguration: Configuration{Level: "error"},
+		HelpURI:          "https://securitylab.github.com/research/github-actions-preventing-pwn-requests/",
+		Properties:       &RuleProperties{Tags: []string{"security", "supply-chain"}},
+	},
 }
 
 func newLog(toolVersion string) *Log {
@@ -254,6 +262,31 @@ func FormatAuditSARIF(result *audit.AuditResult, toolVersion string) (string, er
 			}
 			log.Runs[0].Results = append(log.Runs[0].Results, r)
 		}
+	}
+
+	// Dangerous triggers
+	for _, finding := range result.DangerousTriggers {
+		level := "note"
+		switch finding.Risk {
+		case "critical":
+			level = "error"
+		case "high":
+			level = "warning"
+		}
+		r := Result{
+			RuleID:  "PNPT-TRIGGER-001",
+			Level:   level,
+			Message: Message{Text: fmt.Sprintf("%s/%s: %s", finding.Repo, finding.WorkflowFile, finding.Reason)},
+			Locations: []Location{
+				{PhysicalLocation: PhysicalLocation{
+					ArtifactLocation: ArtifactLocation{URI: ".github/workflows/" + finding.WorkflowFile},
+				}},
+			},
+			Properties: &ResultProperties{
+				Risk: finding.Risk,
+			},
+		}
+		log.Runs[0].Results = append(log.Runs[0].Results, r)
 	}
 
 	// Unprotected workflows
