@@ -591,6 +591,57 @@ type contentResponse struct {
 	Encoding string `json:"encoding"`
 }
 
+// directoryEntry represents a single entry from the GitHub Contents API directory listing.
+type directoryEntry struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+	Path string `json:"path"`
+}
+
+// listDirectory lists files in a directory via the GitHub Contents API.
+func (c *httpClient) listDirectory(ctx context.Context, repo, path, sha string) ([]string, error) {
+	url := fmt.Sprintf("%s/repos/%s/contents/%s?ref=%s", c.baseURL, repo, path, sha)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("creating request: %w", err)
+	}
+	req.Header.Set("Accept", "application/vnd.github+json")
+	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
+	if c.token != "" {
+		req.Header.Set("Authorization", "Bearer "+c.token)
+	}
+
+	resp, err := c.http.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("HTTP request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("reading response: %w", err)
+	}
+
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, &notFoundError{path: path}
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("GitHub API returned %d for %s: %s", resp.StatusCode, path, string(body))
+	}
+
+	var entries []directoryEntry
+	if err := json.Unmarshal(body, &entries); err != nil {
+		return nil, fmt.Errorf("decoding directory listing: %w", err)
+	}
+
+	var names []string
+	for _, e := range entries {
+		names = append(names, e.Name)
+	}
+	return names, nil
+}
+
 // notFoundError is returned when the API returns 404.
 type notFoundError struct {
 	path string

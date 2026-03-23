@@ -13,6 +13,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 // silenceOutput redirects gate messages to a buffer during tests.
@@ -1724,5 +1725,52 @@ jobs:
 	}
 	if len(result.Violations) != 2 {
 		t.Errorf("with fail-on-missing: violations = %d, want 2", len(result.Violations))
+	}
+}
+
+func TestListDirectory(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/repos/owner/repo/contents/.github/workflows" && r.URL.Query().Get("ref") == "abc123" {
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprint(w, `[
+				{"name": "ci.yml", "type": "file", "path": ".github/workflows/ci.yml"},
+				{"name": "deploy.yaml", "type": "file", "path": ".github/workflows/deploy.yaml"},
+				{"name": "README.md", "type": "file", "path": ".github/workflows/README.md"}
+			]`)
+			return
+		}
+		w.WriteHeader(404)
+	}))
+	defer srv.Close()
+
+	client := &httpClient{
+		token:   "test-token",
+		baseURL: srv.URL,
+		http:    &http.Client{Timeout: 5 * time.Second},
+	}
+
+	ctx := context.Background()
+	files, err := client.listDirectory(ctx, "owner/repo", ".github/workflows", "abc123")
+	if err != nil {
+		t.Fatalf("listDirectory failed: %v", err)
+	}
+
+	if len(files) != 3 {
+		t.Fatalf("expected 3 files, got %d", len(files))
+	}
+	expected := []string{"ci.yml", "deploy.yaml", "README.md"}
+	for i, name := range expected {
+		if files[i] != name {
+			t.Errorf("file[%d]: expected %q, got %q", i, name, files[i])
+		}
+	}
+
+	// Test 404 handling
+	_, err = client.listDirectory(ctx, "owner/repo", "nonexistent/path", "abc123")
+	if err == nil {
+		t.Fatal("expected notFoundError for missing path, got nil")
+	}
+	if !isNotFound(err) {
+		t.Fatalf("expected notFoundError, got %T: %v", err, err)
 	}
 }
