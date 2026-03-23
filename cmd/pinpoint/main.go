@@ -9,6 +9,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -80,7 +81,7 @@ USAGE:
   pinpoint watch     --config <path>  [--state <path>]  [--interval 5m]  [--rest]
   pinpoint discover  --workflows <dir>
   pinpoint audit     --org <name>  [--output report|config|manifest|json|sarif]  [--skip-upstream]
-  pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]  [--integrity]  [--on-disk]  [--actions-dir <path>]  [--skip-transitive]
+  pinpoint gate      [--manifest <path>]  [--fail-on-missing]  [--fail-on-unpinned]  [--integrity]  [--on-disk]  [--actions-dir <path>]  [--skip-transitive]  [--warn]  [--json]
   pinpoint lock      [--lockfile <path>]  [--workflows <dir>]  [--verify]  [--skip-disk-integrity]
   pinpoint verify    [--workflows <dir>]  [--output json]
   pinpoint manifest  <refresh|verify|init>  [options]
@@ -444,6 +445,16 @@ func cmdGate() {
 		graphqlURL = "https://api.github.com/graphql"
 	}
 
+	warnMode := hasFlag("warn")
+	if !warnMode && os.Getenv("PINPOINT_GATE_WARN") == "true" {
+		warnMode = true
+	}
+	jsonOutput := hasFlag("json")
+
+	if warnMode {
+		fmt.Fprintf(os.Stderr, "⚠ Running in warn mode — violations logged but not enforced\n")
+	}
+
 	eventName := os.Getenv("GITHUB_EVENT_NAME")
 	baseRef := os.Getenv("GITHUB_BASE_REF")
 
@@ -474,10 +485,38 @@ func cmdGate() {
 	}
 
 	if len(result.Violations) > 0 {
+		if jsonOutput {
+			out := map[string]interface{}{
+				"violations": result.Violations,
+				"verified":   result.Verified,
+				"skipped":    result.Skipped,
+			}
+			if warnMode {
+				out["mode"] = "warn"
+				out["exit_code_override"] = true
+			}
+			json.NewEncoder(os.Stdout).Encode(out)
+		}
+		if warnMode {
+			fmt.Fprintf(os.Stderr, "\n⚠ %d action integrity violations detected (warn mode — not blocking)\n", len(result.Violations))
+			return
+		}
 		fmt.Fprintf(os.Stderr, "\n✗ INTEGRITY VIOLATION: %d action tag(s) do not match manifest\n", len(result.Violations))
 		fmt.Fprintf(os.Stderr, "  Job will not continue. Investigate immediately.\n")
 		fmt.Fprintf(os.Stderr, "  Dashboard: https://github.com/%s/security\n", repo)
 		os.Exit(2)
+	}
+
+	if jsonOutput {
+		out := map[string]interface{}{
+			"violations": []interface{}{},
+			"verified":   result.Verified,
+			"skipped":    result.Skipped,
+		}
+		if warnMode {
+			out["mode"] = "warn"
+		}
+		json.NewEncoder(os.Stdout).Encode(out)
 	}
 
 	fmt.Fprintf(os.Stderr, "\n✓ All action integrity checks passed (%d verified, %d skipped, 0 violations) in %s\n",
