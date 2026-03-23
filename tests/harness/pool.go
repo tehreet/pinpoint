@@ -42,6 +42,9 @@ func NewRepoPool(t *testing.T, n int) *RepoPool {
 		}
 	}
 
+	t.Logf("[pool] Creating %d fixture repos...", n)
+	start := time.Now()
+
 	h := NewTestHelper(t)
 	p := &RepoPool{
 		helper:    h,
@@ -51,6 +54,7 @@ func NewRepoPool(t *testing.T, n int) *RepoPool {
 
 	for i := 0; i < n; i++ {
 		name := fmt.Sprintf("fixture-%02d", i)
+		t.Logf("[pool] Creating %s (%d/%d)...", name, i+1, n)
 		initSHA := h.CreateRepo(t, name)
 		initTree := h.GetCommitTree(t, name, initSHA)
 
@@ -64,6 +68,7 @@ func NewRepoPool(t *testing.T, n int) *RepoPool {
 
 	// Let GitHub settle after bulk creation
 	time.Sleep(2 * time.Second)
+	t.Logf("[pool] All %d repos created in %s", n, time.Since(start).Round(time.Millisecond))
 
 	return p
 }
@@ -73,12 +78,14 @@ func NewRepoPool(t *testing.T, n int) *RepoPool {
 // Registers t.Cleanup to release the repo when the test finishes.
 func (p *RepoPool) Acquire(t *testing.T) (fullRepo, initSHA, initTree string) {
 	t.Helper()
+	t.Logf("[pool] Acquiring repo...")
 	idx := <-p.available
 	p.mu.Lock()
 	p.repos[idx].InUse = true
 	p.mu.Unlock()
 
 	r := p.repos[idx]
+	t.Logf("[pool] Acquired %s", r.Name)
 	t.Cleanup(func() { p.Release(t, idx) })
 	return p.helper.org + "/" + r.Name, r.InitSHA, r.InitTree
 }
@@ -87,6 +94,7 @@ func (p *RepoPool) Acquire(t *testing.T) (fullRepo, initSHA, initTree string) {
 // init SHAs, and init tree SHAs.
 func (p *RepoPool) AcquireN(t *testing.T, n int) (fullRepos, initSHAs, initTrees []string) {
 	t.Helper()
+	t.Logf("[pool] Acquiring %d repos...", n)
 	fullRepos = make([]string, n)
 	initSHAs = make([]string, n)
 	initTrees = make([]string, n)
@@ -99,6 +107,7 @@ func (p *RepoPool) AcquireN(t *testing.T, n int) (fullRepos, initSHAs, initTrees
 // Release resets a repo to clean state and returns it to the pool.
 func (p *RepoPool) Release(t *testing.T, idx int) {
 	r := p.repos[idx]
+	t.Logf("[pool] Releasing %s (deleting tags, resetting main)...", r.Name)
 
 	// Delete all tags
 	p.helper.deleteAllTags(t, r.Name)
@@ -110,11 +119,15 @@ func (p *RepoPool) Release(t *testing.T, idx int) {
 	p.repos[idx].InUse = false
 	p.mu.Unlock()
 	p.available <- idx
+	t.Logf("[pool] Released %s", r.Name)
 }
 
 // Destroy deletes all fixture repos. Called in TestMain cleanup.
 func (p *RepoPool) Destroy(t *testing.T) {
-	for _, r := range p.repos {
+	t.Logf("[pool] Destroying %d fixture repos...", len(p.repos))
+	for i, r := range p.repos {
+		t.Logf("[pool] Deleting %s (%d/%d)...", r.Name, i+1, len(p.repos))
 		p.helper.DeleteRepo(t, r.Name)
 	}
+	t.Logf("[pool] Cleanup complete")
 }

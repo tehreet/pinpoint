@@ -8,6 +8,7 @@ package harness
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 // Scenario defines a self-contained attack scenario that knows how to
@@ -47,18 +48,25 @@ func RunScenarios(t *testing.T, pool *RepoPool, scenarios []Scenario) {
 			t.Parallel()
 			repo, initSHA, initTree := pool.Acquire(t)
 
+			t.Logf("[scenario] %s: setting up on %s...", s.Name(), repoName(repo))
+			start := time.Now()
 			state := s.Setup(t, h, repo, initSHA, initTree)
+			t.Logf("[scenario] %s: setup done (%s)", s.Name(), time.Since(start).Round(time.Millisecond))
 
 			// Baseline scan to populate state
 			if state.ConfigPath != "" {
+				t.Logf("[scenario] %s: running baseline scan...", s.Name())
 				RunPinpointScan(t, state.ConfigPath, state.StatePath)
 			}
 
-			// Execute attack
+			t.Logf("[scenario] %s: executing attack...", s.Name())
+			attackStart := time.Now()
 			s.Attack(t, h, repo, state)
+			t.Logf("[scenario] %s: attack done (%s)", s.Name(), time.Since(attackStart).Round(time.Millisecond))
 
-			// Verify detection
+			t.Logf("[scenario] %s: verifying detection...", s.Name())
 			s.Verify(t, h, repo, state)
+			t.Logf("[scenario] %s: PASSED (%s total)", s.Name(), time.Since(start).Round(time.Millisecond))
 		})
 	}
 }
@@ -80,12 +88,13 @@ func RunMultiRepoScenarios(t *testing.T, pool *RepoPool, scenarios []Scenario) {
 		s := s
 		t.Run(s.Name(), func(t *testing.T) {
 			t.Parallel()
+			start := time.Now()
 
 			if ms, ok := s.(MultiRepoScenario); ok {
-				// Multi-repo scenario handles its own setup/attack/verify with pool
+				t.Logf("[scenario] %s: acquiring %d repos...", s.Name(), ms.RepoCount())
 				repos, initSHAs, initTrees := pool.AcquireN(t, ms.RepoCount())
+				t.Logf("[scenario] %s: setting up on %s (+%d more)...", s.Name(), repoName(repos[0]), len(repos)-1)
 				state := ms.Setup(t, h, repos[0], initSHAs[0], initTrees[0])
-				// Store extra repos in state
 				if state.Extra == nil {
 					state.Extra = make(map[string]string)
 				}
@@ -94,18 +103,31 @@ func RunMultiRepoScenarios(t *testing.T, pool *RepoPool, scenarios []Scenario) {
 					state.Extra[fmt.Sprintf("initSHA_%d", i)] = initSHAs[i]
 					state.Extra[fmt.Sprintf("initTree_%d", i)] = initTrees[i]
 				}
+				t.Logf("[scenario] %s: setup done (%s)", s.Name(), time.Since(start).Round(time.Millisecond))
 
+				t.Logf("[scenario] %s: executing attack...", s.Name())
 				ms.Attack(t, h, repos[0], state)
+
+				t.Logf("[scenario] %s: verifying detection...", s.Name())
 				ms.Verify(t, h, repos[0], state)
 			} else {
 				repo, initSHA, initTree := pool.Acquire(t)
+				t.Logf("[scenario] %s: setting up on %s...", s.Name(), repoName(repo))
 				state := s.Setup(t, h, repo, initSHA, initTree)
+				t.Logf("[scenario] %s: setup done (%s)", s.Name(), time.Since(start).Round(time.Millisecond))
+
 				if state.ConfigPath != "" {
+					t.Logf("[scenario] %s: running baseline scan...", s.Name())
 					RunPinpointScan(t, state.ConfigPath, state.StatePath)
 				}
+
+				t.Logf("[scenario] %s: executing attack...", s.Name())
 				s.Attack(t, h, repo, state)
+
+				t.Logf("[scenario] %s: verifying detection...", s.Name())
 				s.Verify(t, h, repo, state)
 			}
+			t.Logf("[scenario] %s: PASSED (%s total)", s.Name(), time.Since(start).Round(time.Millisecond))
 		})
 	}
 }
