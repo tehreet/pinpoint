@@ -24,14 +24,32 @@ var dangerousRefPatterns = []string{
 	"github.head_ref",
 }
 
+// testRepoPatterns matches repos that are intentionally vulnerable (CTF/goat/playground).
+var testRepoPatterns = []string{
+	"goat", "playground", "vulnerable", "damn-vulnerable",
+	"dvga", "dvwa", "juice-shop", "webgoat",
+}
+
 // DetectDangerousTriggers scans workflow content for risky trigger configurations.
 func DetectDangerousTriggers(repo, workflowName, content string) []DangerousTriggerFinding {
-	if !hasPullRequestTarget(content) {
+	// Only match pull_request_target in the on: trigger section, not in if: conditions
+	if !hasPullRequestTargetTrigger(content) {
+		return nil
+	}
+
+	// Filter out intentionally vulnerable test repos
+	if isTestRepo(repo) {
+		return nil
+	}
+
+	// Check if all jobs using dangerous patterns are guarded by if: false
+	if allJobsDisabled(content) {
 		return nil
 	}
 
 	// Check for checkout of PR head (CRITICAL)
-	if hasCheckoutPRHead(content) {
+	// But only in jobs that are NOT disabled with if: false
+	if hasLiveCheckoutPRHead(content) {
 		return []DangerousTriggerFinding{{
 			Repo:         repo,
 			WorkflowFile: workflowName,
@@ -62,38 +80,172 @@ func DetectDangerousTriggers(repo, workflowName, content string) []DangerousTrig
 	}}
 }
 
-// hasPullRequestTarget checks if the workflow uses pull_request_target trigger.
-// Uses string matching rather than full YAML parse to match existing audit patterns.
-func hasPullRequestTarget(content string) bool {
-	for _, line := range strings.Split(content, "\n") {
+// hasPullRequestTargetTrigger checks if pull_request_target appears as an actual
+// trigger in the on: section, NOT in if: conditions or comments elsewhere.
+func hasPullRequestTargetTrigger(content string) bool {
+	lines := strings.Split(content, "\n")
+	inOnBlock := false
+	onIndent := -1
+
+	for _, line := range lines {
 		trimmed := strings.TrimSpace(line)
 		if strings.HasPrefix(trimmed, "#") {
 			continue
 		}
-		if strings.Contains(trimmed, "pull_request_target") {
+
+		indent := leadingSpaces(line)
+
+		// Detect the on: block
+		if trimmed == "on:" || strings.HasPrefix(trimmed, "on:") {
+			inOnBlock = true
+			onIndent = indent
+			// Check for inline form: on: pull_request_target
+			if strings.Contains(trimmed, "pull_request_target") {
+				return true
+			}
+			continue
+		}
+
+		// If we're in the on: block
+		if inOnBlock {
+			// Exit on: block when we hit a top-level key at same or lesser indent
+			if indent <= onIndent && trimmed != "" && !strings.HasPrefix(trimmed, "-") {
+				inOnBlock = false
+				continue
+			}
+			// Match pull_request_target as a trigger key (indented under on:)
+			if strings.Contains(trimmed, "pull_request_target") {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// isTestRepo checks if a repo is an intentionally vulnerable test/demo/goat repo.
+func isTestRepo(repo string) bool {
+	lower := strings.ToLower(repo)
+	for _, pattern := range testRepoPatterns {
+		if strings.Contains(lower, pattern) {
 			return true
 		}
 	}
 	return false
 }
 
-// hasCheckoutPRHead checks for actions/checkout with a dangerous ref.
-func hasCheckoutPRHead(content string) bool {
+// allJobsDisabled checks if every job in the workflow has `if: false`.
+func allJobsDisabled(content string) bool {
 	lines := strings.Split(content, "\n")
-	inCheckout := false
-	for _, line := range lines {
+	inJobs := false
+	jobsIndent := -1
+	jobCount := 0
+	disabledCount := 0
+
+	for i, line := range lines {
 		trimmed := strings.TrimSpace(line)
 		if strings.HasPrefix(trimmed, "#") {
 			continue
 		}
+		indent := leadingSpaces(line)
+
+		// Find jobs: section
+		if trimmed == "jobs:" || strings.HasPrefix(trimmed, "jobs:") {
+			inJobs = true
+			jobsIndent = indent
+			continue
+		}
+
+		if !inJobs {
+			continue
+		}
+
+		// Exit jobs: when we hit a top-level key at same or lesser indent
+		if indent <= jobsIndent && trimmed != "" {
+			break
+		}
+
+		// Detect job names (indented exactly 1 level under jobs:)
+		if indent == jobsIndent+2 && !strings.HasPrefix(trimmed, "-") && strings.HasSuffix(trimmed, ":") {
+			jobCount++
+			// Look ahead for if: false in the next few lines at the right indent
+			for j := i + 1; j < len(lines) && j < i+10; j++ {
+				nextTrimmed := strings.TrimSpace(lines[j])
+				nextIndent := leadingSpaces(lines[j])
+				if nextIndent <= indent && nextTrimmed != "" {
+					break // hit next job or section
+				}
+				if nextIndent == indent+2 && (nextTrimmed == "if: false" || nextTrimmed == "if: 'false'" || nextTrimmed == `if: "false"`) {
+					disabledCount++
+					break
+				}
+			}
+		}
+	}
+
+	return jobCount > 0 && jobCount == disabledCount
+}
+
+// hasLiveCheckoutPRHead checks for actions/checkout with a dangerous ref,
+// but only in jobs that are NOT disabled with if: false.
+func hasLiveCheckoutPRHead(content string) bool {
+	lines := strings.Split(content, "\n")
+	inCheckout := false
+	currentJobDisabled := false
+	inJobs := false
+	jobsIndent := -1
+
+	for i, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "#") {
+			continue
+		}
+		indent := leadingSpaces(line)
+
+		// Track jobs section
+		if trimmed == "jobs:" || strings.HasPrefix(trimmed, "jobs:") {
+			inJobs = true
+			jobsIndent = indent
+			continue
+		}
+
+		if !inJobs {
+			continue
+		}
+
+		// Detect job boundaries and check for if: false
+		if indent == jobsIndent+2 && !strings.HasPrefix(trimmed, "-") && strings.HasSuffix(trimmed, ":") {
+			currentJobDisabled = false
+			// Look ahead for if: false
+			for j := i + 1; j < len(lines) && j < i+10; j++ {
+				nextTrimmed := strings.TrimSpace(lines[j])
+				nextIndent := leadingSpaces(lines[j])
+				if nextIndent <= indent && nextTrimmed != "" {
+					break
+				}
+				if nextIndent == indent+2 && (nextTrimmed == "if: false" || nextTrimmed == "if: 'false'" || nextTrimmed == `if: "false"`) {
+					currentJobDisabled = true
+					break
+				}
+			}
+			inCheckout = false
+			continue
+		}
+
+		// Skip disabled jobs entirely
+		if currentJobDisabled {
+			continue
+		}
+
 		if strings.Contains(trimmed, "actions/checkout") {
 			inCheckout = true
 			continue
 		}
+
 		// Reset on next step or job boundary
 		if inCheckout && (strings.HasPrefix(trimmed, "- ") || strings.HasPrefix(trimmed, "jobs:")) {
 			inCheckout = false
 		}
+
 		if inCheckout && strings.Contains(trimmed, "ref:") {
 			for _, pattern := range dangerousRefPatterns {
 				if strings.Contains(trimmed, pattern) {
@@ -125,33 +277,25 @@ func hasRunWithPRInterpolation(content string) bool {
 			strings.HasPrefix(trimmed, "- run :")
 
 		if isRunLine {
-			// Single-line run: the interpolation is on this same line
 			if strings.Contains(trimmed, "github.event.pull_request") {
 				return true
 			}
-			// Multi-line run block starts with run: | or run: >
 			if strings.Contains(trimmed, "|") || strings.Contains(trimmed, ">") {
 				inRunBlock = true
-				// Record the indentation of the "run:" key itself so we know
-				// when a subsequent line exits the block (same or lesser indent)
 				runIndent = leadingSpaces(line)
 			}
 			continue
 		}
 
-		// If we're inside a multi-line run block, check continuation lines
 		if inRunBlock {
-			// A blank line doesn't end a YAML block scalar
 			if trimmed == "" {
 				continue
 			}
-			// Block continues while indented deeper than the run: key
 			if leadingSpaces(line) > runIndent {
 				if strings.Contains(line, "github.event.pull_request") {
 					return true
 				}
 			} else {
-				// Indentation returned to or past the run: level — block ended
 				inRunBlock = false
 			}
 		}
@@ -166,7 +310,7 @@ func leadingSpaces(line string) int {
 		if ch == ' ' {
 			count++
 		} else if ch == '\t' {
-			count += 2 // treat tab as 2 spaces for comparison purposes
+			count += 2
 		} else {
 			break
 		}

@@ -4,7 +4,7 @@ set -euo pipefail
 
 export GITHUB_TOKEN=$(gh auth token)
 ORG="pinpoint-testing"
-PINPOINT_VERSION="v0.5.0"
+PINPOINT_VERSION="v0.6.0"
 
 # The workflow content
 WORKFLOW=$(cat <<'WORKFLOW_EOF'
@@ -40,7 +40,7 @@ jobs:
         run: |
           ASSET_URL=$(curl -sSL \
             -H "Authorization: Bearer $GH_TOKEN" \
-            "https://api.github.com/repos/pinpoint-testing/pinpoint/releases/tags/v0.5.0" \
+            "https://api.github.com/repos/pinpoint-testing/pinpoint/releases/tags/v0.6.0" \
             | jq -r '.assets[] | select(.name=="pinpoint-linux-amd64") | .url')
           curl -sSL \
             -H "Authorization: Bearer $GH_TOKEN" \

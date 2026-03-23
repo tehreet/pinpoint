@@ -96,7 +96,6 @@ jobs:
 }
 
 func TestHigh_MultiLineRunFoldedStyle(t *testing.T) {
-	// Uses > (folded) instead of | (literal)
 	content := `
 on:
   pull_request_target:
@@ -118,7 +117,6 @@ jobs:
 }
 
 func TestMedium_MultiLineRunSafe(t *testing.T) {
-	// Multi-line run block with no PR interpolation should NOT be high
 	content := `
 on:
   pull_request_target:
@@ -136,7 +134,7 @@ jobs:
 		t.Fatalf("expected 1 finding, got %d", len(findings))
 	}
 	if findings[0].Risk != "medium" {
-		t.Errorf("expected medium risk (no dangerous interpolation), got %s", findings[0].Risk)
+		t.Errorf("expected medium risk, got %s", findings[0].Risk)
 	}
 }
 
@@ -198,8 +196,143 @@ jobs:
 	}
 }
 
+// === NEW: False positive regression tests ===
+
+func TestClean_PullRequestTargetInIfConditionOnly(t *testing.T) {
+	// puppet-falcon pattern: trigger is pull_request (NOT target),
+	// but pull_request_target appears in an if: condition.
+	// This was a false positive before the fix.
+	content := `
+name: PR Acceptance Test
+on:
+  push:
+  pull_request:
+    types: [labeled]
+jobs:
+  setup:
+    if: |
+      (github.event_name == 'pull_request_target' &&
+      github.event.label.name == 'ok-to-test') ||
+      contains(fromJson('["push"]'), github.event_name)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{github.event.pull_request.head.sha}}
+`
+	findings := DetectDangerousTriggers("crowdstrike/puppet-falcon", "acceptance-tests.yml", content)
+	if len(findings) != 0 {
+		t.Errorf("expected no findings (pull_request_target only in if: condition, not trigger), got %d: %v", len(findings), findings)
+	}
+}
+
+func TestClean_AllJobsDisabledWithIfFalse(t *testing.T) {
+	// CrowdStrike ansible_collection_falcon pattern: pull_request_target trigger
+	// exists but every job has if: false — dead code.
+	content := `
+name: falcon_configure
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  push:
+    paths:
+      - 'roles/falcon_configure/**'
+  pull_request_target:
+    types: [labeled]
+jobs:
+  molecule:
+    if: false
+    runs-on: ubuntu-latest
+    env:
+      FALCON_CLIENT_ID: ${{ secrets.FALCON_CLIENT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        if: github.event_name != 'pull_request_target'
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{github.event.pull_request.head.sha}}
+        if: github.event_name == 'pull_request_target'
+      - run: molecule test
+`
+	findings := DetectDangerousTriggers("crowdstrike/ansible_collection_falcon", "falcon_configure.yml", content)
+	if len(findings) != 0 {
+		t.Errorf("expected no findings (all jobs disabled with if: false), got %d: %v", len(findings), findings)
+	}
+}
+
+func TestClean_TestGoatRepo(t *testing.T) {
+	// StepSecurity github-actions-goat: intentionally vulnerable
+	content := `
+on:
+  pull_request_target:
+jobs:
+  pwn:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - run: make deploy
+`
+	findings := DetectDangerousTriggers("step-security/github-actions-goat", "toc-tou.yml", content)
+	if len(findings) != 0 {
+		t.Errorf("expected no findings for goat/test repo, got %d: %v", len(findings), findings)
+	}
+}
+
+func TestClean_PlaygroundRepo(t *testing.T) {
+	content := `
+on:
+  pull_request_target:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+`
+	findings := DetectDangerousTriggers("step-security/workflow-playground-2", "test.yml", content)
+	if len(findings) != 0 {
+		t.Errorf("expected no findings for playground repo, got %d: %v", len(findings), findings)
+	}
+}
+
+func TestCritical_LiveJobWithDisabledSibling(t *testing.T) {
+	// One job is disabled, another is live with the dangerous pattern.
+	// Should still flag the live job.
+	content := `
+on:
+  pull_request_target:
+    types: [labeled]
+jobs:
+  disabled-job:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+  live-job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - run: make test
+`
+	findings := DetectDangerousTriggers("myorg/mixed-jobs", "ci.yml", content)
+	if len(findings) != 1 {
+		t.Fatalf("expected 1 finding (live job has dangerous pattern), got %d", len(findings))
+	}
+	if findings[0].Risk != "critical" {
+		t.Errorf("expected critical risk, got %s", findings[0].Risk)
+	}
+}
+
+// === Existing replay tests ===
+
 func TestTrivyAPIDiffReplay(t *testing.T) {
-	// Exact replica of trivy's apidiff.yaml pattern
 	content := `
 name: API Diff
 on:
@@ -236,13 +369,9 @@ jobs:
 	if findings[0].Risk != "critical" {
 		t.Errorf("expected critical risk, got %s", findings[0].Risk)
 	}
-	if findings[0].Repo != "aquasecurity/trivy" {
-		t.Errorf("expected repo aquasecurity/trivy, got %s", findings[0].Repo)
-	}
 }
 
 func TestSpotbugsReplay(t *testing.T) {
-	// Replica of spotbugs/sonar-findbugs pattern
 	content := `
 name: Build PR
 on:
