@@ -92,6 +92,7 @@ type GateOptions struct {
 	ActionsDir            string // override for actions cache path
 	EventName             string // "push", "pull_request", etc. From GITHUB_EVENT_NAME
 	BaseRef               string // "main", "develop", etc. From GITHUB_BASE_REF
+	AllWorkflows  bool   // fetch all workflows from .github/workflows/ instead of single workflow
 }
 
 var shaRegexp = regexp.MustCompile(`^[0-9a-f]{40}$`)
@@ -113,16 +114,44 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 		http:    &http.Client{Timeout: 30 * time.Second},
 	}
 
-	// Step 1: Parse workflow path from GITHUB_WORKFLOW_REF
-	workflowPath, err := parseWorkflowPath(opts.WorkflowRef, opts.Repo)
-	if err != nil {
-		return nil, fmt.Errorf("parse workflow ref: %w", err)
-	}
-
-	// Step 2: Fetch workflow file
-	wfContent, err := client.fetchFileContent(ctx, opts.Repo, workflowPath, opts.SHA)
-	if err != nil {
-		return nil, fmt.Errorf("fetch workflow file %q: %w\n\nEnsure GITHUB_TOKEN has contents:read permission and the workflow file exists at the specified commit.", workflowPath, err)
+	// Step 1-2: Fetch workflow content
+	var wfContent []byte
+	if opts.AllWorkflows {
+		// Fetch all workflow files from .github/workflows/
+		fmt.Fprintf(messageWriter, "  ℹ all-workflows mode: scanning all files in .github/workflows/\n")
+		files, err := client.listDirectory(ctx, opts.Repo, ".github/workflows", opts.SHA)
+		if err != nil {
+			return nil, fmt.Errorf("list .github/workflows: %w\n\nEnsure GITHUB_TOKEN has contents:read permission.", err)
+		}
+		var allContent []byte
+		fetched := 0
+		for _, f := range files {
+			if strings.HasSuffix(f, ".yml") || strings.HasSuffix(f, ".yaml") {
+				content, err := client.fetchFileContent(ctx, opts.Repo, ".github/workflows/"+f, opts.SHA)
+				if err != nil {
+					fmt.Fprintf(messageWriter, "  ⚠ skipping %s: %v\n", f, err)
+					continue
+				}
+				allContent = append(allContent, '\n')
+				allContent = append(allContent, content...)
+				fetched++
+			}
+		}
+		if fetched == 0 {
+			return nil, fmt.Errorf("no .yml/.yaml files found in .github/workflows/")
+		}
+		fmt.Fprintf(messageWriter, "  ℹ fetched %d workflow files\n", fetched)
+		wfContent = allContent
+	} else {
+		// Original single-workflow path
+		workflowPath, err := parseWorkflowPath(opts.WorkflowRef, opts.Repo)
+		if err != nil {
+			return nil, fmt.Errorf("parse workflow ref: %w", err)
+		}
+		wfContent, err = client.fetchFileContent(ctx, opts.Repo, workflowPath, opts.SHA)
+		if err != nil {
+			return nil, fmt.Errorf("fetch workflow file %q: %w\n\nEnsure GITHUB_TOKEN has contents:read permission and the workflow file exists at the specified commit.", workflowPath, err)
+		}
 	}
 
 	// Step 3: Determine manifest ref
@@ -204,8 +233,16 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 		}
 	}
 
-	// Step 5: Extract action references from workflow
-	rawRefs := ExtractUsesDirectives(string(wfContent))
+	// Step 5: Extract action references from workflow (deduplicated)
+	allRefs := ExtractUsesDirectives(string(wfContent))
+	seen := make(map[string]bool, len(allRefs))
+	var rawRefs []string
+	for _, r := range allRefs {
+		if !seen[r] {
+			seen[r] = true
+			rawRefs = append(rawRefs, r)
+		}
+	}
 
 	if len(rawRefs) == 0 {
 		fmt.Fprintf(messageWriter, "pinpoint gate: no action references found in workflow. Nothing to verify.\n")

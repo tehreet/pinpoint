@@ -1774,3 +1774,97 @@ func TestListDirectory(t *testing.T) {
 		t.Fatalf("expected notFoundError, got %T: %v", err, err)
 	}
 }
+
+func TestAllWorkflowsMode(t *testing.T) {
+	buf := silenceOutput(t)
+
+	// Two workflow files with different actions
+	ciYml := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+`
+	deployYml := `name: Deploy
+on: push
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+`
+
+	manifest := `{
+		"version": 1,
+		"generated_at": "` + time.Now().Format(time.RFC3339) + `",
+		"actions": {
+			"actions/checkout": {"v4": {"sha": "` + strings.Repeat("a", 40) + `"}},
+			"actions/setup-go": {"v5": {"sha": "` + strings.Repeat("b", 40) + `"}},
+			"aws-actions/configure-aws-credentials": {"v4": {"sha": "` + strings.Repeat("c", 40) + `"}}
+		}
+	}`
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch {
+		case r.URL.Path == "/repos/owner/repo/contents/.github/workflows" && r.URL.Query().Get("ref") != "":
+			fmt.Fprint(w, `[
+				{"name": "ci.yml", "type": "file", "path": ".github/workflows/ci.yml"},
+				{"name": "deploy.yml", "type": "file", "path": ".github/workflows/deploy.yml"}
+			]`)
+		case r.URL.Path == "/repos/owner/repo/contents/.github/workflows/ci.yml":
+			content := base64.StdEncoding.EncodeToString([]byte(ciYml))
+			fmt.Fprintf(w, `{"content": %q, "encoding": "base64"}`, content)
+		case r.URL.Path == "/repos/owner/repo/contents/.github/workflows/deploy.yml":
+			content := base64.StdEncoding.EncodeToString([]byte(deployYml))
+			fmt.Fprintf(w, `{"content": %q, "encoding": "base64"}`, content)
+		case r.URL.Path == "/repos/owner/repo/contents/.github/actions-lock.json":
+			content := base64.StdEncoding.EncodeToString([]byte(manifest))
+			fmt.Fprintf(w, `{"content": %q, "encoding": "base64"}`, content)
+		case r.URL.Path == "/graphql":
+			fmt.Fprint(w, buildGraphQLResponse(map[string]map[string]string{
+				"actions/checkout":                       {"v4": strings.Repeat("a", 40)},
+				"actions/setup-go":                       {"v5": strings.Repeat("b", 40)},
+				"aws-actions/configure-aws-credentials":  {"v4": strings.Repeat("c", 40)},
+			}))
+		default:
+			w.WriteHeader(404)
+		}
+	}))
+	defer srv.Close()
+
+	opts := GateOptions{
+		Repo:         "owner/repo",
+		SHA:          strings.Repeat("d", 40),
+		AllWorkflows: true,
+		ManifestPath: ".github/actions-lock.json",
+		// WorkflowRef intentionally omitted
+		Token:      "test-token",
+		APIURL:     srv.URL,
+		GraphQLURL: srv.URL + "/graphql",
+	}
+
+	result, err := RunGate(context.Background(), opts)
+	if err != nil {
+		t.Fatalf("RunGate failed: %v", err)
+	}
+
+	if len(result.Violations) != 0 {
+		t.Errorf("expected 0 violations, got %d: %+v", len(result.Violations), result.Violations)
+	}
+
+	// actions/checkout appears in both files but should be deduplicated.
+	// Expect 3 unique refs verified: checkout@v4, setup-go@v5, configure-aws-credentials@v4
+	if result.Verified != 3 {
+		t.Errorf("expected 3 verified (deduplicated), got %d", result.Verified)
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "all-workflows") {
+		t.Errorf("expected output to mention all-workflows mode, got: %s", output)
+	}
+}
