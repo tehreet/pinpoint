@@ -92,7 +92,7 @@ type GateOptions struct {
 	ActionsDir            string // override for actions cache path
 	EventName             string // "push", "pull_request", etc. From GITHUB_EVENT_NAME
 	BaseRef               string // "main", "develop", etc. From GITHUB_BASE_REF
-	AllWorkflows  bool   // fetch all workflows from .github/workflows/ instead of single workflow
+	AllWorkflows          bool   // fetch all workflows from .github/workflows/ instead of single workflow
 }
 
 var shaRegexp = regexp.MustCompile(`^[0-9a-f]{40}$`)

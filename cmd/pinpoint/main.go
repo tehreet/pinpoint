@@ -400,7 +400,7 @@ func cmdGate() {
 		repo = os.Getenv("GITHUB_REPOSITORY")
 	}
 	if repo == "" {
-		fmt.Fprintf(os.Stderr, "Error: --repo is required (or set GITHUB_REPOSITORY).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--on-disk] [--actions-dir <path>] [--skip-transitive]\n")
+		fmt.Fprintf(os.Stderr, "Error: --repo is required (or set GITHUB_REPOSITORY).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--on-disk] [--actions-dir <path>] [--skip-transitive] [--all-workflows]\n")
 		os.Exit(1)
 	}
 
@@ -409,7 +409,7 @@ func cmdGate() {
 		sha = os.Getenv("GITHUB_SHA")
 	}
 	if sha == "" {
-		fmt.Fprintf(os.Stderr, "Error: --sha is required (or set GITHUB_SHA).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--on-disk] [--actions-dir <path>] [--skip-transitive]\n")
+		fmt.Fprintf(os.Stderr, "Error: --sha is required (or set GITHUB_SHA).\n\nUsage: pinpoint gate [--manifest <path>] [--fail-on-missing] [--fail-on-unpinned] [--integrity] [--on-disk] [--actions-dir <path>] [--skip-transitive] [--all-workflows]\n")
 		os.Exit(1)
 	}
 
