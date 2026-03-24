@@ -279,3 +279,27 @@ func InjectFile(path string, opts InjectOptions) (*InjectResult, error) {
 	result.Output = modified
 	return result, nil
 }
+
+// InjectDir processes all .yml/.yaml files in a directory.
+func InjectDir(dir string, opts InjectOptions) ([]*InjectResult, error) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, fmt.Errorf("reading directory %s: %w", dir, err)
+	}
+	var results []*InjectResult
+	for _, e := range entries {
+		if e.IsDir() {
+			continue
+		}
+		name := e.Name()
+		if !strings.HasSuffix(name, ".yml") && !strings.HasSuffix(name, ".yaml") {
+			continue
+		}
+		r, err := InjectFile(filepath.Join(dir, name), opts)
+		if err != nil {
+			return nil, fmt.Errorf("injecting %s: %w", name, err)
+		}
+		results = append(results, r)
+	}
+	return results, nil
+}

@@ -306,3 +306,63 @@ jobs:
 		})
 	}
 }
+
+func TestInjectDir(t *testing.T) {
+	dir := t.TempDir()
+
+	workflow1 := `name: CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: go build ./...
+`
+	workflow2 := `name: Test
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test
+        run: go test ./...
+`
+	txtContent := "this is not a workflow file"
+
+	if err := os.WriteFile(filepath.Join(dir, "ci.yml"), []byte(workflow1), 0644); err != nil {
+		t.Fatalf("writing ci.yml: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "test.yml"), []byte(workflow2), 0644); err != nil {
+		t.Fatalf("writing test.yml: %v", err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, "notes.txt"), []byte(txtContent), 0644); err != nil {
+		t.Fatalf("writing notes.txt: %v", err)
+	}
+
+	opts := InjectOptions{Mode: "warn", Version: "v1", DryRun: false}
+	results, err := InjectDir(dir, opts)
+	if err != nil {
+		t.Fatalf("InjectDir returned error: %v", err)
+	}
+
+	if len(results) != 2 {
+		t.Fatalf("expected 2 results (skipping .txt), got %d", len(results))
+	}
+
+	for _, r := range results {
+		if !r.Modified {
+			t.Errorf("expected file %s to be modified", r.File)
+		}
+		if r.JobsInjected != 1 {
+			t.Errorf("expected 1 injection in %s, got %d", r.File, r.JobsInjected)
+		}
+		if !strings.Contains(r.Output, "pinpoint-action@v1") {
+			t.Errorf("expected pinpoint-action@v1 in output of %s", r.File)
+		}
+	}
+}
