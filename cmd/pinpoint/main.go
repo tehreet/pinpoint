@@ -23,6 +23,7 @@ import (
 	"github.com/tehreet/pinpoint/internal/config"
 	"github.com/tehreet/pinpoint/internal/discover"
 	"github.com/tehreet/pinpoint/internal/gate"
+	"github.com/tehreet/pinpoint/internal/inject"
 	"github.com/tehreet/pinpoint/internal/manifest"
 	"github.com/tehreet/pinpoint/internal/poller"
 	"github.com/tehreet/pinpoint/internal/risk"
@@ -62,6 +63,8 @@ func main() {
 		cmdVerify()
 	case "manifest":
 		cmdManifest()
+	case "inject":
+		cmdInject()
 	case "version":
 		fmt.Printf("pinpoint %s (commit: %s, built: %s)\n", version, commit, date)
 	case "help", "-h", "--help":
@@ -85,6 +88,7 @@ USAGE:
   pinpoint lock      [--lockfile <path>]  [--workflows <dir>]  [--verify]  [--skip-disk-integrity]
   pinpoint verify    [--workflows <dir>]  [--output json]
   pinpoint manifest  <refresh|verify|init>  [options]
+  pinpoint inject    [--file <path>]  [--workflows <dir>]  [--dry-run]  [--mode warn|enforce]  [--version <tag>]  [--pr <org>]  [--pr-title <title>]
 
 COMMANDS:
   scan       One-shot: poll all monitored actions and report changes
@@ -95,6 +99,7 @@ COMMANDS:
   lock       Generate or update .github/actions-lock.json
   verify     Retroactive: check current dependencies for signs of tampering
   manifest   Manage the pinpoint manifest (refresh, verify, init)
+  inject     Inject pinpoint-action step into workflow files
 
 ENVIRONMENT:
   GITHUB_TOKEN     GitHub personal access token (recommended)
@@ -1206,4 +1211,99 @@ func truncate(s string, max int) string {
 		return s
 	}
 	return s[:max-3] + "..."
+}
+
+func cmdInject() {
+	file := getFlag("file")
+	workflows := getFlag("workflows")
+	pr := getFlag("pr")
+	dryRun := hasFlag("dry-run")
+	mode := getFlag("mode")
+	if mode == "" {
+		mode = "warn"
+	}
+	ver := getFlag("version")
+	if ver == "" {
+		ver = "v1"
+	}
+
+	// Validate: need at least one of --file, --workflows, or --pr
+	if file == "" && workflows == "" && pr == "" {
+		fmt.Fprintf(os.Stderr, `Error: specify --file, --workflows, or --pr.
+
+Usage:
+  pinpoint inject --file <path>                    Inject into a single workflow file
+  pinpoint inject --workflows <dir>                Inject into all workflows in directory
+  pinpoint inject --pr <org>                       Open PRs across all repos in an org
+
+Options:
+  --dry-run              Preview changes without writing files
+  --mode warn|enforce    Gate mode (default: warn)
+  --version <tag>        Pinpoint action version (default: v1)
+  --pr-title <title>     Custom PR title
+`)
+		os.Exit(1)
+	}
+
+	opts := inject.InjectOptions{
+		Mode:    mode,
+		Version: ver,
+		DryRun:  dryRun,
+	}
+
+	if pr != "" {
+		cmdInjectPR(pr, opts)
+		return
+	}
+
+	if file != "" {
+		result, err := inject.InjectFile(file, opts)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+		if dryRun {
+			fmt.Print(result.Output)
+		}
+		if result.Modified {
+			fmt.Fprintf(os.Stderr, "✓ %s: injected into %d/%d jobs\n", result.File, result.JobsInjected, result.JobsFound)
+		} else {
+			fmt.Fprintf(os.Stderr, "✓ %s: no changes needed (%d jobs already have pinpoint-action)\n", result.File, result.JobsSkipped)
+		}
+		return
+	}
+
+	// --workflows mode
+	results, err := inject.InjectDir(workflows, opts)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		os.Exit(1)
+	}
+
+	totalFiles := len(results)
+	modifiedFiles := 0
+	totalInjected := 0
+	totalSkipped := 0
+	for _, r := range results {
+		if r.Modified {
+			modifiedFiles++
+		}
+		totalInjected += r.JobsInjected
+		totalSkipped += r.JobsSkipped
+		if dryRun {
+			fmt.Print(r.Output)
+		}
+		if r.Modified {
+			fmt.Fprintf(os.Stderr, "  ✓ %s: injected into %d/%d jobs\n", filepath.Base(r.File), r.JobsInjected, r.JobsFound)
+		} else if r.JobsSkipped > 0 {
+			fmt.Fprintf(os.Stderr, "  · %s: no changes needed\n", filepath.Base(r.File))
+		}
+	}
+	fmt.Fprintf(os.Stderr, "\n✓ Processed %d files: %d modified, %d jobs injected, %d already had pinpoint-action\n",
+		totalFiles, modifiedFiles, totalInjected, totalSkipped)
+}
+
+func cmdInjectPR(org string, opts inject.InjectOptions) {
+	fmt.Fprintf(os.Stderr, "PR mode for org %q not yet implemented\n", org)
+	os.Exit(1)
 }
