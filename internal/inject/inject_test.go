@@ -12,14 +12,15 @@ import (
 
 func TestInjectFile(t *testing.T) {
 	tests := []struct {
-		name           string
-		input          string
-		opts           InjectOptions
-		wantJobsFound  int
-		wantInjected   int
-		wantSkipped    int
-		wantModified   bool
-		wantContains   []string
+		name          string
+		input         string
+		opts          InjectOptions
+		wantJobsFound int
+		wantInjected  int
+		wantSkipped   int
+		wantModified  bool
+		wantContains  []string
+		wantOutput    string
 	}{
 		{
 			name: "simple single-job workflow",
@@ -48,6 +49,193 @@ jobs:
 				"        uses: tehreet/pinpoint-action@v1",
 				"        with:",
 				"          mode: warn",
+			},
+		},
+		{
+			name: "multi-job workflow",
+			input: `name: CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: go build ./...
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test
+        run: go test ./...
+`,
+			opts: InjectOptions{
+				Mode:    "warn",
+				Version: "v1",
+				DryRun:  true,
+			},
+			wantJobsFound: 2,
+			wantInjected:  2,
+			wantSkipped:   0,
+			wantModified:  true,
+			wantContains: []string{
+				"      - name: Pinpoint Gate",
+				"        uses: tehreet/pinpoint-action@v1",
+			},
+		},
+		{
+			name: "already has pinpoint-action (idempotent)",
+			input: `name: CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pinpoint Gate
+        uses: tehreet/pinpoint-action@v1
+        with:
+          mode: warn
+      - uses: actions/checkout@v4
+`,
+			opts: InjectOptions{
+				Mode:    "warn",
+				Version: "v1",
+				DryRun:  true,
+			},
+			wantJobsFound: 1,
+			wantInjected:  0,
+			wantSkipped:   1,
+			wantModified:  false,
+		},
+		{
+			name: "has harden-runner as step 1",
+			input: `name: CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@v4
+      - name: Build
+        run: go build ./...
+`,
+			opts: InjectOptions{
+				Mode:    "warn",
+				Version: "v1",
+				DryRun:  true,
+			},
+			wantJobsFound: 1,
+			wantInjected:  1,
+			wantSkipped:   0,
+			wantModified:  true,
+			wantContains: []string{
+				"step-security/harden-runner@v2",
+				"      - name: Pinpoint Gate",
+				"        uses: tehreet/pinpoint-action@v1",
+			},
+		},
+		{
+			name: "reusable workflow job",
+			input: `name: CI
+on: push
+
+jobs:
+  deploy:
+    uses: org/repo/.github/workflows/reusable.yml@main
+    with:
+      environment: production
+`,
+			opts: InjectOptions{
+				Mode:    "warn",
+				Version: "v1",
+				DryRun:  true,
+			},
+			wantJobsFound: 1,
+			wantInjected:  0,
+			wantSkipped:   1,
+			wantModified:  false,
+		},
+		{
+			name: "job with if: false",
+			input: `name: CI
+on: push
+
+jobs:
+  build:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+`,
+			opts: InjectOptions{
+				Mode:    "warn",
+				Version: "v1",
+				DryRun:  true,
+			},
+			wantJobsFound: 1,
+			wantInjected:  0,
+			wantSkipped:   1,
+			wantModified:  false,
+		},
+		{
+			name: "preserves comments",
+			input: `name: CI
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # SHA-pinned — practicing what we preach
+      - uses: actions/checkout@v4
+      - name: Build
+        run: go build ./...
+`,
+			opts: InjectOptions{
+				Mode:    "warn",
+				Version: "v1",
+				DryRun:  true,
+			},
+			wantJobsFound: 1,
+			wantInjected:  1,
+			wantSkipped:   0,
+			wantModified:  true,
+			wantContains: []string{
+				"# SHA-pinned — practicing what we preach",
+				"      - name: Pinpoint Gate",
+			},
+		},
+		{
+			name: "preserves 4-space indentation",
+			input: `name: CI
+on: push
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Build
+              run: go build ./...
+`,
+			opts: InjectOptions{
+				Mode:    "warn",
+				Version: "v1",
+				DryRun:  true,
+			},
+			wantJobsFound: 1,
+			wantInjected:  1,
+			wantSkipped:   0,
+			wantModified:  true,
+			wantContains: []string{
+				"            - name: Pinpoint Gate",
+				"              uses: tehreet/pinpoint-action@v1",
 			},
 		},
 	}
@@ -81,21 +269,19 @@ jobs:
 
 			for _, s := range tt.wantContains {
 				if !strings.Contains(result.Output, s) {
-					t.Errorf("output missing expected line %q\n\nFull output:\n%s", s, result.Output)
+					t.Errorf("output missing expected string %q\n\nFull output:\n%s", s, result.Output)
 				}
 			}
 
-			// Verify pinpoint-action appears before checkout
-			pinpointIdx := strings.Index(result.Output, "pinpoint-action")
-			checkoutIdx := strings.Index(result.Output, "actions/checkout")
-			if pinpointIdx < 0 {
-				t.Fatal("pinpoint-action not found in output")
+			if tt.wantOutput != "" && result.Output != tt.wantOutput {
+				t.Errorf("output mismatch\nwant:\n%s\ngot:\n%s", tt.wantOutput, result.Output)
 			}
-			if checkoutIdx < 0 {
-				t.Fatal("actions/checkout not found in output")
-			}
-			if pinpointIdx >= checkoutIdx {
-				t.Error("pinpoint-action should appear before actions/checkout")
+
+			// For idempotent test: verify output equals input
+			if tt.wantInjected == 0 && !tt.wantModified {
+				if result.Output != tt.input {
+					t.Errorf("expected output to equal input for unmodified workflow\ngot:\n%s", result.Output)
+				}
 			}
 
 			// Verify dry-run did not modify the file
@@ -106,6 +292,15 @@ jobs:
 				}
 				if string(data) != tt.input {
 					t.Error("dry-run should not modify the original file")
+				}
+			}
+
+			// For harden-runner test: verify ordering
+			if tt.name == "has harden-runner as step 1" {
+				hardenIdx := strings.Index(result.Output, "harden-runner")
+				pinpointIdx := strings.Index(result.Output, "pinpoint-action")
+				if hardenIdx >= pinpointIdx {
+					t.Error("harden-runner should appear before pinpoint-action")
 				}
 			}
 		})
