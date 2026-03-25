@@ -54,3 +54,52 @@ func ParseDockerRef(ref string) (registry, repo, tag string, err error) {
 
 	return registry, repo, tag, nil
 }
+
+// ParseDockerfile extracts FROM instructions from a Dockerfile.
+// Returns base images with their tags. Skips ARG-parameterized images
+// (containing ${ }) and "scratch". Digest is left empty — caller resolves it.
+func ParseDockerfile(content []byte) []DockerBaseImage {
+	var bases []DockerBaseImage
+	for _, line := range strings.Split(string(content), "\n") {
+		line = strings.TrimSpace(line)
+		if !strings.HasPrefix(strings.ToUpper(line), "FROM ") {
+			continue
+		}
+
+		rest := strings.TrimSpace(line[5:])
+		fields := strings.Fields(rest)
+		if len(fields) == 0 {
+			continue
+		}
+		imageRef := fields[0]
+
+		if strings.Contains(imageRef, "${") || strings.Contains(imageRef, "$") {
+			continue
+		}
+		if imageRef == "scratch" {
+			continue
+		}
+
+		image, tag := parseImageTag(imageRef)
+		if image == "" {
+			continue
+		}
+
+		bases = append(bases, DockerBaseImage{Image: image, Tag: tag})
+	}
+	return bases
+}
+
+// parseImageTag splits "image:tag" or "image@digest" into image and tag parts.
+func parseImageTag(ref string) (image, tag string) {
+	if idx := strings.Index(ref, "@"); idx != -1 {
+		return ref[:idx], ref[idx+1:]
+	}
+
+	lastSlash := strings.LastIndex(ref, "/")
+	if idx := strings.LastIndex(ref, ":"); idx != -1 && idx > lastSlash {
+		return ref[:idx], ref[idx+1:]
+	}
+
+	return ref, "latest"
+}
