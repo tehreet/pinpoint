@@ -96,30 +96,29 @@ type gitTagResponse struct {
 // ResolveTransitiveDeps fetches an action's action.yml and discovers
 // inner uses: directives for composite actions.
 // Returns the list of transitive dependencies, the action type, and any error.
-func ResolveTransitiveDeps(ctx context.Context, client *http.Client, baseURL, graphqlURL, token, action, sha string, depth int) ([]TransitiveDep, string, error) {
+func ResolveTransitiveDeps(ctx context.Context, client *http.Client, baseURL, graphqlURL, token, action, sha string, depth int) ([]TransitiveDep, string, []byte, error) {
 	if depth > 5 {
-		return nil, "unknown", fmt.Errorf("transitive dependency depth exceeded (max 5)")
+		return nil, "unknown", nil, fmt.Errorf("transitive dependency depth exceeded (max 5)")
 	}
 
 	// Fetch action.yml (try action.yml first, then action.yaml)
-	content, err := fetchActionFile(ctx, client, baseURL, token, action, sha, "action.yml")
+	content, err := fetchActionFileForRepo(ctx, client, baseURL, token, action, sha)
 	if err != nil {
-		content, err = fetchActionFile(ctx, client, baseURL, token, action, sha, "action.yaml")
-		if err != nil {
-			// Not an error — some actions may be Docker-only without action.yml
-			return nil, "unknown", nil
-		}
+		return nil, "unknown", nil, nil
 	}
 
 	actionType := ParseActionType(content)
+	if actionType == "docker" {
+		return nil, "docker", content, nil
+	}
 	if actionType != "composite" {
-		return nil, actionType, nil
+		return nil, actionType, content, nil
 	}
 
 	// Extract uses directives from composite action
 	refs := ExtractUsesFromComposite(content)
 	if len(refs) == 0 {
-		return nil, "composite", nil
+		return nil, "composite", content, nil
 	}
 
 	var deps []TransitiveDep
@@ -142,7 +141,7 @@ func ResolveTransitiveDeps(ctx context.Context, client *http.Client, baseURL, gr
 		integrity, _ := DownloadAndHash(ctx, client, baseURL, token, owner, repo, resolvedSHA)
 
 		// Recurse for this dependency's own transitive deps
-		innerDeps, innerType, _ := ResolveTransitiveDeps(ctx, client, baseURL, graphqlURL, token, owner+"/"+repo, resolvedSHA, depth+1)
+		innerDeps, innerType, _, _ := ResolveTransitiveDeps(ctx, client, baseURL, graphqlURL, token, owner+"/"+repo, resolvedSHA, depth+1)
 
 		deps = append(deps, TransitiveDep{
 			Action:       owner + "/" + repo,
@@ -153,7 +152,7 @@ func ResolveTransitiveDeps(ctx context.Context, client *http.Client, baseURL, gr
 		})
 	}
 
-	return deps, "composite", nil
+	return deps, "composite", content, nil
 }
 
 // fetchActionFile fetches a file from a repo at a specific SHA using the GitHub Contents API.
@@ -194,6 +193,15 @@ func fetchActionFile(ctx context.Context, client *http.Client, baseURL, token, a
 	}
 
 	return decoded, nil
+}
+
+// fetchActionFileForRepo fetches action.yml or action.yaml from a repo at a specific SHA.
+func fetchActionFileForRepo(ctx context.Context, client *http.Client, baseURL, token, repo, sha string) ([]byte, error) {
+	content, err := fetchActionFile(ctx, client, baseURL, token, repo, sha, "action.yml")
+	if err != nil {
+		content, err = fetchActionFile(ctx, client, baseURL, token, repo, sha, "action.yaml")
+	}
+	return content, err
 }
 
 // parseTransitiveRef parses an "owner/repo@ref" string from a uses directive.

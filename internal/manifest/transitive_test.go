@@ -134,7 +134,7 @@ runs:
 	}))
 	defer ts.Close()
 
-	deps, actionType, err := ResolveTransitiveDeps(context.Background(), ts.Client(), ts.URL, "", "", "actions/checkout", "abc123", 0)
+	deps, actionType, _, err := ResolveTransitiveDeps(context.Background(), ts.Client(), ts.URL, "", "", "actions/checkout", "abc123", 0)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -182,7 +182,7 @@ runs:
 	}))
 	defer ts.Close()
 
-	deps, actionType, err := ResolveTransitiveDeps(context.Background(), ts.Client(), ts.URL, "", "", "actions/upload-pages-artifact", "7b1f4a76", 0)
+	deps, actionType, _, err := ResolveTransitiveDeps(context.Background(), ts.Client(), ts.URL, "", "", "actions/upload-pages-artifact", "7b1f4a76", 0)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -227,7 +227,7 @@ runs:
 	defer ts.Close()
 
 	// Start at depth 5 — should immediately error
-	_, _, err := ResolveTransitiveDeps(context.Background(), ts.Client(), ts.URL, "", "", "actions/recursive", "abc123", 6)
+	_, _, _, err := ResolveTransitiveDeps(context.Background(), ts.Client(), ts.URL, "", "", "actions/recursive", "abc123", 6)
 	if err == nil {
 		t.Fatal("expected depth limit error")
 	}
@@ -252,7 +252,7 @@ runs:
 	}))
 	defer ts.Close()
 
-	deps, actionType, err := ResolveTransitiveDeps(context.Background(), ts.Client(), ts.URL, "", "", "owner/repo", "abc123", 0)
+	deps, actionType, _, err := ResolveTransitiveDeps(context.Background(), ts.Client(), ts.URL, "", "", "owner/repo", "abc123", 0)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

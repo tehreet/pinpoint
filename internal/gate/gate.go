@@ -506,7 +506,7 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 
 			// Transitive dependency verification
 			if !opts.SkipTransitive && len(manifestEntry.Dependencies) > 0 {
-				deps, _, err := manifestpkg.ResolveTransitiveDeps(ctx, client.http, opts.APIURL, opts.GraphQLURL, opts.Token, key, currentSHA, 0)
+				deps, _, _, err := manifestpkg.ResolveTransitiveDeps(ctx, client.http, opts.APIURL, opts.GraphQLURL, opts.Token, key, currentSHA, 0)
 				if err != nil {
 					fmt.Fprintf(messageWriter, "    ⚠ transitive check failed: %v\n", err)
 				} else {

@@ -91,7 +91,8 @@ type IntegrityOptions struct {
 	BaseURL           string // e.g. "https://api.github.com"
 	GraphQLURL        string
 	Token             string
-	SkipDiskIntegrity bool // when true, only compute tarball integrity (no tree hash)
+	SkipDiskIntegrity bool            // when true, only compute tarball integrity (no tree hash)
+	RegistryClient    *RegistryClient // Docker registry client for digest resolution
 }
 
 // LoadManifest reads and parses a manifest file from disk.
@@ -325,10 +326,21 @@ func Refresh(ctx context.Context, manifestPath string, workflowDir string, doDis
 				}
 
 				// Resolve transitive deps and action type
-				deps, actionType, err := ResolveTransitiveDeps(ctx, iOpts.HTTPClient, iOpts.BaseURL, iOpts.GraphQLURL, iOpts.Token, repo, entry.SHA, 0)
+				deps, actionType, actionContent, err := ResolveTransitiveDeps(ctx, iOpts.HTTPClient, iOpts.BaseURL, iOpts.GraphQLURL, iOpts.Token, repo, entry.SHA, 0)
 				if err == nil {
 					entry.Type = actionType
 					entry.Dependencies = deps
+				}
+
+				// Resolve Docker image info for Docker actions (reuses actionContent from above)
+				if actionType == "docker" && iOpts.RegistryClient != nil && actionContent != nil {
+					dockerInfo, dockerErr := ResolveDockerInfo(ctx, iOpts.RegistryClient, actionContent, func(filename string) ([]byte, error) {
+						clean := strings.TrimPrefix(filename, "./")
+						return fetchActionFile(ctx, iOpts.HTTPClient, iOpts.BaseURL, iOpts.Token, repo, entry.SHA, clean)
+					})
+					if dockerErr == nil && dockerInfo != nil {
+						entry.Docker = dockerInfo
+					}
 				}
 
 				tags[tag] = entry

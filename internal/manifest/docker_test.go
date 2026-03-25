@@ -309,3 +309,108 @@ func TestExtractDockerImageRef(t *testing.T) {
 		})
 	}
 }
+
+func TestResolveDockerInfo(t *testing.T) {
+	const wantDigest = "sha256:abc123def456"
+
+	registryServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/token"):
+			fmt.Fprintf(w, `{"token":"test"}`)
+		case r.Method == "HEAD" && strings.Contains(r.URL.Path, "/manifests/"):
+			w.Header().Set("Docker-Content-Digest", wantDigest)
+			w.WriteHeader(http.StatusOK)
+		default:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer registryServer.Close()
+
+	rc := &RegistryClient{
+		HTTP:             &http.Client{},
+		registryOverride: registryServer.URL,
+	}
+
+	tests := []struct {
+		name       string
+		actionYAML string
+		dockerfile string
+		wantDocker *DockerInfo
+	}{
+		{
+			name:       "pre-built image",
+			actionYAML: "name: trivy\nruns:\n  using: docker\n  image: docker://ghcr.io/aquasecurity/trivy:0.58.1\n",
+			wantDocker: &DockerInfo{
+				Image:  "ghcr.io/aquasecurity/trivy",
+				Tag:    "0.58.1",
+				Digest: wantDigest,
+				Source: "action.yml",
+			},
+		},
+		{
+			name:       "Dockerfile action",
+			actionYAML: "name: custom\nruns:\n  using: docker\n  image: Dockerfile\n",
+			dockerfile: "FROM alpine:3.19\nRUN echo hi\n",
+			wantDocker: &DockerInfo{
+				Image: "Dockerfile",
+				BaseImages: []DockerBaseImage{
+					{Image: "alpine", Tag: "3.19", Digest: wantDigest},
+				},
+				Source: "Dockerfile",
+			},
+		},
+		{
+			name:       "node action (no docker info)",
+			actionYAML: "name: setup\nruns:\n  using: node20\n  main: index.js\n",
+			wantDocker: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			info, err := ResolveDockerInfo(context.Background(), rc, []byte(tt.actionYAML), func(filename string) ([]byte, error) {
+				if filename == "Dockerfile" && tt.dockerfile != "" {
+					return []byte(tt.dockerfile), nil
+				}
+				return nil, fmt.Errorf("file not found: %s", filename)
+			})
+			if err != nil {
+				t.Fatalf("ResolveDockerInfo: %v", err)
+			}
+
+			if tt.wantDocker == nil {
+				if info != nil {
+					t.Fatalf("expected nil DockerInfo, got %+v", info)
+				}
+				return
+			}
+
+			if info == nil {
+				t.Fatal("expected DockerInfo, got nil")
+			}
+			if info.Image != tt.wantDocker.Image {
+				t.Errorf("Image = %q, want %q", info.Image, tt.wantDocker.Image)
+			}
+			if info.Tag != tt.wantDocker.Tag {
+				t.Errorf("Tag = %q, want %q", info.Tag, tt.wantDocker.Tag)
+			}
+			if info.Digest != tt.wantDocker.Digest {
+				t.Errorf("Digest = %q, want %q", info.Digest, tt.wantDocker.Digest)
+			}
+			if info.Source != tt.wantDocker.Source {
+				t.Errorf("Source = %q, want %q", info.Source, tt.wantDocker.Source)
+			}
+			if len(info.BaseImages) != len(tt.wantDocker.BaseImages) {
+				t.Fatalf("BaseImages len = %d, want %d", len(info.BaseImages), len(tt.wantDocker.BaseImages))
+			}
+			for i, bi := range info.BaseImages {
+				if bi.Image != tt.wantDocker.BaseImages[i].Image {
+					t.Errorf("BaseImages[%d].Image = %q, want %q", i, bi.Image, tt.wantDocker.BaseImages[i].Image)
+				}
+				if bi.Digest != tt.wantDocker.BaseImages[i].Digest {
+					t.Errorf("BaseImages[%d].Digest = %q, want %q", i, bi.Digest, tt.wantDocker.BaseImages[i].Digest)
+				}
+			}
+		})
+	}
+}

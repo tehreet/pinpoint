@@ -246,6 +246,95 @@ type dockerActionYAML struct {
 	} `yaml:"runs"`
 }
 
+// FileReader is a callback to read files from an action's repository.
+type FileReader func(filename string) ([]byte, error)
+
+// ResolveDockerInfo extracts Docker information from an action.yml and resolves
+// image digests from the registry. Returns nil if the action is not Docker-based.
+func ResolveDockerInfo(ctx context.Context, rc *RegistryClient, actionContent []byte, readFile FileReader) (*DockerInfo, error) {
+	ref, isFile := ExtractDockerImageRef(actionContent)
+	if ref == "" {
+		return nil, nil
+	}
+
+	if !isFile {
+		// Pre-built image: docker://registry/repo:tag
+		registry, repo, tag, err := ParseDockerRef(ref)
+		if err != nil {
+			return nil, fmt.Errorf("parsing docker ref %q: %w", ref, err)
+		}
+
+		// If already pinned by digest (tag starts with "sha256:"), record it directly
+		if strings.HasPrefix(tag, "sha256:") {
+			return &DockerInfo{
+				Image:  registry + "/" + repo,
+				Digest: tag,
+				Source: "action.yml",
+			}, nil
+		}
+
+		digest, err := rc.ResolveDigest(ctx, registry, repo, tag)
+		if err != nil {
+			// Non-fatal: record what we can without the digest
+			return &DockerInfo{
+				Image:  registry + "/" + repo,
+				Tag:    tag,
+				Source: "action.yml",
+			}, nil
+		}
+
+		return &DockerInfo{
+			Image:  registry + "/" + repo,
+			Tag:    tag,
+			Digest: digest,
+			Source: "action.yml",
+		}, nil
+	}
+
+	// Dockerfile action: parse FROM instructions and resolve base image digests
+	info := &DockerInfo{
+		Image:  "Dockerfile",
+		Source: "Dockerfile",
+	}
+
+	if readFile == nil {
+		return info, nil
+	}
+
+	filename := strings.TrimPrefix(ref, "./")
+	dfContent, err := readFile(filename)
+	if err != nil {
+		return info, nil
+	}
+
+	bases := ParseDockerfile(dfContent)
+	for i := range bases {
+		baseReg, baseRepo := BaseImageRegistry(bases[i].Image)
+		digest, err := rc.ResolveDigest(ctx, baseReg, baseRepo, bases[i].Tag)
+		if err == nil {
+			bases[i].Digest = digest
+		}
+	}
+
+	info.BaseImages = bases
+	return info, nil
+}
+
+// BaseImageRegistry determines the registry and normalized repo for a FROM image reference.
+func BaseImageRegistry(image string) (registry, repo string) {
+	parts := strings.SplitN(image, "/", 2)
+	if len(parts) == 1 {
+		return "docker.io", "library/" + image
+	}
+
+	first := parts[0]
+	if strings.Contains(first, ".") || strings.Contains(first, ":") || first == "localhost" {
+		return first, parts[1]
+	}
+
+	return "docker.io", image
+}
+
 // ExtractDockerImageRef parses an action.yml and extracts the Docker image reference.
 // Returns the image reference and whether it's a file-based reference (Dockerfile).
 // Returns ("", false) if not a Docker action.
