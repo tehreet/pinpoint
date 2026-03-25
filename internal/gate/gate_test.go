@@ -1868,3 +1868,297 @@ jobs:
 		t.Errorf("expected output to mention all-workflows mode, got: %s", output)
 	}
 }
+
+// --- Spec 023: Verify SHA-pinned references against lockfile ---
+
+func TestSHAPinnedVerifiedAgainstManifest(t *testing.T) {
+	buf := silenceOutput(t)
+
+	correctSHA := "a824008efbb0f27efdc2560e1a50bde6cebcf823"
+	shaWorkflow := fmt.Sprintf(`name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@%s
+`, correctSHA)
+
+	manifest := fmt.Sprintf(`{
+		"version": 1,
+		"actions": {
+			"actions/checkout": {
+				"v4": {"sha": "%s"}
+			}
+		}
+	}`, correctSHA)
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(shaWorkflow))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:                  "owner/repo",
+		SHA:                   "abc123",
+		WorkflowRef:           "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:          ".pinpoint-manifest.json",
+		APIURL:                restServer.URL,
+		GraphQLURL:            "http://should-not-be-called",
+		FailOnMissing:         true,
+		FailOnMissingExplicit: true,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if result.Verified != 1 {
+		t.Errorf("verified = %d, want 1", result.Verified)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+	if result.Skipped != 0 {
+		t.Errorf("skipped = %d, want 0 (SHA should be verified, not skipped)", result.Skipped)
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "SHA matches manifest") {
+		t.Errorf("output should contain 'SHA matches manifest', got:\n%s", output)
+	}
+}
+
+func TestSHAPinnedNotInManifest(t *testing.T) {
+	buf := silenceOutput(t)
+
+	wrongSHA := "b4ffde65f46336ab88eb53be808477a3936bae11"
+	shaWorkflow := fmt.Sprintf(`name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@%s
+`, wrongSHA)
+
+	manifest := `{
+		"version": 1,
+		"actions": {
+			"actions/checkout": {
+				"v4": {"sha": "a824008efbb0f27efdc2560e1a50bde6cebcf823"}
+			}
+		}
+	}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(shaWorkflow))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:                  "owner/repo",
+		SHA:                   "abc123",
+		WorkflowRef:           "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:          ".pinpoint-manifest.json",
+		APIURL:                restServer.URL,
+		GraphQLURL:            "http://should-not-be-called",
+		FailOnMissing:         true,
+		FailOnMissingExplicit: true,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if len(result.Violations) != 1 {
+		t.Fatalf("violations = %d, want 1", len(result.Violations))
+	}
+	if result.Violations[0].Action != "actions/checkout" {
+		t.Errorf("violation action = %q, want actions/checkout", result.Violations[0].Action)
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "SHA not in manifest") {
+		t.Errorf("output should contain 'SHA not in manifest', got:\n%s", output)
+	}
+}
+
+func TestSHAPinnedActionNotInManifest(t *testing.T) {
+	buf := silenceOutput(t)
+
+	shaWorkflow := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: unknown/action@a824008efbb0f27efdc2560e1a50bde6cebcf823
+`
+	manifest := `{
+		"version": 1,
+		"actions": {}
+	}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(shaWorkflow))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:                  "owner/repo",
+		SHA:                   "abc123",
+		WorkflowRef:           "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:          ".pinpoint-manifest.json",
+		APIURL:                restServer.URL,
+		GraphQLURL:            "http://should-not-be-called",
+		FailOnMissing:         true,
+		FailOnMissingExplicit: true,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if len(result.Violations) != 1 {
+		t.Fatalf("violations = %d, want 1", len(result.Violations))
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "not in manifest") {
+		t.Errorf("output should contain 'not in manifest', got:\n%s", output)
+	}
+}
+
+func TestSHAPinnedLegacyModeSkips(t *testing.T) {
+	buf := silenceOutput(t)
+
+	shaWorkflow := `name: CI
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@a824008efbb0f27efdc2560e1a50bde6cebcf823
+`
+	manifest := `{
+		"version": 1,
+		"actions": {}
+	}`
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(shaWorkflow))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	// Legacy mode: FailOnMissing=false — SHA-pinned should be skipped as before
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:                  "owner/repo",
+		SHA:                   "abc123",
+		WorkflowRef:           "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:          ".pinpoint-manifest.json",
+		APIURL:                restServer.URL,
+		GraphQLURL:            "http://should-not-be-called",
+		FailOnMissing:         false,
+		FailOnMissingExplicit: true,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if result.Skipped != 1 {
+		t.Errorf("skipped = %d, want 1", result.Skipped)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "SHA-pinned (inherently safe)") {
+		t.Errorf("output should contain legacy skip message, got:\n%s", output)
+	}
+}
+
+func TestSHAPinnedReusableWorkflowVerified(t *testing.T) {
+	buf := silenceOutput(t)
+
+	correctSHA := "a824008efbb0f27efdc2560e1a50bde6cebcf823"
+	shaWorkflow := fmt.Sprintf(`name: CI
+on: push
+jobs:
+  build:
+    uses: org/shared/.github/workflows/build.yml@%s
+`, correctSHA)
+
+	manifest := fmt.Sprintf(`{
+		"version": 1,
+		"actions": {
+			"org/shared": {
+				"v1": {"sha": "%s"}
+			}
+		}
+	}`, correctSHA)
+
+	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "workflows/ci.yml"):
+			fmt.Fprint(w, buildContentResponse(shaWorkflow))
+		case strings.Contains(r.URL.Path, "pinpoint-manifest.json"):
+			fmt.Fprint(w, buildContentResponse(manifest))
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer restServer.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:                  "owner/repo",
+		SHA:                   "abc123",
+		WorkflowRef:           "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath:          ".pinpoint-manifest.json",
+		APIURL:                restServer.URL,
+		GraphQLURL:            "http://should-not-be-called",
+		FailOnMissing:         true,
+		FailOnMissingExplicit: true,
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	if result.Verified != 1 {
+		t.Errorf("verified = %d, want 1", result.Verified)
+	}
+	if len(result.Violations) != 0 {
+		t.Errorf("violations = %d, want 0", len(result.Violations))
+	}
+
+	output := buf.String()
+	if !strings.Contains(output, "SHA matches manifest") {
+		t.Errorf("output should contain 'SHA matches manifest', got:\n%s", output)
+	}
+}

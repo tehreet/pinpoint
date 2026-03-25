@@ -261,6 +261,7 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 	}
 
 	var tagRefs []actionRef
+	var shaRefs []actionRef
 	repoSet := make(map[string]bool)
 
 	for _, raw := range rawRefs {
@@ -272,9 +273,17 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 		key := owner + "/" + repo
 
 		if shaRegexp.MatchString(ref) {
-			// SHA-pinned: inherently safe
-			result.Skipped++
-			fmt.Fprintf(messageWriter, "  ● %s@%s... → SHA-pinned (inherently safe)\n", key, ref[:7])
+			if opts.FailOnMissing {
+				// Verify SHA-pinned refs against lockfile when fail-on-missing is active
+				shaRefs = append(shaRefs, actionRef{
+					Owner: owner, Repo: repo, Ref: ref, Raw: raw,
+					IsSHA: true, IsBranch: false,
+				})
+			} else {
+				// Legacy: trust SHA-pinned refs without verification
+				result.Skipped++
+				fmt.Fprintf(messageWriter, "  ● %s@%s... → SHA-pinned (inherently safe)\n", key, ref[:7])
+			}
 			continue
 		}
 
@@ -286,7 +295,7 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 		repoSet[key] = true
 	}
 
-	totalRefs := len(tagRefs) + result.Skipped
+	totalRefs := len(tagRefs) + len(shaRefs) + result.Skipped
 	fmt.Fprintf(messageWriter, "pinpoint gate: verifying %d action references against manifest...\n", totalRefs)
 
 	// Step 7: Resolve current tag SHAs via GraphQL (reuse existing poller)
@@ -334,6 +343,47 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 					}
 				}
 			}
+		}
+	}
+
+	// Step 7b: Verify SHA-pinned refs against manifest (no API calls needed)
+	for _, sr := range shaRefs {
+		key := sr.Owner + "/" + sr.Repo
+		actionEntry, exists := manifest.Actions[key]
+		if !exists {
+			result.Violations = append(result.Violations, Violation{
+				Action:      key,
+				Tag:         sr.Ref,
+				ExpectedSHA: "in manifest",
+				ActualSHA:   "missing",
+			})
+			fmt.Fprintf(messageWriter, "  ✗ %s@%s... → not in manifest\n", key, sr.Ref[:7])
+			continue
+		}
+
+		// Check if any tag entry's SHA matches the pinned SHA
+		matched := false
+		for _, entry := range actionEntry {
+			if entry.SHA == sr.Ref {
+				matched = true
+				result.Verified++
+				fmt.Fprintf(messageWriter, "  ✓ %s@%s... → SHA matches manifest\n", key, sr.Ref[:7])
+				break
+			}
+		}
+		if !matched {
+			var shas []string
+			for tag, entry := range actionEntry {
+				shas = append(shas, entry.SHA[:7]+"("+tag+")")
+			}
+			result.Violations = append(result.Violations, Violation{
+				Action:      key,
+				Tag:         sr.Ref,
+				ExpectedSHA: strings.Join(shas, ", "),
+				ActualSHA:   sr.Ref,
+			})
+			fmt.Fprintf(messageWriter, "  ✗ %s@%s... → SHA not in manifest (expected one of: %s)\n",
+				key, sr.Ref[:7], strings.Join(shas, ", "))
 		}
 	}
 
