@@ -1164,6 +1164,9 @@ func cmdLock() {
 		GraphQLURL:        graphqlURL,
 		Token:             token,
 		SkipDiskIntegrity: hasFlag("skip-disk-integrity"),
+		RegistryClient: &manifest.RegistryClient{
+			HTTP: &http.Client{Timeout: 30 * time.Second},
+		},
 	}
 
 	result, err := manifest.Refresh(ctx, outputPath, workflowDir, true, client, iOpts)
