@@ -260,3 +260,52 @@ func TestResolveDigestDockerHub(t *testing.T) {
 		t.Errorf("digest = %q, want %q", digest, wantDigest)
 	}
 }
+
+func TestExtractDockerImageRef(t *testing.T) {
+	tests := []struct {
+		name       string
+		actionYAML string
+		wantRef    string
+		wantIsFile bool
+	}{
+		{
+			name:       "pre-built image",
+			actionYAML: "name: trivy\nruns:\n  using: docker\n  image: docker://ghcr.io/aquasecurity/trivy:0.58.1\n",
+			wantRef:    "docker://ghcr.io/aquasecurity/trivy:0.58.1",
+		},
+		{
+			name:       "Dockerfile action",
+			actionYAML: "name: custom\nruns:\n  using: docker\n  image: Dockerfile\n",
+			wantRef:    "Dockerfile",
+			wantIsFile: true,
+		},
+		{
+			name:       "node action (not docker)",
+			actionYAML: "name: setup-node\nruns:\n  using: node20\n  main: index.js\n",
+			wantRef:    "",
+		},
+		{
+			name:       "composite action (not docker)",
+			actionYAML: "name: composite\nruns:\n  using: composite\n  steps:\n    - run: echo hi\n",
+			wantRef:    "",
+		},
+		{
+			name:       "docker with relative path",
+			actionYAML: "name: custom\nruns:\n  using: docker\n  image: ./container/Dockerfile\n",
+			wantRef:    "./container/Dockerfile",
+			wantIsFile: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ref, isFile := ExtractDockerImageRef([]byte(tt.actionYAML))
+			if ref != tt.wantRef {
+				t.Errorf("ref = %q, want %q", ref, tt.wantRef)
+			}
+			if isFile != tt.wantIsFile {
+				t.Errorf("isFile = %v, want %v", isFile, tt.wantIsFile)
+			}
+		})
+	}
+}

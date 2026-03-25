@@ -10,6 +10,8 @@ import (
 	"io"
 	"net/http"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 // ParseDockerRef extracts registry, repo, and tag from a "docker://..." reference.
@@ -234,4 +236,38 @@ func (c *RegistryClient) tokenURL(baseURL, registry, repo string) string {
 	default:
 		return baseURL + "/v2/token?scope=repository:" + repo + ":pull"
 	}
+}
+
+// dockerActionYAML is a minimal struct for parsing Docker action.yml.
+type dockerActionYAML struct {
+	Runs struct {
+		Using string `yaml:"using"`
+		Image string `yaml:"image"`
+	} `yaml:"runs"`
+}
+
+// ExtractDockerImageRef parses an action.yml and extracts the Docker image reference.
+// Returns the image reference and whether it's a file-based reference (Dockerfile).
+// Returns ("", false) if not a Docker action.
+func ExtractDockerImageRef(content []byte) (ref string, isFile bool) {
+	var a dockerActionYAML
+	if err := yaml.Unmarshal(content, &a); err != nil {
+		return "", false
+	}
+
+	using := strings.Trim(a.Runs.Using, "'\"")
+	if using != "docker" {
+		return "", false
+	}
+
+	image := strings.TrimSpace(a.Runs.Image)
+	if image == "" {
+		return "", false
+	}
+
+	if strings.HasPrefix(image, "docker://") {
+		return image, false
+	}
+
+	return image, true
 }
