@@ -414,3 +414,84 @@ func TestResolveDockerInfo(t *testing.T) {
 		})
 	}
 }
+
+func TestDockerLockfileRoundTrip(t *testing.T) {
+	m := &Manifest{
+		Version:     2,
+		GeneratedAt: "2026-03-25T00:00:00Z",
+		Actions: map[string]map[string]ManifestEntry{
+			"aquasecurity/trivy-action": {
+				"v0.28.0": {
+					SHA:       "abc123def456abc123def456abc123def456abc1",
+					Integrity: "sha256-AAAA",
+					Type:      "docker",
+					Docker: &DockerInfo{
+						Image:  "ghcr.io/aquasecurity/trivy",
+						Tag:    "0.58.1",
+						Digest: "sha256:9e3a184f",
+						Source: "action.yml",
+					},
+				},
+			},
+			"custom-org/scanner-action": {
+				"v1": {
+					SHA:  "def456abc123def456abc123def456abc123def4",
+					Type: "docker",
+					Docker: &DockerInfo{
+						Image: "Dockerfile",
+						BaseImages: []DockerBaseImage{
+							{Image: "alpine", Tag: "3.19", Digest: "sha256:aaa"},
+							{Image: "golang", Tag: "1.24", Digest: "sha256:bbb"},
+						},
+						Source: "Dockerfile",
+					},
+				},
+			},
+			"actions/checkout": {
+				"v4": {
+					SHA:  "111222333444555666777888999000aaabbbcccd",
+					Type: "node20",
+				},
+			},
+		},
+	}
+
+	tmpDir := t.TempDir()
+	path := tmpDir + "/actions-lock.json"
+
+	if err := SaveManifest(path, m); err != nil {
+		t.Fatalf("SaveManifest: %v", err)
+	}
+
+	loaded, err := LoadManifest(path)
+	if err != nil {
+		t.Fatalf("LoadManifest: %v", err)
+	}
+
+	// Verify Docker action
+	trivy := loaded.Actions["aquasecurity/trivy-action"]["v0.28.0"]
+	if trivy.Docker == nil {
+		t.Fatal("trivy Docker info is nil after round-trip")
+	}
+	if trivy.Docker.Digest != "sha256:9e3a184f" {
+		t.Errorf("trivy digest = %q", trivy.Docker.Digest)
+	}
+
+	// Verify Dockerfile action
+	scanner := loaded.Actions["custom-org/scanner-action"]["v1"]
+	if scanner.Docker == nil {
+		t.Fatal("scanner Docker info is nil after round-trip")
+	}
+	if len(scanner.Docker.BaseImages) != 2 {
+		t.Fatalf("scanner base images = %d", len(scanner.Docker.BaseImages))
+	}
+	if scanner.Docker.BaseImages[0].Image != "alpine" {
+		t.Errorf("base[0].Image = %q", scanner.Docker.BaseImages[0].Image)
+	}
+
+	// Verify non-Docker action has no Docker field
+	checkout := loaded.Actions["actions/checkout"]["v4"]
+	if checkout.Docker != nil {
+		t.Error("checkout should not have Docker info")
+	}
+}
