@@ -533,35 +533,37 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 			}
 
 			// Docker digest verification (integrity mode only)
-			// Skip when Tag is empty — digest-pinned images are already immutable.
-			if opts.Integrity && manifestEntry.Docker != nil && manifestEntry.Docker.Digest != "" && manifestEntry.Docker.Tag != "" {
+			if opts.Integrity && manifestEntry.Docker != nil {
 				rc := &manifestpkg.RegistryClient{HTTP: client.http}
 				if opts.RegistryURL != "" {
 					rc.SetRegistryOverride(opts.RegistryURL)
 				}
 
-				registry, repo, tag, err := manifestpkg.ParseDockerRef("docker://" + manifestEntry.Docker.Image + ":" + manifestEntry.Docker.Tag)
-				if err == nil {
-					liveDigest, err := rc.ResolveDigest(ctx, registry, repo, tag)
-					if err != nil {
-						fmt.Fprintf(messageWriter, "    ⚠ Docker digest check failed: %v\n", err)
-					} else if liveDigest != manifestEntry.Docker.Digest {
-						result.Violations = append(result.Violations, Violation{
-							Action:      key,
-							Tag:         ar.Ref,
-							ExpectedSHA: manifestEntry.Docker.Digest,
-							ActualSHA:   liveDigest,
-						})
-						fmt.Fprintf(messageWriter, "    ✗ DOCKER IMAGE REPOINTED: %s:%s\n", manifestEntry.Docker.Image, manifestEntry.Docker.Tag)
-						fmt.Fprintf(messageWriter, "      Expected digest: %s\n", manifestEntry.Docker.Digest)
-						fmt.Fprintf(messageWriter, "      Current digest:  %s\n", liveDigest)
-						fmt.Fprintf(messageWriter, "      The Docker image tag has been repointed to a different image — possible supply chain attack.\n")
-					} else {
-						fmt.Fprintf(messageWriter, "    ✓ Docker image digest verified (%s:%s)\n", manifestEntry.Docker.Image, manifestEntry.Docker.Tag)
+				// Verify pre-built image digest (skip digest-pinned images where Tag is empty)
+				if manifestEntry.Docker.Digest != "" && manifestEntry.Docker.Tag != "" {
+					registry, repo, tag, err := manifestpkg.ParseDockerRef("docker://" + manifestEntry.Docker.Image + ":" + manifestEntry.Docker.Tag)
+					if err == nil {
+						liveDigest, err := rc.ResolveDigest(ctx, registry, repo, tag)
+						if err != nil {
+							fmt.Fprintf(messageWriter, "    ⚠ Docker digest check failed: %v\n", err)
+						} else if liveDigest != manifestEntry.Docker.Digest {
+							result.Violations = append(result.Violations, Violation{
+								Action:      key,
+								Tag:         ar.Ref,
+								ExpectedSHA: manifestEntry.Docker.Digest,
+								ActualSHA:   liveDigest,
+							})
+							fmt.Fprintf(messageWriter, "    ✗ DOCKER IMAGE REPOINTED: %s:%s\n", manifestEntry.Docker.Image, manifestEntry.Docker.Tag)
+							fmt.Fprintf(messageWriter, "      Expected digest: %s\n", manifestEntry.Docker.Digest)
+							fmt.Fprintf(messageWriter, "      Current digest:  %s\n", liveDigest)
+							fmt.Fprintf(messageWriter, "      The Docker image tag has been repointed to a different image — possible supply chain attack.\n")
+						} else {
+							fmt.Fprintf(messageWriter, "    ✓ Docker image digest verified (%s:%s)\n", manifestEntry.Docker.Image, manifestEntry.Docker.Tag)
+						}
 					}
 				}
 
-				// Also verify base image digests for Dockerfile actions
+				// Verify base image digests for Dockerfile actions
 				for _, base := range manifestEntry.Docker.BaseImages {
 					if base.Digest == "" {
 						continue

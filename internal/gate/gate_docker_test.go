@@ -194,3 +194,89 @@ func TestGateDockerScenarioC_ImageRefChanged(t *testing.T) {
 		t.Errorf("no SHA mismatch violation for custom-org/scanner; violations: %+v", result.Violations)
 	}
 }
+
+func TestGateDockerBaseImageVerification(t *testing.T) {
+	const goodDigest = "sha256:aaa"
+	const badDigest = "sha256:bbb"
+
+	silenceOutput(t)
+
+	registryTS := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/token"):
+			fmt.Fprintf(w, `{"token":"test"}`)
+		case r.Method == "HEAD" && strings.Contains(r.URL.Path, "/manifests/"):
+			// Return a different digest than what's recorded
+			w.Header().Set("Docker-Content-Digest", badDigest)
+			w.WriteHeader(http.StatusOK)
+		default:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer registryTS.Close()
+
+	lockfile := Manifest{
+		Version: 2,
+		Actions: map[string]map[string]ManifestEntry{
+			"custom-org/builder": {
+				"v1": {
+					SHA:  "abc123def456abc123def456abc123def456abc1",
+					Type: "docker",
+					Docker: &DockerInfo{
+						Image: "Dockerfile",
+						BaseImages: []DockerBaseImage{
+							{Image: "alpine", Tag: "3.19", Digest: goodDigest},
+						},
+						Source: "Dockerfile",
+					},
+				},
+			},
+		},
+	}
+	lockJSON, _ := json.Marshal(lockfile)
+
+	workflow := "on: push\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: custom-org/builder@v1\n"
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.Contains(r.URL.Path, "/graphql"):
+			resp := buildGraphQLResponse(map[string]map[string]string{
+				"custom-org/builder": {"v1": "abc123def456abc123def456abc123def456abc1"},
+			})
+			fmt.Fprint(w, resp)
+		case strings.Contains(r.URL.Path, "ci.yml"):
+			fmt.Fprint(w, buildContentResponse(workflow))
+		case strings.Contains(r.URL.Path, "actions-lock.json"):
+			fmt.Fprint(w, buildContentResponse(string(lockJSON)))
+		default:
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer ts.Close()
+
+	result, err := RunGate(context.Background(), GateOptions{
+		Repo:         "owner/repo",
+		SHA:          "abc123",
+		WorkflowRef:  "owner/repo/.github/workflows/ci.yml@refs/heads/main",
+		ManifestPath: ".github/actions-lock.json",
+		APIURL:       ts.URL,
+		GraphQLURL:   ts.URL + "/graphql",
+		Integrity:    true,
+		RegistryURL:  registryTS.URL,
+	})
+
+	if err != nil {
+		t.Fatalf("RunGate: %v", err)
+	}
+
+	// Should catch base image digest mismatch
+	found := false
+	for _, v := range result.Violations {
+		if v.ExpectedSHA == goodDigest && v.ActualSHA == badDigest {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("expected base image digest violation, got: %+v", result.Violations)
+	}
+}

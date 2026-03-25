@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -275,7 +276,8 @@ func ResolveDockerInfo(ctx context.Context, rc *RegistryClient, actionContent []
 
 		digest, err := rc.ResolveDigest(ctx, registry, repo, tag)
 		if err != nil {
-			// Non-fatal: record what we can without the digest
+			// Non-fatal: record what we can, but warn the user
+			fmt.Fprintf(os.Stderr, "  ⚠ Docker digest resolution failed for %s/%s:%s: %v\n", registry, repo, tag, err)
 			return &DockerInfo{
 				Image:  registry + "/" + repo,
 				Tag:    tag,
@@ -304,6 +306,7 @@ func ResolveDockerInfo(ctx context.Context, rc *RegistryClient, actionContent []
 	filename := strings.TrimPrefix(ref, "./")
 	dfContent, err := readFile(filename)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "  ⚠ Could not read %s: %v\n", filename, err)
 		return info, nil
 	}
 
@@ -311,7 +314,9 @@ func ResolveDockerInfo(ctx context.Context, rc *RegistryClient, actionContent []
 	for i := range bases {
 		baseReg, baseRepo := BaseImageRegistry(bases[i].Image)
 		digest, err := rc.ResolveDigest(ctx, baseReg, baseRepo, bases[i].Tag)
-		if err == nil {
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "  ⚠ Base image digest resolution failed for %s:%s: %v\n", bases[i].Image, bases[i].Tag, err)
+		} else {
 			bases[i].Digest = digest
 		}
 	}
