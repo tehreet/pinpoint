@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/tehreet/pinpoint/internal/poller"
@@ -591,6 +592,79 @@ func TestInit_CreatesFiles(t *testing.T) {
 	}
 	if entry.SHA != "abc123" {
 		t.Errorf("expected SHA abc123, got %s", entry.SHA)
+	}
+}
+
+func TestManifestEntryDockerSerialization(t *testing.T) {
+	entry := ManifestEntry{
+		SHA:       "abc123def456",
+		Integrity: "sha256-AAAA",
+		Type:      "docker",
+		Docker: &DockerInfo{
+			Image:  "ghcr.io/aquasecurity/trivy",
+			Tag:    "0.58.1",
+			Digest: "sha256:9e3a184f680d5f4e1007348f04b020e7e34f205124e5fb2e7eae3ca2fd919e00",
+			Source: "action.yml",
+		},
+	}
+
+	data, err := json.Marshal(entry)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+
+	var got ManifestEntry
+	if err := json.Unmarshal(data, &got); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	if got.Docker == nil {
+		t.Fatal("Docker field is nil after round-trip")
+	}
+	if got.Docker.Image != "ghcr.io/aquasecurity/trivy" {
+		t.Errorf("Image = %q, want %q", got.Docker.Image, "ghcr.io/aquasecurity/trivy")
+	}
+	if got.Docker.Digest != "sha256:9e3a184f680d5f4e1007348f04b020e7e34f205124e5fb2e7eae3ca2fd919e00" {
+		t.Errorf("Digest = %q", got.Docker.Digest)
+	}
+
+	// Verify omitempty: entry without Docker should not have "docker" key
+	noDocker := ManifestEntry{SHA: "abc", Type: "node20"}
+	data2, _ := json.Marshal(noDocker)
+	if strings.Contains(string(data2), `"docker"`) {
+		t.Error("docker key present when DockerInfo is nil")
+	}
+}
+
+func TestManifestEntryDockerfileBaseImages(t *testing.T) {
+	entry := ManifestEntry{
+		SHA:  "abc123",
+		Type: "docker",
+		Docker: &DockerInfo{
+			Image: "Dockerfile",
+			BaseImages: []DockerBaseImage{
+				{Image: "alpine", Tag: "3.19", Digest: "sha256:aaa"},
+				{Image: "golang", Tag: "1.24", Digest: "sha256:bbb"},
+			},
+			Source: "Dockerfile",
+		},
+	}
+
+	data, err := json.Marshal(entry)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+
+	var got ManifestEntry
+	if err := json.Unmarshal(data, &got); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+
+	if len(got.Docker.BaseImages) != 2 {
+		t.Fatalf("BaseImages len = %d, want 2", len(got.Docker.BaseImages))
+	}
+	if got.Docker.BaseImages[0].Image != "alpine" {
+		t.Errorf("BaseImages[0].Image = %q", got.Docker.BaseImages[0].Image)
 	}
 }
 

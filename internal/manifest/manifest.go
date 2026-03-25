@@ -34,6 +34,7 @@ type ManifestEntry struct {
 	GPGSigner     string          `json:"gpg_signer,omitempty"`
 	RecordedAt    string          `json:"recorded_at,omitempty"`
 	Type          string          `json:"type,omitempty"`
+	Docker        *DockerInfo     `json:"docker,omitempty"`         // Docker image info for docker-type actions
 	Dependencies  []TransitiveDep `json:"dependencies,omitempty"`
 }
 
@@ -45,6 +46,22 @@ type TransitiveDep struct {
 	DiskIntegrity string          `json:"disk_integrity,omitempty"`
 	Type          string          `json:"type,omitempty"`
 	Dependencies  []TransitiveDep `json:"dependencies"`
+}
+
+// DockerInfo holds Docker image information for Docker-based actions.
+type DockerInfo struct {
+	Image      string            `json:"image"`                 // "ghcr.io/owner/image" or "Dockerfile"
+	Tag        string            `json:"tag,omitempty"`         // "0.58.1"
+	Digest     string            `json:"digest,omitempty"`      // "sha256:..."
+	BaseImages []DockerBaseImage `json:"base_images,omitempty"` // For Dockerfile actions
+	Source     string            `json:"source"`                // "action.yml" or "Dockerfile"
+}
+
+// DockerBaseImage holds a resolved base image from a Dockerfile FROM instruction.
+type DockerBaseImage struct {
+	Image  string `json:"image"`
+	Tag    string `json:"tag"`
+	Digest string `json:"digest"`
 }
 
 // Change describes a single modification found during refresh/verify.
