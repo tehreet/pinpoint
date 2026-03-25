@@ -61,6 +61,7 @@ type ManifestEntry struct {
 	GPGSigner     string          `json:"gpg_signer,omitempty"`
 	RecordedAt    string          `json:"recorded_at,omitempty"`
 	Type          string          `json:"type,omitempty"`
+	Docker        *DockerInfo     `json:"docker,omitempty"`
 	Dependencies  []TransitiveDep `json:"dependencies,omitempty"`
 }
 
@@ -72,6 +73,22 @@ type TransitiveDep struct {
 	DiskIntegrity string          `json:"disk_integrity,omitempty"`
 	Type          string          `json:"type,omitempty"`
 	Dependencies  []TransitiveDep `json:"dependencies"`
+}
+
+// DockerInfo holds Docker image information from the lockfile.
+type DockerInfo struct {
+	Image      string            `json:"image"`
+	Tag        string            `json:"tag,omitempty"`
+	Digest     string            `json:"digest,omitempty"`
+	BaseImages []DockerBaseImage `json:"base_images,omitempty"`
+	Source     string            `json:"source"`
+}
+
+// DockerBaseImage holds a resolved base image from a Dockerfile.
+type DockerBaseImage struct {
+	Image  string `json:"image"`
+	Tag    string `json:"tag"`
+	Digest string `json:"digest"`
 }
 
 // GateOptions holds configuration for the gate check.
@@ -90,6 +107,7 @@ type GateOptions struct {
 	SkipTransitive        bool   // skip transitive dependency verification
 	OnDisk                bool   // verify on-disk action content against lockfile
 	ActionsDir            string // override for actions cache path
+	RegistryURL           string // override for Docker registry URL (testing)
 	EventName             string // "push", "pull_request", etc. From GITHUB_EVENT_NAME
 	BaseRef               string // "main", "develop", etc. From GITHUB_BASE_REF
 	AllWorkflows          bool   // fetch all workflows from .github/workflows/ instead of single workflow
@@ -511,6 +529,60 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 					fmt.Fprintf(messageWriter, "    ⚠ transitive check failed: %v\n", err)
 				} else {
 					checkTransitiveDeps(result, manifestEntry.Dependencies, deps, key, ar.Ref)
+				}
+			}
+
+			// Docker digest verification (integrity mode only)
+			// Skip when Tag is empty — digest-pinned images are already immutable.
+			if opts.Integrity && manifestEntry.Docker != nil && manifestEntry.Docker.Digest != "" && manifestEntry.Docker.Tag != "" {
+				rc := &manifestpkg.RegistryClient{HTTP: client.http}
+				if opts.RegistryURL != "" {
+					rc.SetRegistryOverride(opts.RegistryURL)
+				}
+
+				registry, repo, tag, err := manifestpkg.ParseDockerRef("docker://" + manifestEntry.Docker.Image + ":" + manifestEntry.Docker.Tag)
+				if err == nil {
+					liveDigest, err := rc.ResolveDigest(ctx, registry, repo, tag)
+					if err != nil {
+						fmt.Fprintf(messageWriter, "    ⚠ Docker digest check failed: %v\n", err)
+					} else if liveDigest != manifestEntry.Docker.Digest {
+						result.Violations = append(result.Violations, Violation{
+							Action:      key,
+							Tag:         ar.Ref,
+							ExpectedSHA: manifestEntry.Docker.Digest,
+							ActualSHA:   liveDigest,
+						})
+						fmt.Fprintf(messageWriter, "    ✗ DOCKER IMAGE REPOINTED: %s:%s\n", manifestEntry.Docker.Image, manifestEntry.Docker.Tag)
+						fmt.Fprintf(messageWriter, "      Expected digest: %s\n", manifestEntry.Docker.Digest)
+						fmt.Fprintf(messageWriter, "      Current digest:  %s\n", liveDigest)
+						fmt.Fprintf(messageWriter, "      The Docker image tag has been repointed to a different image — possible supply chain attack.\n")
+					} else {
+						fmt.Fprintf(messageWriter, "    ✓ Docker image digest verified (%s:%s)\n", manifestEntry.Docker.Image, manifestEntry.Docker.Tag)
+					}
+				}
+
+				// Also verify base image digests for Dockerfile actions
+				for _, base := range manifestEntry.Docker.BaseImages {
+					if base.Digest == "" {
+						continue
+					}
+					baseReg, baseRepo := manifestpkg.BaseImageRegistry(base.Image)
+					liveDigest, err := rc.ResolveDigest(ctx, baseReg, baseRepo, base.Tag)
+					if err != nil {
+						fmt.Fprintf(messageWriter, "    ⚠ Base image digest check failed for %s:%s: %v\n", base.Image, base.Tag, err)
+					} else if liveDigest != base.Digest {
+						result.Violations = append(result.Violations, Violation{
+							Action:      key,
+							Tag:         ar.Ref,
+							ExpectedSHA: base.Digest,
+							ActualSHA:   liveDigest,
+						})
+						fmt.Fprintf(messageWriter, "    ✗ BASE IMAGE REPOINTED: %s:%s\n", base.Image, base.Tag)
+						fmt.Fprintf(messageWriter, "      Expected: %s\n", base.Digest)
+						fmt.Fprintf(messageWriter, "      Current:  %s\n", liveDigest)
+					} else {
+						fmt.Fprintf(messageWriter, "    ✓ Base image digest verified (%s:%s)\n", base.Image, base.Tag)
+					}
 				}
 			}
 		}
