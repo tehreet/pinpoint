@@ -403,3 +403,60 @@ These are solvable. The architecture supports them. They just aren't built yet.
 **The right way to think about it:** Pinpoint is a smoke detector AND a
 circuit breaker. The monitor catches smash-and-grab attacks. The gate stops
 them from executing. Most CI/CD pipelines have neither. That's the gap.
+
+---
+
+## 11. Docker Verification Limitations
+
+Pinpoint v0.7.0 adds Docker image digest verification — the first tool in the
+space to do this. But it has real limitations:
+
+### 11a. Registry Authentication
+
+Anonymous pulls from Docker Hub are rate-limited (100 pulls/6hr per IP). For
+orgs with many Docker actions, the integrity check may hit rate limits. ghcr.io
+with a token has much higher limits, but private registries may require
+credentials pinpoint doesn't have.
+
+**Mitigation:** Digest resolution uses HEAD requests (manifest only, not full
+pulls), which are lighter than actual pulls. The worker pool limits concurrency.
+
+### 11b. Multi-Architecture Images
+
+Multi-arch images use manifest lists (fat manifests). The digest pinpoint
+captures is for the manifest list, not individual platform manifests. If an
+attacker replaces only the linux/amd64 image within a manifest list while
+keeping the manifest list digest the same — pinpoint wouldn't catch it.
+
+**Mitigation:** This is an extremely sophisticated attack requiring write
+access to the registry. In practice, replacing a single platform image while
+preserving the manifest list hash is not trivial.
+
+### 11c. Only --integrity Mode
+
+Docker digest verification only runs with `--integrity` flag. The default
+SHA-only gate does not re-resolve Docker digests — it only verifies the Git
+SHA of the action repository. A Docker image tag repoint where the action.yml
+doesn't change would only be caught in integrity mode.
+
+**Mitigation:** Run `pinpoint gate --integrity` on a schedule (e.g., daily)
+in addition to the default SHA-only gate on every CI run. This mirrors how
+tarball integrity works — the default is fast, the audit mode is thorough.
+
+### 11d. Dockerfile Build Args
+
+For Dockerfile actions that use `ARG` before `FROM` (parameterized base images),
+pinpoint captures the literal `FROM` value, which may include unresolved build
+args. The actual base image used at build time may differ.
+
+**Mitigation:** Actions that parameterize their base image are rare. Pinpoint
+logs a warning when it encounters `ARG` before `FROM`.
+
+### 11e. Private Registries
+
+Actions that pull from private registries (e.g., private ECR, Artifactory)
+require authentication that pinpoint may not have. Digest resolution will fail
+with a warning, and the action will be recorded without a digest.
+
+**Mitigation:** Pinpoint gracefully degrades — a missing digest means no
+digest verification, but all other checks (SHA, integrity, on-disk) still run.

@@ -24,3 +24,6 @@ journal-*.md
 # OS
 .DS_Store
 Thumbs.db
+-e 
+# Build artifacts
+dist/

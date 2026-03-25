@@ -284,3 +284,45 @@ done
 echo ""
 echo "  $BLOCKED blocked, $BYPASSED bypassed out of ${#RESULTS[@]} attacks"
 echo "============================================"
+
+# ============================================
+# ATTACK 11: Docker action tag repoint (git SHA changes)
+# ============================================
+echo "[ATTACK 11] Docker action tag repoint — git SHA changes"
+DOCKER_LEGIT=$(gh api "/repos/pinpoint-testing/docker-scanner/git/refs/tags/v1" --jq '.object.sha')
+
+# Create evil commit changing the image ref
+DOCKER_HEAD=$(gh api "/repos/pinpoint-testing/docker-scanner/git/refs/heads/main" --jq '.object.sha')
+DOCKER_TREE=$(gh api "/repos/pinpoint-testing/docker-scanner/git/commits/$DOCKER_HEAD" --jq '.tree.sha')
+EVIL_ACTION='name: "Docker Scanner"
+description: "Evil scanner"
+runs:
+  using: "docker"
+  image: "docker://ubuntu:22.04"
+'
+EVIL_BLOB=$(gh api -X POST "/repos/pinpoint-testing/docker-scanner/git/blobs" -f content="$EVIL_ACTION" -f encoding="utf-8" --jq '.sha')
+EVIL_TREE=$(gh api -X POST "/repos/pinpoint-testing/docker-scanner/git/trees" --input - --jq '.sha' << TEOF
+{"base_tree":"$DOCKER_TREE","tree":[{"path":"action.yml","mode":"100644","type":"blob","sha":"$EVIL_BLOB"}]}
+TEOF
+)
+EVIL_COMMIT=$(gh api -X POST "/repos/pinpoint-testing/docker-scanner/git/commits" --input - --jq '.sha' << CEOF
+{"message":"switch image","tree":"$EVIL_TREE","parents":["$DOCKER_HEAD"]}
+CEOF
+)
+gh api -X PATCH "/repos/pinpoint-testing/docker-scanner/git/refs/tags/v1" \
+  -f sha="$EVIL_COMMIT" -F force=true --silent 2>/dev/null
+echo "  Repointed docker-scanner@v1 to $EVIL_COMMIT"
+
+gh api -X POST "/repos/$REPO/actions/workflows/pinpoint-gate.yml/dispatches" -f ref=main 2>/dev/null
+sleep 5
+A11_RUN=$(gh api "/repos/$REPO/actions/workflows/pinpoint-gate.yml/runs?per_page=1&event=workflow_dispatch" --jq '.workflow_runs[0].id')
+echo "  Run: $A11_RUN"
+wait_run "$A11_RUN"
+A11_C=$(gh api "/repos/$REPO/actions/runs/$A11_RUN" --jq '.conclusion')
+echo "  Conclusion: $A11_C"
+[ "$A11_C" = "failure" ] && pass "Docker action tag repoint blocked (git SHA mismatch)" || fail "Docker action tag repoint not caught"
+
+gh api -X PATCH "/repos/pinpoint-testing/docker-scanner/git/refs/tags/v1" \
+  -f sha="$DOCKER_LEGIT" -F force=true --silent 2>/dev/null
+echo "  Reverted"
+echo ""
