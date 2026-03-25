@@ -4,7 +4,11 @@
 package manifest
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"strings"
 )
 
@@ -102,4 +106,132 @@ func parseImageTag(ref string) (image, tag string) {
 	}
 
 	return ref, "latest"
+}
+
+// RegistryClient resolves Docker image digests from OCI-compliant registries.
+type RegistryClient struct {
+	HTTP             *http.Client
+	registryOverride string // for testing: override all registry URLs
+}
+
+// SetRegistryOverride sets a URL override for all registry requests (for testing).
+func (c *RegistryClient) SetRegistryOverride(url string) {
+	c.registryOverride = url
+}
+
+// tokenResponse represents a Docker registry token exchange response.
+type tokenResponse struct {
+	Token       string `json:"token"`
+	AccessToken string `json:"access_token"`
+}
+
+// ResolveDigest returns the manifest digest for image:tag from the given registry.
+// Uses the OCI Distribution Spec: HEAD /v2/<repo>/manifests/<tag>.
+func (c *RegistryClient) ResolveDigest(ctx context.Context, registry, repo, tag string) (string, error) {
+	baseURL := c.registryURL(registry)
+
+	token, err := c.getToken(ctx, baseURL, registry, repo)
+	if err != nil {
+		return "", fmt.Errorf("registry auth for %s/%s: %w\n\nEnsure the image is public or set appropriate registry credentials.", registry, repo, err)
+	}
+
+	url := fmt.Sprintf("%s/v2/%s/manifests/%s", baseURL, repo, tag)
+	req, err := http.NewRequestWithContext(ctx, "HEAD", url, nil)
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Accept", strings.Join([]string{
+		"application/vnd.docker.distribution.manifest.v2+json",
+		"application/vnd.docker.distribution.manifest.list.v2+json",
+		"application/vnd.oci.image.manifest.v1+json",
+		"application/vnd.oci.image.index.v1+json",
+	}, ", "))
+
+	resp, err := c.HTTP.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("HEAD %s: %w", url, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
+		return "", fmt.Errorf("unauthorized: %s/%s:%s (HTTP %d). Image may be private or credentials invalid.", registry, repo, tag, resp.StatusCode)
+	}
+	if resp.StatusCode == http.StatusNotFound {
+		return "", fmt.Errorf("image not found: %s/%s:%s", registry, repo, tag)
+	}
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("registry returned HTTP %d for %s/%s:%s", resp.StatusCode, registry, repo, tag)
+	}
+
+	digest := resp.Header.Get("Docker-Content-Digest")
+	if digest == "" {
+		return "", fmt.Errorf("no Docker-Content-Digest header for %s/%s:%s. Registry may not support digest resolution.", registry, repo, tag)
+	}
+
+	return digest, nil
+}
+
+func (c *RegistryClient) getToken(ctx context.Context, baseURL, registry, repo string) (string, error) {
+	tokenURL := c.tokenURL(baseURL, registry, repo)
+
+	req, err := http.NewRequestWithContext(ctx, "GET", tokenURL, nil)
+	if err != nil {
+		return "", err
+	}
+
+	resp, err := c.HTTP.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("token request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("token exchange failed (HTTP %d): %s", resp.StatusCode, string(body))
+	}
+
+	var tr tokenResponse
+	if err := json.NewDecoder(resp.Body).Decode(&tr); err != nil {
+		return "", fmt.Errorf("parsing token response: %w", err)
+	}
+
+	token := tr.Token
+	if token == "" {
+		token = tr.AccessToken
+	}
+	if token == "" {
+		return "", fmt.Errorf("empty token from registry")
+	}
+
+	return token, nil
+}
+
+func (c *RegistryClient) registryURL(registry string) string {
+	if c.registryOverride != "" {
+		return c.registryOverride
+	}
+	switch registry {
+	case "docker.io":
+		return "https://registry-1.docker.io"
+	default:
+		return "https://" + registry
+	}
+}
+
+func (c *RegistryClient) tokenURL(baseURL, registry, repo string) string {
+	if c.registryOverride != "" {
+		return baseURL + "/token?scope=repository:" + repo + ":pull"
+	}
+	switch registry {
+	case "ghcr.io":
+		return "https://ghcr.io/token?scope=repository:" + repo + ":pull"
+	case "docker.io":
+		return "https://auth.docker.io/token?service=registry.docker.io&scope=repository:" + repo + ":pull"
+	case "quay.io":
+		return baseURL + "/v2/auth?service=quay.io&scope=repository:" + repo + ":pull"
+	default:
+		return baseURL + "/v2/token?scope=repository:" + repo + ":pull"
+	}
 }

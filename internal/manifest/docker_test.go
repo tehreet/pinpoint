@@ -4,6 +4,11 @@
 package manifest
 
 import (
+	"context"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -159,5 +164,99 @@ func TestParseDockerfile(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestResolveDigest(t *testing.T) {
+	const wantDigest = "sha256:9e3a184f680d5f4e1007348f04b020e7e34f205124e5fb2e7eae3ca2fd919e00"
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case r.URL.Path == "/token" || r.URL.Path == "/v2/token":
+			fmt.Fprintf(w, `{"token":"test-token"}`)
+		case r.Method == "HEAD" && strings.Contains(r.URL.Path, "/manifests/"):
+			if r.Header.Get("Authorization") != "Bearer test-token" {
+				w.WriteHeader(http.StatusUnauthorized)
+				return
+			}
+			accept := r.Header.Get("Accept")
+			if !strings.Contains(accept, "application/vnd.docker.distribution.manifest") &&
+				!strings.Contains(accept, "application/vnd.oci.image") {
+				t.Error("missing manifest accept header")
+			}
+			w.Header().Set("Docker-Content-Digest", wantDigest)
+			w.WriteHeader(http.StatusOK)
+		default:
+			t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer ts.Close()
+
+	rc := &RegistryClient{
+		HTTP:             &http.Client{},
+		registryOverride: ts.URL,
+	}
+
+	digest, err := rc.ResolveDigest(context.Background(), "ghcr.io", "aquasecurity/trivy", "0.58.1")
+	if err != nil {
+		t.Fatalf("ResolveDigest: %v", err)
+	}
+	if digest != wantDigest {
+		t.Errorf("digest = %q, want %q", digest, wantDigest)
+	}
+}
+
+func TestResolveDigestUnauthorized(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case r.URL.Path == "/token" || r.URL.Path == "/v2/token":
+			w.WriteHeader(http.StatusForbidden)
+			fmt.Fprintf(w, `{"errors":[{"code":"DENIED"}]}`)
+		default:
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+	}))
+	defer ts.Close()
+
+	rc := &RegistryClient{
+		HTTP:             &http.Client{},
+		registryOverride: ts.URL,
+	}
+
+	_, err := rc.ResolveDigest(context.Background(), "ghcr.io", "owner/private", "v1")
+	if err == nil {
+		t.Fatal("expected error for unauthorized registry")
+	}
+}
+
+func TestResolveDigestDockerHub(t *testing.T) {
+	const wantDigest = "sha256:aabbcc"
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case r.URL.Path == "/token" || r.URL.Path == "/v2/token":
+			fmt.Fprintf(w, `{"token":"hub-token"}`)
+		case r.Method == "HEAD" && strings.Contains(r.URL.Path, "/v2/library/alpine/manifests/3.19"):
+			w.Header().Set("Docker-Content-Digest", wantDigest)
+			w.WriteHeader(http.StatusOK)
+		default:
+			t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
+			w.WriteHeader(http.StatusNotFound)
+		}
+	}))
+	defer ts.Close()
+
+	rc := &RegistryClient{
+		HTTP:             &http.Client{},
+		registryOverride: ts.URL,
+	}
+
+	digest, err := rc.ResolveDigest(context.Background(), "docker.io", "library/alpine", "3.19")
+	if err != nil {
+		t.Fatalf("ResolveDigest: %v", err)
+	}
+	if digest != wantDigest {
+		t.Errorf("digest = %q, want %q", digest, wantDigest)
 	}
 }
