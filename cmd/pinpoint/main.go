@@ -16,6 +16,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -619,6 +620,12 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 	batchChanges := make(map[string]int)                     // repo → count of changes this cycle
 	scoreContexts := make(map[string]risk.ScoreContext) // "repo@tag" → context for suppression
 
+	// Load lockfile for behavioral baseline data (spec 025)
+	lockfilePath, _ := manifest.ResolveLockfilePath(".")
+	behavioralManifest, behavioralLoadErr := manifest.LoadManifest(lockfilePath)
+	lockfileExists := behavioralLoadErr == nil
+	behavioralUpdated := false
+
 	// Collect valid repos for batching
 	validActions := make([]config.ActionConfig, 0, len(cfg.Actions))
 	for _, actionCfg := range cfg.Actions {
@@ -703,11 +710,54 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 				}
 
 				// Enrichment: check commit ancestry
-				compareResult, err := restClient.CompareCommits(ctx, owner, repo, previousSHA, tag.CommitSHA)
+				var compareResult *poller.CompareResult
+				var err error
+				compareResult, err = restClient.CompareCommits(ctx, owner, repo, previousSHA, tag.CommitSHA)
 				if err == nil {
 					scoreCtx.IsDescendant = compareResult.IsDescendant
 					scoreCtx.AheadBy = compareResult.AheadBy
 					scoreCtx.BehindBy = compareResult.BehindBy
+
+					// Behavioral enrichment: diff anomaly (spec 025)
+					scoreCtx.SuspiciousFiles, scoreCtx.DiffOnly = risk.ClassifyDiffFiles(compareResult.Files)
+
+					// Behavioral enrichment from lockfile (spec 025)
+					if lockfileExists {
+						if tags, ok := behavioralManifest.Actions[actionCfg.Repo]; ok {
+							if entry, ok := tags[tag.Name]; ok {
+								// Contributor anomaly
+								if len(entry.KnownContributors) > 0 {
+									known := make(map[string]bool)
+									for _, c := range entry.KnownContributors {
+										known[c] = true
+									}
+									for _, login := range compareResult.AuthorLogins {
+										if !known[login] {
+											scoreCtx.NewContributors = append(scoreCtx.NewContributors, login)
+										}
+									}
+									if scoreCtx.NewContributors == nil {
+										scoreCtx.NewContributors = []string{} // empty = all known
+									}
+								}
+
+								// Release cadence anomaly
+								if len(entry.ReleaseHistory) >= 3 {
+									scoreCtx.ReleaseHistoryLen = len(entry.ReleaseHistory)
+									scoreCtx.MeanReleaseInterval = computeMeanInterval(entry.ReleaseHistory)
+									if last, parseErr := time.Parse(time.RFC3339, entry.ReleaseHistory[len(entry.ReleaseHistory)-1]); parseErr == nil {
+										scoreCtx.TimeSinceLastRelease = time.Since(last)
+									}
+									cutoff := time.Now().Add(-24 * time.Hour)
+									for _, ts := range entry.ReleaseHistory {
+										if parsed, parseErr := time.Parse(time.RFC3339, ts); parseErr == nil && parsed.After(cutoff) {
+											scoreCtx.ReleasesLast24h++
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 
 				// Enrichment: commit info
@@ -762,6 +812,32 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 				}
 
 				allAlerts = append(allAlerts, a)
+
+				// Update behavioral baselines in lockfile (spec 025)
+				if lockfileExists {
+					if tags, ok := behavioralManifest.Actions[actionCfg.Repo]; ok {
+						if entry, ok := tags[tag.Name]; ok {
+							// Merge new contributors into known set
+							if compareResult != nil && len(compareResult.AuthorLogins) > 0 {
+								known := make(map[string]bool)
+								for _, c := range entry.KnownContributors {
+									known[c] = true
+								}
+								for _, login := range compareResult.AuthorLogins {
+									if !known[login] {
+										entry.KnownContributors = append(entry.KnownContributors, login)
+									}
+								}
+							}
+
+							// Append release timestamp
+							now := time.Now().UTC().Format(time.RFC3339)
+							entry.ReleaseHistory = append(entry.ReleaseHistory, now)
+							tags[tag.Name] = entry
+							behavioralUpdated = true
+						}
+					}
+				}
 			}
 		}
 
@@ -825,6 +901,11 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 				emitter.Emit(a)
 			}
 		}
+	}
+
+	// Save behavioral baseline updates (spec 025)
+	if behavioralUpdated && lockfileExists {
+		_ = manifest.SaveManifest(lockfilePath, behavioralManifest)
 	}
 
 	return filteredAlerts, nil
@@ -1215,6 +1296,25 @@ func truncate(s string, max int) string {
 		return s
 	}
 	return s[:max-3] + "..."
+}
+
+// computeMeanInterval calculates the average time between release timestamps.
+func computeMeanInterval(history []string) time.Duration {
+	if len(history) < 2 {
+		return 0
+	}
+	var times []time.Time
+	for _, ts := range history {
+		if t, err := time.Parse(time.RFC3339, ts); err == nil {
+			times = append(times, t)
+		}
+	}
+	if len(times) < 2 {
+		return 0
+	}
+	sort.Slice(times, func(i, j int) bool { return times[i].Before(times[j]) })
+	total := times[len(times)-1].Sub(times[0])
+	return total / time.Duration(len(times)-1)
 }
 
 func cmdInject() {
