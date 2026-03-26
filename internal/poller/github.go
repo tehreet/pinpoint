@@ -200,41 +200,73 @@ func (c *GitHubClient) dereferenceTag(ctx context.Context, owner, repo, tagSHA s
 	return tagObj.Object.SHA, nil
 }
 
+// CompareResult holds the result of comparing two commits.
+type CompareResult struct {
+	IsDescendant bool
+	AheadBy      int
+	BehindBy     int
+	AuthorLogins []string // Deduplicated commit author logins
+	Files        []string // Changed file paths
+}
+
 // CompareCommits checks if newSHA is a descendant of oldSHA on the default branch.
-func (c *GitHubClient) CompareCommits(ctx context.Context, owner, repo, oldSHA, newSHA string) (isDescendant bool, ahead int, behind int, err error) {
+// Also extracts commit author logins and changed file paths from the response.
+func (c *GitHubClient) CompareCommits(ctx context.Context, owner, repo, oldSHA, newSHA string) (*CompareResult, error) {
 	url := fmt.Sprintf("%s/repos/%s/%s/compare/%s...%s", c.baseURL, owner, repo, oldSHA, newSHA)
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
-		return false, 0, 0, err
+		return nil, err
 	}
 	c.setHeaders(req)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return false, 0, 0, err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return false, 0, 0, fmt.Errorf("compare returned %d", resp.StatusCode)
+		return nil, fmt.Errorf("compare returned %d", resp.StatusCode)
 	}
 
-	var result struct {
-		Status      string `json:"status"`
-		AheadBy     int    `json:"ahead_by"`
-		BehindBy    int    `json:"behind_by"`
-		TotalCommits int   `json:"total_commits"`
+	var raw struct {
+		Status       string `json:"status"`
+		AheadBy      int    `json:"ahead_by"`
+		BehindBy     int    `json:"behind_by"`
+		TotalCommits int    `json:"total_commits"`
+		Commits      []struct {
+			Author *struct {
+				Login string `json:"login"`
+			} `json:"author"`
+		} `json:"commits"`
+		Files []struct {
+			Filename string `json:"filename"`
+		} `json:"files"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return false, 0, 0, err
+	if err := json.NewDecoder(resp.Body).Decode(&raw); err != nil {
+		return nil, err
 	}
 
-	// "ahead" means newSHA is ahead of oldSHA (descendant)
-	// "behind" means newSHA is behind (ancestor)
-	// "diverged" means they share a common ancestor but diverged
-	isDescendant = result.Status == "ahead"
-	return isDescendant, result.AheadBy, result.BehindBy, nil
+	result := &CompareResult{
+		IsDescendant: raw.Status == "ahead",
+		AheadBy:      raw.AheadBy,
+		BehindBy:     raw.BehindBy,
+	}
+
+	seen := make(map[string]bool)
+	for _, c := range raw.Commits {
+		if c.Author != nil && c.Author.Login != "" && !seen[c.Author.Login] {
+			seen[c.Author.Login] = true
+			result.AuthorLogins = append(result.AuthorLogins, c.Author.Login)
+		}
+	}
+
+	for _, f := range raw.Files {
+		result.Files = append(result.Files, f.Filename)
+	}
+
+	return result, nil
 }
 
 // GetCommitInfo retrieves metadata about a specific commit.

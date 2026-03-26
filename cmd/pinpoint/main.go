@@ -703,11 +703,11 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 				}
 
 				// Enrichment: check commit ancestry
-				isDesc, ahead, behind, err := restClient.CompareCommits(ctx, owner, repo, previousSHA, tag.CommitSHA)
+				compareResult, err := restClient.CompareCommits(ctx, owner, repo, previousSHA, tag.CommitSHA)
 				if err == nil {
-					scoreCtx.IsDescendant = isDesc
-					scoreCtx.AheadBy = ahead
-					scoreCtx.BehindBy = behind
+					scoreCtx.IsDescendant = compareResult.IsDescendant
+					scoreCtx.AheadBy = compareResult.AheadBy
+					scoreCtx.BehindBy = compareResult.BehindBy
 				}
 
 				// Enrichment: commit info
