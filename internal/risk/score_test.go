@@ -466,3 +466,81 @@ func TestContributorAnomaly_FirstLock(t *testing.T) {
 		}
 	}
 }
+
+func TestDiffAnomaly_SuspiciousMixedWithNormal(t *testing.T) {
+	sev, signals := Score(ScoreContext{
+		TagName:         "v4",
+		IsDescendant:    true,
+		ReleaseExists:   true,
+		CommitDate:      time.Now(),
+		SuspiciousFiles: []string{"dist/index.js"},
+		DiffOnly:        false,
+	})
+	found := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "DIFF_ANOMALY") {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected DIFF_ANOMALY signal, got: %v", signals)
+	}
+	if sev != SeverityLow {
+		t.Errorf("expected LOW (-30+40=10), got %s", sev)
+	}
+}
+
+func TestDiffAnomaly_NormalOnly(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:         "v4",
+		IsDescendant:    true,
+		ReleaseExists:   true,
+		CommitDate:      time.Now(),
+		SuspiciousFiles: []string{},
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "DIFF_ANOMALY") {
+			t.Errorf("DIFF_ANOMALY should not fire for normal-only diff, got: %v", signals)
+		}
+	}
+}
+
+func TestDiffAnomaly_SuspiciousOnly(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:         "v4",
+		IsDescendant:    true,
+		ReleaseExists:   true,
+		CommitDate:      time.Now(),
+		SuspiciousFiles: []string{".github/workflows/ci.yml"},
+		DiffOnly:        true,
+	})
+	found := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "DIFF_ANOMALY") {
+			found = true
+			if !strings.Contains(s, "suspicious files only") {
+				t.Errorf("expected 'suspicious files only' in signal, got: %s", s)
+			}
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected DIFF_ANOMALY signal, got: %v", signals)
+	}
+}
+
+func TestDiffAnomaly_NilSuspicious(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:         "v4",
+		IsDescendant:    true,
+		ReleaseExists:   true,
+		CommitDate:      time.Now(),
+		SuspiciousFiles: nil,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "DIFF_ANOMALY") {
+			t.Errorf("DIFF_ANOMALY should not fire with nil SuspiciousFiles, got: %v", signals)
+		}
+	}
+}

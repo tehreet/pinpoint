@@ -135,6 +135,17 @@ func Score(ctx ScoreContext) (Severity, []string) {
 		signals = append(signals, "CONTRIBUTOR_ANOMALY: release includes commits from new contributor(s): "+strings.Join(ctx.NewContributors, ", "))
 	}
 
+	// Suspicious files in release diff
+	if ctx.SuspiciousFiles != nil && len(ctx.SuspiciousFiles) > 0 {
+		if ctx.DiffOnly {
+			score += 50
+			signals = append(signals, "DIFF_ANOMALY: release changes suspicious files only (no normal code changes): "+strings.Join(ctx.SuspiciousFiles, ", "))
+		} else {
+			score += 40
+			signals = append(signals, "DIFF_ANOMALY: release mixes suspicious files with normal changes: "+strings.Join(ctx.SuspiciousFiles, ", "))
+		}
+	}
+
 	// === MEDIUM SIGNALS ===
 
 	// No corresponding release
