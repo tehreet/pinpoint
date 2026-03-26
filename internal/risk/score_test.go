@@ -409,3 +409,60 @@ func TestScore_SixBatchSize(t *testing.T) {
 		t.Errorf("expected MASS_REPOINT signal, got: %v", signals)
 	}
 }
+
+// === Spec 025: Behavioral Anomaly Signal tests ===
+
+func TestContributorAnomaly_NewContributor(t *testing.T) {
+	// Known contributors [A, B], new release has commit from C → +35
+	sev, signals := Score(ScoreContext{
+		TagName:         "v4",
+		IsDescendant:    true,
+		ReleaseExists:   true,
+		CommitDate:      time.Now(),
+		NewContributors: []string{"attacker-account"},
+	})
+	found := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "CONTRIBUTOR_ANOMALY") {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected CONTRIBUTOR_ANOMALY signal, got: %v", signals)
+	}
+	// Score: -30 (MAJOR_TAG_ADVANCE) + 35 (CONTRIBUTOR_ANOMALY) = 5 → LOW
+	if sev != SeverityLow {
+		t.Errorf("expected LOW (score=5), got %s", sev)
+	}
+}
+
+func TestContributorAnomaly_AllKnown(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:         "v4",
+		IsDescendant:    true,
+		ReleaseExists:   true,
+		CommitDate:      time.Now(),
+		NewContributors: []string{},
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "CONTRIBUTOR_ANOMALY") {
+			t.Errorf("CONTRIBUTOR_ANOMALY should not fire when all authors known, got: %v", signals)
+		}
+	}
+}
+
+func TestContributorAnomaly_FirstLock(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:         "v4",
+		IsDescendant:    true,
+		ReleaseExists:   true,
+		CommitDate:      time.Now(),
+		NewContributors: nil,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "CONTRIBUTOR_ANOMALY") {
+			t.Errorf("CONTRIBUTOR_ANOMALY should not fire on first lock, got: %v", signals)
+		}
+	}
+}

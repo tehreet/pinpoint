@@ -52,6 +52,15 @@ type ScoreContext struct {
 	WasGPGSigned    bool   // Was the commit GPG-signed at lock time?
 	IsGPGSigned     bool   // Is the current commit GPG-signed?
 	VerifiedSigner  string // e.g. "web-flow" — who signed the original
+
+	// Behavioral anomaly fields (spec 025)
+	NewContributors      []string      // Logins not seen in previous releases (nil = first lock)
+	SuspiciousFiles      []string      // Files in the diff matching suspicious patterns
+	DiffOnly             bool          // True if ONLY suspicious files changed
+	MeanReleaseInterval  time.Duration // Average time between releases
+	TimeSinceLastRelease time.Duration // Time since previous release
+	ReleasesLast24h      int           // Number of releases in last 24 hours
+	ReleaseHistoryLen    int           // Number of entries in release history
 }
 
 var (
@@ -116,6 +125,14 @@ func Score(ctx ScoreContext) (Severity, []string) {
 	if ctx.WasGPGSigned && !ctx.IsGPGSigned {
 		score += 45
 		signals = append(signals, "SIGNATURE_DROPPED: commit was GPG-signed at lock time, replacement is unsigned")
+	}
+
+	// === BEHAVIORAL ANOMALY SIGNALS (spec 025) ===
+
+	// New contributor in release diff
+	if ctx.NewContributors != nil && len(ctx.NewContributors) > 0 {
+		score += 35
+		signals = append(signals, "CONTRIBUTOR_ANOMALY: release includes commits from new contributor(s): "+strings.Join(ctx.NewContributors, ", "))
 	}
 
 	// === MEDIUM SIGNALS ===
