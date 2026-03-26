@@ -725,7 +725,10 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 					if lockfileExists {
 						if tags, ok := behavioralManifest.Actions[actionCfg.Repo]; ok {
 							if entry, ok := tags[tag.Name]; ok {
-								// Contributor anomaly
+								// Contributor anomaly: three-state semantics for NewContributors:
+								//   nil = first lock (no baseline), signal skipped
+								//   []string{} = all authors known, signal skipped
+								//   non-empty = new contributors found, signal fires (+35)
 								if len(entry.KnownContributors) > 0 {
 									known := make(map[string]bool)
 									for _, c := range entry.KnownContributors {
@@ -905,7 +908,9 @@ func runScan(ctx context.Context, cfg *config.Config, restClient *poller.GitHubC
 
 	// Save behavioral baseline updates (spec 025)
 	if behavioralUpdated && lockfileExists {
-		_ = manifest.SaveManifest(lockfilePath, behavioralManifest)
+		if err := manifest.SaveManifest(lockfilePath, behavioralManifest); err != nil {
+			fmt.Fprintf(os.Stderr, "Warning: failed to save behavioral baseline updates to %s: %v\n", lockfilePath, err)
+		}
 	}
 
 	return filteredAlerts, nil
