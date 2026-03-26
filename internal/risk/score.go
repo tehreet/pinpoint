@@ -235,6 +235,47 @@ func MeetsThreshold(severity Severity, threshold string) bool {
 	return sevLevel >= threshLevel
 }
 
+// ClassifyDiffFiles separates changed files into suspicious and normal categories.
+// Returns the list of suspicious files and whether ALL changed files are suspicious
+// (diffOnly=true means no normal files to provide cover).
+func ClassifyDiffFiles(files []string) (suspicious []string, diffOnly bool) {
+	normalCount := 0
+	for _, f := range files {
+		if isSuspiciousFile(f) {
+			suspicious = append(suspicious, f)
+		} else {
+			normalCount++
+		}
+	}
+	diffOnly = len(suspicious) > 0 && normalCount == 0
+	return suspicious, diffOnly
+}
+
+func isSuspiciousFile(path string) bool {
+	switch path {
+	case "Makefile", "Dockerfile", "entrypoint.sh", "action.yml", "action.yaml",
+		"setup.py", "setup.cfg":
+		return true
+	}
+
+	if strings.HasPrefix(path, ".github/workflows/") {
+		return true
+	}
+	if strings.HasPrefix(path, "dist/") {
+		return true
+	}
+
+	base := path
+	if idx := strings.LastIndex(path, "/"); idx >= 0 {
+		base = path[idx+1:]
+	}
+	if strings.HasPrefix(base, "postinstall") || strings.HasPrefix(base, "preinstall") {
+		return true
+	}
+
+	return false
+}
+
 func formatSignal(format string, args ...interface{}) string {
 	// Simple formatting without importing fmt to keep it clean
 	result := format

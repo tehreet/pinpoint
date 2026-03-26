@@ -712,3 +712,68 @@ func TestComposite_LegitimateRelease_Low(t *testing.T) {
 		t.Errorf("expected LOW for legitimate release, got %s (signals: %v)", sev, signals)
 	}
 }
+
+func TestClassifyDiffFiles_MixedSuspicious(t *testing.T) {
+	files := []string{"src/main.ts", "dist/index.js", ".github/workflows/ci.yml"}
+	suspicious, diffOnly := ClassifyDiffFiles(files)
+	if len(suspicious) != 2 {
+		t.Errorf("expected 2 suspicious files, got %d: %v", len(suspicious), suspicious)
+	}
+	if diffOnly {
+		t.Error("expected diffOnly=false when normal files present")
+	}
+}
+
+func TestClassifyDiffFiles_NormalOnly(t *testing.T) {
+	files := []string{"src/main.ts", "README.md", "package.json"}
+	suspicious, _ := ClassifyDiffFiles(files)
+	if len(suspicious) != 0 {
+		t.Errorf("expected 0 suspicious files, got %d: %v", len(suspicious), suspicious)
+	}
+}
+
+func TestClassifyDiffFiles_SuspiciousOnly(t *testing.T) {
+	files := []string{".github/workflows/ci.yml", "Makefile"}
+	suspicious, diffOnly := ClassifyDiffFiles(files)
+	if len(suspicious) != 2 {
+		t.Errorf("expected 2 suspicious files, got %d: %v", len(suspicious), suspicious)
+	}
+	if !diffOnly {
+		t.Error("expected diffOnly=true when only suspicious files")
+	}
+}
+
+func TestClassifyDiffFiles_EntrypointSh(t *testing.T) {
+	files := []string{"entrypoint.sh", "src/main.go"}
+	suspicious, diffOnly := ClassifyDiffFiles(files)
+	if len(suspicious) != 1 || suspicious[0] != "entrypoint.sh" {
+		t.Errorf("expected [entrypoint.sh], got: %v", suspicious)
+	}
+	if diffOnly {
+		t.Error("expected diffOnly=false")
+	}
+}
+
+func TestClassifyDiffFiles_Dockerfile(t *testing.T) {
+	files := []string{"Dockerfile", "src/index.ts"}
+	suspicious, _ := ClassifyDiffFiles(files)
+	if len(suspicious) != 1 {
+		t.Errorf("expected 1 suspicious file, got %d: %v", len(suspicious), suspicious)
+	}
+}
+
+func TestClassifyDiffFiles_ActionYml(t *testing.T) {
+	files := []string{"action.yml", "src/index.ts"}
+	suspicious, _ := ClassifyDiffFiles(files)
+	if len(suspicious) != 1 || suspicious[0] != "action.yml" {
+		t.Errorf("expected [action.yml], got: %v", suspicious)
+	}
+}
+
+func TestClassifyDiffFiles_DocsOnly(t *testing.T) {
+	files := []string{"docs/guide.md", "README.md", "LICENSE"}
+	suspicious, _ := ClassifyDiffFiles(files)
+	if len(suspicious) != 0 {
+		t.Errorf("expected 0 suspicious for docs-only, got: %v", suspicious)
+	}
+}
