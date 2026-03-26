@@ -34,8 +34,10 @@ type ManifestEntry struct {
 	GPGSigner     string          `json:"gpg_signer,omitempty"`
 	RecordedAt    string          `json:"recorded_at,omitempty"`
 	Type          string          `json:"type,omitempty"`
-	Docker        *DockerInfo     `json:"docker,omitempty"`         // Docker image info for docker-type actions
-	Dependencies  []TransitiveDep `json:"dependencies,omitempty"`
+	Docker            *DockerInfo     `json:"docker,omitempty"`         // Docker image info for docker-type actions
+	Dependencies      []TransitiveDep `json:"dependencies,omitempty"`
+	KnownContributors []string        `json:"known_contributors,omitempty"`
+	ReleaseHistory    []string        `json:"release_history,omitempty"` // RFC3339 timestamps
 }
 
 // TransitiveDep represents a dependency discovered in a composite action.
