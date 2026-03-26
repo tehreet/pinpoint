@@ -662,3 +662,53 @@ func TestReleaseCadence_RapidFire(t *testing.T) {
 		t.Errorf("expected RELEASE_CADENCE_ANOMALY for rapid-fire releases, got: %v", signals)
 	}
 }
+
+func TestComposite_AllBehavioralSignals_Critical(t *testing.T) {
+	// Legitimate-looking attack: descendant, release exists, but all 3 behavioral signals fire
+	// Score: -30 (MAJOR_TAG_ADVANCE) + 35 (CONTRIBUTOR) + 40 (DIFF) + 25 (CADENCE) = +70 → CRITICAL
+	sev, signals := Score(ScoreContext{
+		TagName:              "v4",
+		IsDescendant:         true,
+		ReleaseExists:        true,
+		CommitDate:           time.Now(),
+		NewContributors:      []string{"attacker"},
+		SuspiciousFiles:      []string{"dist/index.js", "action.yml"},
+		DiffOnly:             false,
+		MeanReleaseInterval:  30 * 24 * time.Hour,
+		TimeSinceLastRelease: 2 * time.Hour,
+		ReleaseHistoryLen:    5,
+	})
+	if sev != SeverityCritical {
+		t.Errorf("expected CRITICAL for composite behavioral anomaly, got %s (signals: %v)", sev, signals)
+	}
+	expected := []string{"MAJOR_TAG_ADVANCE", "CONTRIBUTOR_ANOMALY", "DIFF_ANOMALY", "RELEASE_CADENCE_ANOMALY"}
+	for _, prefix := range expected {
+		found := false
+		for _, s := range signals {
+			if strings.HasPrefix(s, prefix) {
+				found = true
+				break
+			}
+		}
+		if !found {
+			t.Errorf("missing signal %s in %v", prefix, signals)
+		}
+	}
+}
+
+func TestComposite_LegitimateRelease_Low(t *testing.T) {
+	sev, signals := Score(ScoreContext{
+		TagName:              "v4",
+		IsDescendant:         true,
+		ReleaseExists:        true,
+		CommitDate:           time.Now(),
+		NewContributors:      []string{},
+		SuspiciousFiles:      []string{},
+		MeanReleaseInterval:  30 * 24 * time.Hour,
+		TimeSinceLastRelease: 25 * 24 * time.Hour,
+		ReleaseHistoryLen:    10,
+	})
+	if sev != SeverityLow {
+		t.Errorf("expected LOW for legitimate release, got %s (signals: %v)", sev, signals)
+	}
+}
