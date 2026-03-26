@@ -146,6 +146,36 @@ func Score(ctx ScoreContext) (Severity, []string) {
 		}
 	}
 
+	// Release cadence anomaly
+	if ctx.ReleaseHistoryLen >= 3 && ctx.MeanReleaseInterval > 7*24*time.Hour {
+		fired := false
+		reason := ""
+
+		// Burst: released in < 10% of mean interval
+		if ctx.TimeSinceLastRelease > 0 && ctx.TimeSinceLastRelease < ctx.MeanReleaseInterval/10 {
+			fired = true
+			reason = "burst release (time since last release far below average)"
+		}
+
+		// Rapid-fire: > 3 releases in 24h
+		if ctx.ReleasesLast24h > 3 {
+			fired = true
+			reason = "rapid-fire releases in last 24 hours"
+		}
+
+		// Dormant: > 3× mean interval and mean < 90 days
+		if ctx.MeanReleaseInterval < 90*24*time.Hour &&
+			ctx.TimeSinceLastRelease > 3*ctx.MeanReleaseInterval {
+			fired = true
+			reason = "dormant action suddenly releasing (time since last release exceeds 3× average)"
+		}
+
+		if fired {
+			score += 25
+			signals = append(signals, "RELEASE_CADENCE_ANOMALY: "+reason)
+		}
+	}
+
 	// === MEDIUM SIGNALS ===
 
 	// No corresponding release

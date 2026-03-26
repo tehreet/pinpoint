@@ -544,3 +544,121 @@ func TestDiffAnomaly_NilSuspicious(t *testing.T) {
 		}
 	}
 }
+
+func TestReleaseCadence_BurstRelease(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:              "v4",
+		IsDescendant:         true,
+		ReleaseExists:        true,
+		CommitDate:           time.Now(),
+		MeanReleaseInterval:  30 * 24 * time.Hour,
+		TimeSinceLastRelease: 2 * time.Hour,
+		ReleaseHistoryLen:    5,
+	})
+	found := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "RELEASE_CADENCE_ANOMALY") {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected RELEASE_CADENCE_ANOMALY signal, got: %v", signals)
+	}
+}
+
+func TestReleaseCadence_NormalTiming(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:              "v4",
+		IsDescendant:         true,
+		ReleaseExists:        true,
+		CommitDate:           time.Now(),
+		MeanReleaseInterval:  30 * 24 * time.Hour,
+		TimeSinceLastRelease: 20 * 24 * time.Hour,
+		ReleaseHistoryLen:    5,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "RELEASE_CADENCE_ANOMALY") {
+			t.Errorf("RELEASE_CADENCE_ANOMALY should not fire for normal timing, got: %v", signals)
+		}
+	}
+}
+
+func TestReleaseCadence_HighCadenceExcluded(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:              "v4",
+		IsDescendant:         true,
+		ReleaseExists:        true,
+		CommitDate:           time.Now(),
+		MeanReleaseInterval:  2 * 24 * time.Hour,
+		TimeSinceLastRelease: 1 * time.Hour,
+		ReleaseHistoryLen:    10,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "RELEASE_CADENCE_ANOMALY") {
+			t.Errorf("RELEASE_CADENCE_ANOMALY should not fire for high-cadence projects, got: %v", signals)
+		}
+	}
+}
+
+func TestReleaseCadence_TooFewReleases(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:              "v4",
+		IsDescendant:         true,
+		ReleaseExists:        true,
+		CommitDate:           time.Now(),
+		MeanReleaseInterval:  30 * 24 * time.Hour,
+		TimeSinceLastRelease: 1 * time.Hour,
+		ReleaseHistoryLen:    2,
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "RELEASE_CADENCE_ANOMALY") {
+			t.Errorf("RELEASE_CADENCE_ANOMALY should not fire with < 3 releases, got: %v", signals)
+		}
+	}
+}
+
+func TestReleaseCadence_DormantAction(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:              "v4",
+		IsDescendant:         true,
+		ReleaseExists:        true,
+		CommitDate:           time.Now(),
+		MeanReleaseInterval:  30 * 24 * time.Hour,
+		TimeSinceLastRelease: 180 * 24 * time.Hour,
+		ReleaseHistoryLen:    5,
+	})
+	found := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "RELEASE_CADENCE_ANOMALY") {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected RELEASE_CADENCE_ANOMALY for dormant action, got: %v", signals)
+	}
+}
+
+func TestReleaseCadence_RapidFire(t *testing.T) {
+	_, signals := Score(ScoreContext{
+		TagName:              "v4",
+		IsDescendant:         true,
+		ReleaseExists:        true,
+		CommitDate:           time.Now(),
+		MeanReleaseInterval:  30 * 24 * time.Hour,
+		TimeSinceLastRelease: 1 * time.Hour,
+		ReleasesLast24h:      4,
+		ReleaseHistoryLen:    10,
+	})
+	found := false
+	for _, s := range signals {
+		if strings.HasPrefix(s, "RELEASE_CADENCE_ANOMALY") {
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Errorf("expected RELEASE_CADENCE_ANOMALY for rapid-fire releases, got: %v", signals)
+	}
+}
