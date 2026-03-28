@@ -32,6 +32,7 @@ import (
 	"github.com/tehreet/pinpoint/internal/sarif"
 	"github.com/tehreet/pinpoint/internal/store"
 	"github.com/tehreet/pinpoint/internal/suppress"
+	"github.com/tehreet/pinpoint/internal/util"
 	"github.com/tehreet/pinpoint/internal/verify"
 )
 
@@ -1001,7 +1002,7 @@ func cmdManifestRefresh() {
 	for _, c := range result.Changes {
 		switch c.Type {
 		case "updated":
-			fmt.Fprintf(os.Stderr, "  %s@%s: UPDATED %s → %s (tag advanced)\n", c.Action, c.Tag, shortSHA(c.OldSHA), shortSHA(c.NewSHA))
+			fmt.Fprintf(os.Stderr, "  %s@%s: UPDATED %s → %s (tag advanced)\n", c.Action, c.Tag, util.ShortSHA(c.OldSHA), util.ShortSHA(c.NewSHA))
 		case "added":
 			source := ""
 			if c.Source != "" {
@@ -1009,7 +1010,7 @@ func cmdManifestRefresh() {
 			}
 			fmt.Fprintf(os.Stderr, "  + %s@%s: NEW%s\n", c.Action, c.Tag, source)
 		case "missing_tag":
-			fmt.Fprintf(os.Stderr, "  ! %s@%s: WARNING tag no longer exists on remote (keeping old SHA %s)\n", c.Action, c.Tag, shortSHA(c.OldSHA))
+			fmt.Fprintf(os.Stderr, "  ! %s@%s: WARNING tag no longer exists on remote (keeping old SHA %s)\n", c.Action, c.Tag, util.ShortSHA(c.OldSHA))
 		}
 	}
 
@@ -1051,10 +1052,10 @@ func cmdManifestVerify() {
 		switch c.Type {
 		case "updated":
 			fmt.Fprintf(os.Stderr, "  ✗ %s@%s: DRIFTED\n", c.Action, c.Tag)
-			fmt.Fprintf(os.Stderr, "    manifest: %s\n", shortSHA(c.OldSHA))
-			fmt.Fprintf(os.Stderr, "    current:  %s  (resolved just now)\n", shortSHA(c.NewSHA))
+			fmt.Fprintf(os.Stderr, "    manifest: %s\n", util.ShortSHA(c.OldSHA))
+			fmt.Fprintf(os.Stderr, "    current:  %s  (resolved just now)\n", util.ShortSHA(c.NewSHA))
 		case "missing_tag":
-			fmt.Fprintf(os.Stderr, "  ✗ %s@%s: TAG MISSING (was %s)\n", c.Action, c.Tag, shortSHA(c.OldSHA))
+			fmt.Fprintf(os.Stderr, "  ✗ %s@%s: TAG MISSING (was %s)\n", c.Action, c.Tag, util.ShortSHA(c.OldSHA))
 		}
 	}
 
@@ -1156,10 +1157,10 @@ func cmdLock() {
 			switch c.Type {
 			case "updated":
 				fmt.Fprintf(os.Stderr, "  ✗ %s@%s: DRIFTED\n", c.Action, c.Tag)
-				fmt.Fprintf(os.Stderr, "    lockfile: %s\n", shortSHA(c.OldSHA))
-				fmt.Fprintf(os.Stderr, "    current:  %s  (resolved just now)\n", shortSHA(c.NewSHA))
+				fmt.Fprintf(os.Stderr, "    lockfile: %s\n", util.ShortSHA(c.OldSHA))
+				fmt.Fprintf(os.Stderr, "    current:  %s  (resolved just now)\n", util.ShortSHA(c.NewSHA))
 			case "missing_tag":
-				fmt.Fprintf(os.Stderr, "  ✗ %s@%s: TAG MISSING (was %s)\n", c.Action, c.Tag, shortSHA(c.OldSHA))
+				fmt.Fprintf(os.Stderr, "  ✗ %s@%s: TAG MISSING (was %s)\n", c.Action, c.Tag, util.ShortSHA(c.OldSHA))
 			}
 		}
 
@@ -1265,7 +1266,7 @@ func cmdLock() {
 	for _, c := range result.Changes {
 		switch c.Type {
 		case "updated":
-			fmt.Fprintf(os.Stderr, "  %s@%s: UPDATED %s → %s\n", c.Action, c.Tag, shortSHA(c.OldSHA), shortSHA(c.NewSHA))
+			fmt.Fprintf(os.Stderr, "  %s@%s: UPDATED %s → %s\n", c.Action, c.Tag, util.ShortSHA(c.OldSHA), util.ShortSHA(c.NewSHA))
 		case "added":
 			source := ""
 			if c.Source != "" {
@@ -1289,12 +1290,6 @@ func cmdLock() {
 	}
 }
 
-func shortSHA(sha string) string {
-	if len(sha) > 7 {
-		return sha[:7] + "..."
-	}
-	return sha
-}
 
 func truncate(s string, max int) string {
 	if len(s) <= max {

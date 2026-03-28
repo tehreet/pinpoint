@@ -12,6 +12,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/tehreet/pinpoint/internal/util"
 )
 
 const (
@@ -268,7 +270,7 @@ func verifyAction(action ActionInput, data *repoVerifyPayload, advisoryMap map[s
 		if !match {
 			av.Status = StatusFailed
 			av.Notes = append(av.Notes, fmt.Sprintf("RELEASE_MISMATCH: release %s recorded SHA %s but tag currently points to %s",
-				release.TagName, shortSHA(release.TagCommit.OID), shortSHA(currentSHA)))
+				release.TagName, util.ShortSHA(release.TagCommit.OID), util.ShortSHA(currentSHA)))
 		}
 
 		// Signal 2: GPG signature discontinuity
@@ -589,7 +591,7 @@ func FormatText(result *VerifyResult) string {
 		}
 
 		if av.CurrentSHA != "" {
-			fmt.Fprintf(&b, "    Tag %s → %s\n", av.Tag, shortSHA(av.CurrentSHA))
+			fmt.Fprintf(&b, "    Tag %s → %s\n", av.Tag, util.ShortSHA(av.CurrentSHA))
 		}
 
 		if av.ReleaseSHAMatch != nil {
@@ -597,7 +599,7 @@ func FormatText(result *VerifyResult) string {
 				fmt.Fprintf(&b, "    Release SHA matches current tag: ✓\n")
 			} else {
 				fmt.Fprintf(&b, "    Release SHA: %s MISMATCH (current: %s)\n",
-					shortSHA(av.ReleaseSHA), shortSHA(av.CurrentSHA))
+					util.ShortSHA(av.ReleaseSHA), util.ShortSHA(av.CurrentSHA))
 			}
 		}
 
@@ -647,9 +649,3 @@ func FormatJSON(result *VerifyResult) (string, error) {
 	return string(data), nil
 }
 
-func shortSHA(sha string) string {
-	if len(sha) > 7 {
-		return sha[:7] + "..."
-	}
-	return sha
-}

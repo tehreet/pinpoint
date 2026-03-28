@@ -8,6 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/tehreet/pinpoint/internal/util"
 )
 
 // InjectOptions configures how pinpoint-action steps are injected.
@@ -27,10 +29,6 @@ type InjectResult struct {
 	Output       string // modified content (for dry-run)
 }
 
-// leadingSpaces returns the number of leading spaces on a line.
-func leadingSpaces(line string) int {
-	return len(line) - len(strings.TrimLeft(line, " "))
-}
 
 // InjectFile inserts a pinpoint-action step as the first step of each job
 // in the given workflow YAML file. It uses line-based manipulation to
@@ -69,7 +67,7 @@ func InjectFile(path string, opts InjectOptions) (*InjectResult, error) {
 		trimmed := strings.TrimSpace(line)
 
 		// Detect top-level `jobs:` key
-		if trimmed == "jobs:" && leadingSpaces(line) == 0 {
+		if trimmed == "jobs:" && util.LeadingSpaces(line) == 0 {
 			inJobs = true
 			jobsIndent = 0
 			detectedJobIndent = -1
@@ -80,7 +78,7 @@ func InjectFile(path string, opts InjectOptions) (*InjectResult, error) {
 		}
 
 		// If we're in the jobs block, check for top-level keys that end jobs block
-		if inJobs && trimmed != "" && !strings.HasPrefix(trimmed, "#") && leadingSpaces(line) == 0 && trimmed != "jobs:" {
+		if inJobs && trimmed != "" && !strings.HasPrefix(trimmed, "#") && util.LeadingSpaces(line) == 0 && trimmed != "jobs:" {
 			inJobs = false
 			inJob = false
 			inSteps = false
@@ -91,7 +89,7 @@ func InjectFile(path string, opts InjectOptions) (*InjectResult, error) {
 		// that ends with colon and has no spaces. Auto-detect the indent level from
 		// the first job encountered.
 		if inJobs && trimmed != "" && !strings.HasPrefix(trimmed, "#") {
-			indent := leadingSpaces(line)
+			indent := util.LeadingSpaces(line)
 			// Auto-detect job indent from first job name
 			if detectedJobIndent == -1 && indent > jobsIndent && strings.HasSuffix(trimmed, ":") && !strings.Contains(trimmed, " ") {
 				detectedJobIndent = indent
@@ -111,7 +109,7 @@ func InjectFile(path string, opts InjectOptions) (*InjectResult, error) {
 				for j := i + 1; j < len(lines); j++ {
 					nextLine := lines[j]
 					nextTrimmed := strings.TrimSpace(nextLine)
-					nextIndent := leadingSpaces(nextLine)
+					nextIndent := util.LeadingSpaces(nextLine)
 
 					// Skip blank lines and comments
 					if nextTrimmed == "" || strings.HasPrefix(nextTrimmed, "#") {
@@ -172,7 +170,7 @@ func InjectFile(path string, opts InjectOptions) (*InjectResult, error) {
 				firstStepFound = true
 
 				// Detect the indentation of this step's `- `
-				stepIndent := leadingSpaces(line)
+				stepIndent := util.LeadingSpaces(line)
 				indent := strings.Repeat(" ", stepIndent)
 
 				// Check if this step is pinpoint-action (idempotency)
@@ -220,7 +218,7 @@ func InjectFile(path string, opts InjectOptions) (*InjectResult, error) {
 						line = lines[i]
 						lt := strings.TrimSpace(line)
 						// Next step starts with `- ` at the same indent level
-						if lt != "" && !strings.HasPrefix(lt, "#") && strings.HasPrefix(lt, "-") && leadingSpaces(line) == stepIndent {
+						if lt != "" && !strings.HasPrefix(lt, "#") && strings.HasPrefix(lt, "-") && util.LeadingSpaces(line) == stepIndent {
 							break
 						}
 						output = append(output, line)

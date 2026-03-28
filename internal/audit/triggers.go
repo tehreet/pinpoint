@@ -5,6 +5,8 @@ package audit
 
 import (
 	"strings"
+
+	"github.com/tehreet/pinpoint/internal/util"
 )
 
 // DangerousTriggerFinding represents a risky workflow trigger configuration.
@@ -93,7 +95,7 @@ func hasPullRequestTargetTrigger(content string) bool {
 			continue
 		}
 
-		indent := leadingSpaces(line)
+		indent := util.LeadingSpaces(line)
 
 		// Detect the on: block
 		if trimmed == "on:" || strings.HasPrefix(trimmed, "on:") {
@@ -146,7 +148,7 @@ func allJobsDisabled(content string) bool {
 		if strings.HasPrefix(trimmed, "#") {
 			continue
 		}
-		indent := leadingSpaces(line)
+		indent := util.LeadingSpaces(line)
 
 		// Find jobs: section
 		if trimmed == "jobs:" || strings.HasPrefix(trimmed, "jobs:") {
@@ -170,7 +172,7 @@ func allJobsDisabled(content string) bool {
 			// Look ahead for if: false in the next few lines at the right indent
 			for j := i + 1; j < len(lines) && j < i+10; j++ {
 				nextTrimmed := strings.TrimSpace(lines[j])
-				nextIndent := leadingSpaces(lines[j])
+				nextIndent := util.LeadingSpaces(lines[j])
 				if nextIndent <= indent && nextTrimmed != "" {
 					break // hit next job or section
 				}
@@ -199,7 +201,7 @@ func hasLiveCheckoutPRHead(content string) bool {
 		if strings.HasPrefix(trimmed, "#") {
 			continue
 		}
-		indent := leadingSpaces(line)
+		indent := util.LeadingSpaces(line)
 
 		// Track jobs section
 		if trimmed == "jobs:" || strings.HasPrefix(trimmed, "jobs:") {
@@ -218,7 +220,7 @@ func hasLiveCheckoutPRHead(content string) bool {
 			// Look ahead for if: false
 			for j := i + 1; j < len(lines) && j < i+10; j++ {
 				nextTrimmed := strings.TrimSpace(lines[j])
-				nextIndent := leadingSpaces(lines[j])
+				nextIndent := util.LeadingSpaces(lines[j])
 				if nextIndent <= indent && nextTrimmed != "" {
 					break
 				}
@@ -282,7 +284,7 @@ func hasRunWithPRInterpolation(content string) bool {
 			}
 			if strings.Contains(trimmed, "|") || strings.Contains(trimmed, ">") {
 				inRunBlock = true
-				runIndent = leadingSpaces(line)
+				runIndent = util.LeadingSpaces(line)
 			}
 			continue
 		}
@@ -291,7 +293,7 @@ func hasRunWithPRInterpolation(content string) bool {
 			if trimmed == "" {
 				continue
 			}
-			if leadingSpaces(line) > runIndent {
+			if util.LeadingSpaces(line) > runIndent {
 				if strings.Contains(line, "github.event.pull_request") {
 					return true
 				}
@@ -303,17 +305,3 @@ func hasRunWithPRInterpolation(content string) bool {
 	return false
 }
 
-// leadingSpaces counts the number of leading space characters in a line.
-func leadingSpaces(line string) int {
-	count := 0
-	for _, ch := range line {
-		if ch == ' ' {
-			count++
-		} else if ch == '\t' {
-			count += 2
-		} else {
-			break
-		}
-	}
-	return count
-}

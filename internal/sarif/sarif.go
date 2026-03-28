@@ -10,6 +10,7 @@ import (
 
 	"github.com/tehreet/pinpoint/internal/audit"
 	"github.com/tehreet/pinpoint/internal/risk"
+	"github.com/tehreet/pinpoint/internal/util"
 )
 
 const sarifSchema = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json"
@@ -197,7 +198,7 @@ func FormatScanSARIF(alerts []risk.Alert, toolVersion string) (string, error) {
 		r := Result{
 			RuleID:  "pinpoint/tag-repointed",
 			Level:   severityToLevel(a.Severity),
-			Message: Message{Text: fmt.Sprintf("%s@%s tag has been repointed from %s to %s. This may indicate a supply chain attack.", a.Action, a.Tag, shortSHA(a.PreviousSHA), shortSHA(a.CurrentSHA))},
+			Message: Message{Text: fmt.Sprintf("%s@%s tag has been repointed from %s to %s. This may indicate a supply chain attack.", a.Action, a.Tag, util.ShortSHA(a.PreviousSHA), util.ShortSHA(a.CurrentSHA))},
 			Properties: &ResultProperties{
 				Severity:    string(a.Severity),
 				PreviousSHA: a.PreviousSHA,
@@ -319,9 +320,3 @@ func marshalSARIF(log *Log) (string, error) {
 	return string(data) + "\n", nil
 }
 
-func shortSHA(sha string) string {
-	if len(sha) > 7 {
-		return sha[:7] + "..."
-	}
-	return sha
-}
