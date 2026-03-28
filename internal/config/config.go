@@ -39,11 +39,10 @@ type ActionConfig struct {
 
 // AlertConfig controls alerting behavior.
 type AlertConfig struct {
-	MinSeverity   string `yaml:"min_severity"`   // "low", "medium", "critical"
-	SlackWebhook  string `yaml:"slack_webhook"`
-	WebhookURL    string `yaml:"webhook_url"`
-	GitHubIssues  bool   `yaml:"github_issues"`
-	Stdout        bool   `yaml:"stdout"`
+	MinSeverity  string `yaml:"min_severity"` // "low", "medium", "critical"
+	SlackWebhook string `yaml:"slack_webhook"`
+	WebhookURL   string `yaml:"webhook_url"`
+	Stdout       bool   `yaml:"stdout"`
 }
 
 // StoreConfig controls state persistence.

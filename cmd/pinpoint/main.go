@@ -1474,7 +1474,7 @@ checking that action tags still point to the same commit SHA at execution time.
 		// Create temp dir
 		tmpdir, err := os.MkdirTemp("", "pinpoint-inject-*")
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "  Error creating temp dir: %v\n", repo)
+			fmt.Fprintf(os.Stderr, "  Error creating temp dir: %v\n", err)
 			failed++
 			continue
 		}
