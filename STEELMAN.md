@@ -525,3 +525,56 @@ digest verification, but all other checks (SHA, integrity, on-disk) still run.
 For private registries, mount Docker credentials (e.g., `~/.docker/config.json`)
 in the environment where `pinpoint lock` runs. The registry client uses
 standard Docker credential helpers.
+
+## 12. Behavioral Anomaly Signal Limitations (Spec 025)
+
+### 12a. Compromised Maintainer Bypass
+
+CONTRIBUTOR_ANOMALY (+35) fires when new contributors appear in a release.
+But if the attacker IS a known maintainer (as in the tj-actions attack where
+a maintainer account was compromised), their commits won't trigger this signal.
+The contributor is already in the `known_contributors` set.
+
+**Recommendation:** CONTRIBUTOR_ANOMALY catches new/unknown accounts, not
+insider threats. Layer it with DIFF_ANOMALY and RELEASE_CADENCE_ANOMALY —
+even a known maintainer pushing suspicious files at unusual times will
+trigger composite scoring. The three signals together are designed to catch
+attacks that no single signal would flag.
+
+### 12b. action.yml False Positives
+
+DIFF_ANOMALY classifies all `action.yml` modifications as suspicious because
+determining what changed within the file (description vs runs.main) would
+require fetching and diffing content — an additional API call per detection.
+Actions that frequently update their action.yml metadata will generate noise.
+
+**Recommendation:** Suppress with allow rules for specific repos where
+action.yml churn is expected. A `diff_ignore` config option is planned but
+not yet implemented.
+
+### 12c. Baseline Requirement
+
+All three behavioral signals require historical data in the lockfile:
+- CONTRIBUTOR_ANOMALY needs `known_contributors` (populated after first lock)
+- RELEASE_CADENCE_ANOMALY needs `release_history` with ≥3 entries
+- DIFF_ANOMALY needs a previous SHA to compare against
+
+The first `pinpoint lock` after upgrading captures the initial baseline but
+cannot detect anomalies until the second tag movement. There is no retroactive
+population from git history.
+
+**Recommendation:** Run `pinpoint lock` immediately after upgrading to v0.7+.
+The behavioral signals activate automatically as tag movements are observed.
+For critical actions, manually review the first release after baseline
+establishment.
+
+### 12d. High-Cadence Exclusion
+
+RELEASE_CADENCE_ANOMALY excludes projects with mean release intervals under
+7 days. This prevents false positives on actively developed projects but
+also means attackers targeting high-cadence projects (nightly release actions,
+CI tooling) won't trigger cadence anomalies.
+
+**Recommendation:** High-cadence projects are partially protected by the
+other two behavioral signals. CONTRIBUTOR_ANOMALY and DIFF_ANOMALY operate
+independently of release cadence.
