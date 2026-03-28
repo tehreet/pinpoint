@@ -10,6 +10,7 @@ import (
 )
 
 func TestResolveLockfilePath_NewExists(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	if err := os.MkdirAll(filepath.Join(dir, ".github"), 0755); err != nil {
 		t.Fatal(err)
@@ -29,6 +30,7 @@ func TestResolveLockfilePath_NewExists(t *testing.T) {
 }
 
 func TestResolveLockfilePath_LegacyExists(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	if err := os.WriteFile(filepath.Join(dir, ".pinpoint-manifest.json"), []byte("{}"), 0644); err != nil {
 		t.Fatal(err)
@@ -45,6 +47,7 @@ func TestResolveLockfilePath_LegacyExists(t *testing.T) {
 }
 
 func TestResolveLockfilePath_BothExist(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	if err := os.MkdirAll(filepath.Join(dir, ".github"), 0755); err != nil {
 		t.Fatal(err)
@@ -67,6 +70,7 @@ func TestResolveLockfilePath_BothExist(t *testing.T) {
 }
 
 func TestResolveLockfilePath_NeitherExists(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	path, legacy := ResolveLockfilePath(dir)

@@ -13,6 +13,7 @@ import (
 )
 
 func TestParseDockerRef(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name     string
 		ref      string
@@ -98,6 +99,7 @@ func TestParseDockerRef(t *testing.T) {
 }
 
 func TestParseDockerfile(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		content string
@@ -168,6 +170,7 @@ func TestParseDockerfile(t *testing.T) {
 }
 
 func TestResolveDigest(t *testing.T) {
+	t.Parallel()
 	const wantDigest = "sha256:9e3a184f680d5f4e1007348f04b020e7e34f205124e5fb2e7eae3ca2fd919e00"
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -208,6 +211,7 @@ func TestResolveDigest(t *testing.T) {
 }
 
 func TestResolveDigestUnauthorized(t *testing.T) {
+	t.Parallel()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case r.URL.Path == "/token" || r.URL.Path == "/v2/token":
@@ -231,6 +235,7 @@ func TestResolveDigestUnauthorized(t *testing.T) {
 }
 
 func TestResolveDigestDockerHub(t *testing.T) {
+	t.Parallel()
 	const wantDigest = "sha256:aabbcc"
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -262,6 +267,7 @@ func TestResolveDigestDockerHub(t *testing.T) {
 }
 
 func TestExtractDockerImageRef(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name       string
 		actionYAML string
@@ -311,6 +317,7 @@ func TestExtractDockerImageRef(t *testing.T) {
 }
 
 func TestResolveDockerInfo(t *testing.T) {
+	t.Parallel()
 	const wantDigest = "sha256:abc123def456"
 
 	registryServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -416,6 +423,7 @@ func TestResolveDockerInfo(t *testing.T) {
 }
 
 func TestDockerLockfileRoundTrip(t *testing.T) {
+	t.Parallel()
 	m := &Manifest{
 		Version:     2,
 		GeneratedAt: "2026-03-25T00:00:00Z",

@@ -10,6 +10,7 @@ import (
 )
 
 func TestSizeAnomalyOverridesMajorTagAdvance(t *testing.T) {
+	t.Parallel()
 	sev, signals := Score(ScoreContext{
 		TagName:       "v4",
 		IsDescendant:  true,
@@ -36,6 +37,7 @@ func TestSizeAnomalyOverridesMajorTagAdvance(t *testing.T) {
 }
 
 func TestScoreSemverRepoint(t *testing.T) {
+	t.Parallel()
 	sev, _ := Score(ScoreContext{TagName: "v1.2.3", IsDescendant: false})
 	if sev != SeverityCritical {
 		t.Errorf("expected CRITICAL for semver repoint, got %s", sev)
@@ -43,6 +45,7 @@ func TestScoreSemverRepoint(t *testing.T) {
 }
 
 func TestScoreMassRepoint(t *testing.T) {
+	t.Parallel()
 	sev, _ := Score(ScoreContext{TagName: "v1", BatchSize: 10})
 	if sev != SeverityCritical {
 		t.Errorf("expected CRITICAL for mass repoint, got %s", sev)
@@ -50,6 +53,7 @@ func TestScoreMassRepoint(t *testing.T) {
 }
 
 func TestScoreLegitimateAdvance(t *testing.T) {
+	t.Parallel()
 	sev, _ := Score(ScoreContext{
 		TagName: "v4", IsDescendant: true, ReleaseExists: true,
 	})
@@ -59,6 +63,7 @@ func TestScoreLegitimateAdvance(t *testing.T) {
 }
 
 func TestScore_AllSignalsCritical(t *testing.T) {
+	t.Parallel()
 	sev, signals := Score(ScoreContext{
 		BatchSize:     10,
 		IsDescendant:  false,
@@ -91,6 +96,7 @@ func TestScore_AllSignalsCritical(t *testing.T) {
 }
 
 func TestScore_MajorTagDescendantWithSizeAnomaly(t *testing.T) {
+	t.Parallel()
 	sev, signals := Score(ScoreContext{
 		TagName:       "v4",
 		IsDescendant:  true,
@@ -115,6 +121,7 @@ func TestScore_MajorTagDescendantWithSizeAnomaly(t *testing.T) {
 }
 
 func TestScore_MajorTagDescendantNoAnomaly(t *testing.T) {
+	t.Parallel()
 	sev, _ := Score(ScoreContext{
 		TagName:       "v4",
 		IsDescendant:  true,
@@ -128,6 +135,7 @@ func TestScore_MajorTagDescendantNoAnomaly(t *testing.T) {
 }
 
 func TestScore_SingleTagNonDescendant(t *testing.T) {
+	t.Parallel()
 	sev, _ := Score(ScoreContext{
 		TagName:       "v1.5.0",
 		IsDescendant:  false,
@@ -140,6 +148,7 @@ func TestScore_SingleTagNonDescendant(t *testing.T) {
 }
 
 func TestScore_BackdatedWithRelease(t *testing.T) {
+	t.Parallel()
 	sev, _ := Score(ScoreContext{
 		TagName:       "v1",
 		CommitDate:    time.Now().Add(-60 * 24 * time.Hour),
@@ -152,6 +161,7 @@ func TestScore_BackdatedWithRelease(t *testing.T) {
 }
 
 func TestScore_ZeroBatchSize(t *testing.T) {
+	t.Parallel()
 	sev, signals := Score(ScoreContext{
 		BatchSize:     0,
 		TagName:       "v1",
@@ -171,6 +181,7 @@ func TestScore_ZeroBatchSize(t *testing.T) {
 // === Spec 019: IMPOSSIBLE_TIMESTAMP tests ===
 
 func TestImpossibleTimestamp(t *testing.T) {
+	t.Parallel()
 	// Child dated 2022, parent dated 2026 → +70, signal present
 	sev, signals := Score(ScoreContext{
 		TagName:    "v1.2.3",
@@ -194,6 +205,7 @@ func TestImpossibleTimestamp(t *testing.T) {
 }
 
 func TestNormalTimestampOrder(t *testing.T) {
+	t.Parallel()
 	// Child dated 2026-03-20, parent dated 2026-03-19 → no signal
 	_, signals := Score(ScoreContext{
 		TagName:    "v1",
@@ -211,6 +223,7 @@ func TestNormalTimestampOrder(t *testing.T) {
 }
 
 func TestSameDate(t *testing.T) {
+	t.Parallel()
 	// Child and parent same date → no signal
 	now := time.Now()
 	_, signals := Score(ScoreContext{
@@ -229,6 +242,7 @@ func TestSameDate(t *testing.T) {
 }
 
 func TestNoParent(t *testing.T) {
+	t.Parallel()
 	// ParentDate is zero → no signal (root commits are fine)
 	_, signals := Score(ScoreContext{
 		TagName:    "v1",
@@ -242,6 +256,7 @@ func TestNoParent(t *testing.T) {
 }
 
 func TestImpossibleWithBackdated(t *testing.T) {
+	t.Parallel()
 	// Both IMPOSSIBLE_TIMESTAMP and BACKDATED_COMMIT fire independently, scores stack
 	sev, signals := Score(ScoreContext{
 		TagName:    "v1.2.3",
@@ -268,6 +283,7 @@ func TestImpossibleWithBackdated(t *testing.T) {
 }
 
 func TestTrivyFullReplay(t *testing.T) {
+	t.Parallel()
 	// All signals fire together, total score >400
 	sev, signals := Score(ScoreContext{
 		BatchSize:     76,
@@ -312,6 +328,7 @@ func TestTrivyFullReplay(t *testing.T) {
 // === Spec 017: SIGNATURE_DROPPED tests ===
 
 func TestSignatureDropped(t *testing.T) {
+	t.Parallel()
 	sev, signals := Score(ScoreContext{
 		TagName:      "v1.2.3",
 		WasGPGSigned: true,
@@ -334,6 +351,7 @@ func TestSignatureDropped(t *testing.T) {
 }
 
 func TestSignatureStillSigned(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:      "v1",
 		WasGPGSigned: true,
@@ -349,6 +367,7 @@ func TestSignatureStillSigned(t *testing.T) {
 }
 
 func TestSignatureNeverSigned(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:      "v1",
 		WasGPGSigned: false,
@@ -364,6 +383,7 @@ func TestSignatureNeverSigned(t *testing.T) {
 }
 
 func TestSignatureLockfileNoData(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:      "v1",
 		WasGPGSigned: false,
@@ -379,6 +399,7 @@ func TestSignatureLockfileNoData(t *testing.T) {
 }
 
 func TestScore_ExactlyFiveBatchSize(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		BatchSize: 5,
 		TagName:   "v1",
@@ -391,6 +412,7 @@ func TestScore_ExactlyFiveBatchSize(t *testing.T) {
 }
 
 func TestScore_SixBatchSize(t *testing.T) {
+	t.Parallel()
 	sev, signals := Score(ScoreContext{
 		BatchSize: 6,
 		TagName:   "v1",
@@ -413,6 +435,7 @@ func TestScore_SixBatchSize(t *testing.T) {
 // === Spec 025: Behavioral Anomaly Signal tests ===
 
 func TestContributorAnomaly_NewContributor(t *testing.T) {
+	t.Parallel()
 	// Known contributors [A, B], new release has commit from C → +35
 	sev, signals := Score(ScoreContext{
 		TagName:         "v4",
@@ -438,6 +461,7 @@ func TestContributorAnomaly_NewContributor(t *testing.T) {
 }
 
 func TestContributorAnomaly_AllKnown(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
@@ -453,6 +477,7 @@ func TestContributorAnomaly_AllKnown(t *testing.T) {
 }
 
 func TestContributorAnomaly_FirstLock(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
@@ -468,6 +493,7 @@ func TestContributorAnomaly_FirstLock(t *testing.T) {
 }
 
 func TestDiffAnomaly_SuspiciousMixedWithNormal(t *testing.T) {
+	t.Parallel()
 	sev, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
@@ -492,6 +518,7 @@ func TestDiffAnomaly_SuspiciousMixedWithNormal(t *testing.T) {
 }
 
 func TestDiffAnomaly_NormalOnly(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
@@ -507,6 +534,7 @@ func TestDiffAnomaly_NormalOnly(t *testing.T) {
 }
 
 func TestDiffAnomaly_SuspiciousOnly(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
@@ -531,6 +559,7 @@ func TestDiffAnomaly_SuspiciousOnly(t *testing.T) {
 }
 
 func TestDiffAnomaly_NilSuspicious(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
@@ -546,6 +575,7 @@ func TestDiffAnomaly_NilSuspicious(t *testing.T) {
 }
 
 func TestReleaseCadence_BurstRelease(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
@@ -568,6 +598,7 @@ func TestReleaseCadence_BurstRelease(t *testing.T) {
 }
 
 func TestReleaseCadence_NormalTiming(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
@@ -585,6 +616,7 @@ func TestReleaseCadence_NormalTiming(t *testing.T) {
 }
 
 func TestReleaseCadence_HighCadenceExcluded(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
@@ -602,6 +634,7 @@ func TestReleaseCadence_HighCadenceExcluded(t *testing.T) {
 }
 
 func TestReleaseCadence_TooFewReleases(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
@@ -619,6 +652,7 @@ func TestReleaseCadence_TooFewReleases(t *testing.T) {
 }
 
 func TestReleaseCadence_DormantAction(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
@@ -641,6 +675,7 @@ func TestReleaseCadence_DormantAction(t *testing.T) {
 }
 
 func TestReleaseCadence_RapidFire(t *testing.T) {
+	t.Parallel()
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
@@ -664,6 +699,7 @@ func TestReleaseCadence_RapidFire(t *testing.T) {
 }
 
 func TestComposite_AllBehavioralSignals_Critical(t *testing.T) {
+	t.Parallel()
 	// Legitimate-looking attack: descendant, release exists, but all 3 behavioral signals fire
 	// Score: -30 (MAJOR_TAG_ADVANCE) + 35 (CONTRIBUTOR) + 40 (DIFF) + 25 (CADENCE) = +70 → CRITICAL
 	sev, signals := Score(ScoreContext{
@@ -697,6 +733,7 @@ func TestComposite_AllBehavioralSignals_Critical(t *testing.T) {
 }
 
 func TestComposite_LegitimateRelease_Low(t *testing.T) {
+	t.Parallel()
 	sev, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
@@ -714,6 +751,7 @@ func TestComposite_LegitimateRelease_Low(t *testing.T) {
 }
 
 func TestClassifyDiffFiles_MixedSuspicious(t *testing.T) {
+	t.Parallel()
 	files := []string{"src/main.ts", "dist/index.js", ".github/workflows/ci.yml"}
 	suspicious, diffOnly := ClassifyDiffFiles(files)
 	if len(suspicious) != 2 {
@@ -725,6 +763,7 @@ func TestClassifyDiffFiles_MixedSuspicious(t *testing.T) {
 }
 
 func TestClassifyDiffFiles_NormalOnly(t *testing.T) {
+	t.Parallel()
 	files := []string{"src/main.ts", "README.md", "package.json"}
 	suspicious, _ := ClassifyDiffFiles(files)
 	if len(suspicious) != 0 {
@@ -733,6 +772,7 @@ func TestClassifyDiffFiles_NormalOnly(t *testing.T) {
 }
 
 func TestClassifyDiffFiles_SuspiciousOnly(t *testing.T) {
+	t.Parallel()
 	files := []string{".github/workflows/ci.yml", "Makefile"}
 	suspicious, diffOnly := ClassifyDiffFiles(files)
 	if len(suspicious) != 2 {
@@ -744,6 +784,7 @@ func TestClassifyDiffFiles_SuspiciousOnly(t *testing.T) {
 }
 
 func TestClassifyDiffFiles_EntrypointSh(t *testing.T) {
+	t.Parallel()
 	files := []string{"entrypoint.sh", "src/main.go"}
 	suspicious, diffOnly := ClassifyDiffFiles(files)
 	if len(suspicious) != 1 || suspicious[0] != "entrypoint.sh" {
@@ -755,6 +796,7 @@ func TestClassifyDiffFiles_EntrypointSh(t *testing.T) {
 }
 
 func TestClassifyDiffFiles_Dockerfile(t *testing.T) {
+	t.Parallel()
 	files := []string{"Dockerfile", "src/index.ts"}
 	suspicious, _ := ClassifyDiffFiles(files)
 	if len(suspicious) != 1 {
@@ -763,6 +805,7 @@ func TestClassifyDiffFiles_Dockerfile(t *testing.T) {
 }
 
 func TestClassifyDiffFiles_ActionYml(t *testing.T) {
+	t.Parallel()
 	files := []string{"action.yml", "src/index.ts"}
 	suspicious, _ := ClassifyDiffFiles(files)
 	if len(suspicious) != 1 || suspicious[0] != "action.yml" {
@@ -771,6 +814,7 @@ func TestClassifyDiffFiles_ActionYml(t *testing.T) {
 }
 
 func TestClassifyDiffFiles_DocsOnly(t *testing.T) {
+	t.Parallel()
 	files := []string{"docs/guide.md", "README.md", "LICENSE"}
 	suspicious, _ := ClassifyDiffFiles(files)
 	if len(suspicious) != 0 {

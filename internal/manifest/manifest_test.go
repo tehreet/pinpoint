@@ -72,6 +72,7 @@ func writeManifest(t *testing.T, dir string, m *Manifest) string {
 }
 
 func TestRefreshNoChanges(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{
@@ -116,6 +117,7 @@ func TestRefreshNoChanges(t *testing.T) {
 }
 
 func TestRefreshWithDrift(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{
@@ -178,6 +180,7 @@ func TestRefreshWithDrift(t *testing.T) {
 }
 
 func TestRefreshWithDiscover(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{
@@ -244,6 +247,7 @@ jobs:
 }
 
 func TestVerifyClean(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{
@@ -281,6 +285,7 @@ func TestVerifyClean(t *testing.T) {
 }
 
 func TestVerifyDrift(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{
@@ -336,6 +341,7 @@ func TestVerifyDrift(t *testing.T) {
 }
 
 func TestRefreshMissingManifest(t *testing.T) {
+	t.Parallel()
 	client := poller.NewGraphQLClient("")
 
 	_, err := Refresh(context.Background(), "/nonexistent/.pinpoint-manifest.json", "", false, client)
@@ -351,6 +357,7 @@ func TestRefreshMissingManifest(t *testing.T) {
 }
 
 func TestRefresh_TagDeletedOnRemote(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{
@@ -406,6 +413,7 @@ func TestRefresh_TagDeletedOnRemote(t *testing.T) {
 }
 
 func TestRefresh_NewRepoDiscovered(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{
@@ -469,6 +477,7 @@ jobs:
 }
 
 func TestRefresh_ConcurrentSHAChange(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{
@@ -522,6 +531,7 @@ func TestRefresh_ConcurrentSHAChange(t *testing.T) {
 }
 
 func TestVerify_ExitCodeThree(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{
@@ -556,6 +566,7 @@ func TestVerify_ExitCodeThree(t *testing.T) {
 }
 
 func TestInit_CreatesFiles(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	manifestPath := filepath.Join(dir, ".pinpoint-manifest.json")
 
@@ -596,6 +607,7 @@ func TestInit_CreatesFiles(t *testing.T) {
 }
 
 func TestManifestEntryDockerSerialization(t *testing.T) {
+	t.Parallel()
 	entry := ManifestEntry{
 		SHA:       "abc123def456",
 		Integrity: "sha256-AAAA",
@@ -637,6 +649,7 @@ func TestManifestEntryDockerSerialization(t *testing.T) {
 }
 
 func TestManifestEntryDockerfileBaseImages(t *testing.T) {
+	t.Parallel()
 	entry := ManifestEntry{
 		SHA:  "abc123",
 		Type: "docker",
@@ -669,6 +682,7 @@ func TestManifestEntryDockerfileBaseImages(t *testing.T) {
 }
 
 func TestRefresh_EmptyManifest(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	m := &Manifest{

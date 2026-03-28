@@ -11,6 +11,7 @@ import (
 )
 
 func TestInjectFile(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name          string
 		input         string
@@ -308,6 +309,7 @@ jobs:
 }
 
 func TestInjectDir(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	workflow1 := `name: CI

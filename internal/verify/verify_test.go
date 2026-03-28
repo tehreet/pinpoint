@@ -102,6 +102,7 @@ func makeRef(name, sha string) refNode {
 }
 
 func TestVerify_AllClean(t *testing.T) {
+	t.Parallel()
 	sha1 := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	sha2 := "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 	sha3 := "cccccccccccccccccccccccccccccccccccccccc"
@@ -170,6 +171,7 @@ func TestVerify_AllClean(t *testing.T) {
 }
 
 func TestVerify_ReleaseMismatch(t *testing.T) {
+	t.Parallel()
 	releaseSHA := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	currentSHA := "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 
@@ -214,6 +216,7 @@ func TestVerify_ReleaseMismatch(t *testing.T) {
 }
 
 func TestVerify_GPGDiscontinuity(t *testing.T) {
+	t.Parallel()
 	sha := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 	// Current release is unsigned, but another release is signed
@@ -259,6 +262,7 @@ func TestVerify_GPGDiscontinuity(t *testing.T) {
 }
 
 func TestVerify_ImpossibleChronology(t *testing.T) {
+	t.Parallel()
 	sha := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 	// Authored date is July 2024, but parent committed March 2026 — backdated
@@ -301,6 +305,7 @@ func TestVerify_ImpossibleChronology(t *testing.T) {
 }
 
 func TestVerify_NoReleases(t *testing.T) {
+	t.Parallel()
 	sha := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 	graphqlData := map[string]repoVerifyPayload{
@@ -336,6 +341,7 @@ func TestVerify_NoReleases(t *testing.T) {
 }
 
 func TestVerify_MajorTagResolution(t *testing.T) {
+	t.Parallel()
 	// v4 and v4.2.2 point to the same SHA
 	sha := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
@@ -381,6 +387,7 @@ func TestVerify_MajorTagResolution(t *testing.T) {
 }
 
 func TestVerify_KnownBadSHA(t *testing.T) {
+	t.Parallel()
 	// SHA starting with known-bad prefix "0e58ed8"
 	sha := "0e58ed8671d6b60e0d8e05b5d65bcbc18b67e161"
 
@@ -419,6 +426,7 @@ func TestVerify_KnownBadSHA(t *testing.T) {
 }
 
 func TestVerify_AdvisoryMatch(t *testing.T) {
+	t.Parallel()
 	sha := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 	graphqlData := map[string]repoVerifyPayload{
@@ -477,6 +485,7 @@ func TestVerify_AdvisoryMatch(t *testing.T) {
 }
 
 func TestVerify_ChronologyTolerance(t *testing.T) {
+	t.Parallel()
 	sha := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 
 	// Authored date is 24 hours before parent committed date — within 48h tolerance
@@ -521,6 +530,7 @@ func TestVerify_ChronologyTolerance(t *testing.T) {
 }
 
 func TestVerify_CombinedSignals(t *testing.T) {
+	t.Parallel()
 	releaseSHA := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 	currentSHA := "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 
@@ -605,6 +615,7 @@ func assertHasNote(t *testing.T, notes []string, prefix string) {
 
 // Verify FormatText doesn't panic and produces expected output.
 func TestVerify_FormatText(t *testing.T) {
+	t.Parallel()
 	result := &VerifyResult{
 		Clean:   1,
 		Limited: 1,

@@ -15,6 +15,7 @@ import (
 )
 
 func TestRepoToAlias(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input string
 		want  string
@@ -35,6 +36,7 @@ func TestRepoToAlias(t *testing.T) {
 }
 
 func TestBuildAliasMap_Collision(t *testing.T) {
+	t.Parallel()
 	repos := []string{"foo/bar-baz", "foo/bar_baz"}
 	aliasMap := buildAliasMap(repos)
 
@@ -55,6 +57,7 @@ func TestBuildAliasMap_Collision(t *testing.T) {
 }
 
 func TestBuildBatchQuery(t *testing.T) {
+	t.Parallel()
 	aliasMap := map[string]string{
 		"actions_checkout":          "actions/checkout",
 		"docker_build_push_action": "docker/build-push-action",
@@ -77,6 +80,7 @@ func TestBuildBatchQuery(t *testing.T) {
 }
 
 func TestParseRefNodes_Lightweight(t *testing.T) {
+	t.Parallel()
 	payload := refsPayload{}
 	payload.Refs.Nodes = []struct {
 		Name   string `json:"name"`
@@ -125,6 +129,7 @@ func TestParseRefNodes_Lightweight(t *testing.T) {
 }
 
 func TestParseRefNodes_Annotated(t *testing.T) {
+	t.Parallel()
 	payload := refsPayload{}
 	innerTarget := &struct {
 		TypeName string `json:"__typename"`
@@ -224,6 +229,7 @@ func mockGraphQLResponse(aliasToTags map[string][]ResolvedTag, cost, remaining i
 }
 
 func TestFetchTagsBatch_SingleBatch(t *testing.T) {
+	t.Parallel()
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		resp := mockGraphQLResponse(map[string][]ResolvedTag{
 			"actions_checkout": {
@@ -275,6 +281,7 @@ func TestFetchTagsBatch_SingleBatch(t *testing.T) {
 }
 
 func TestFetchTagsBatch_BatchSplitting(t *testing.T) {
+	t.Parallel()
 	var callCount atomic.Int32
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -331,6 +338,7 @@ func TestFetchTagsBatch_BatchSplitting(t *testing.T) {
 }
 
 func TestFetchTagsBatch_PartialFailure(t *testing.T) {
+	t.Parallel()
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Return data for repo1 but error for repo2
 		resp := map[string]interface{}{
@@ -391,6 +399,7 @@ func TestFetchTagsBatch_PartialFailure(t *testing.T) {
 }
 
 func TestFetchTagsBatch_Pagination(t *testing.T) {
+	t.Parallel()
 	callNum := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		callNum++
@@ -478,6 +487,7 @@ func TestFetchTagsBatch_Pagination(t *testing.T) {
 }
 
 func TestFetchTagsBatch_GraphQLError_Retries(t *testing.T) {
+	t.Parallel()
 	var callCount atomic.Int32
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -518,6 +528,7 @@ func TestFetchTagsBatch_GraphQLError_Retries(t *testing.T) {
 }
 
 func TestFetchTagsBatch_AllRetriesFail(t *testing.T) {
+	t.Parallel()
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("internal error"))

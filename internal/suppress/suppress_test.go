@@ -25,6 +25,7 @@ func makeAlert(action, tag string, severity risk.Severity) risk.Alert {
 }
 
 func TestSuppressMajorTagAdvance(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		makeAlert("actions/checkout", "v4", risk.SeverityLow),
 	}
@@ -54,6 +55,7 @@ func TestSuppressMajorTagAdvance(t *testing.T) {
 }
 
 func TestNoSuppressForSemver(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		makeAlert("actions/checkout", "v1.2.3", risk.SeverityCritical),
 	}
@@ -81,6 +83,7 @@ func TestNoSuppressForSemver(t *testing.T) {
 }
 
 func TestSuppressByActor(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		makeAlert("myorg/my-action", "v2", risk.SeverityLow),
 	}
@@ -109,6 +112,7 @@ func TestSuppressByActor(t *testing.T) {
 }
 
 func TestSuppressEntireRepo(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		makeAlert("coreweave/internal-action", "v1", risk.SeverityCritical),
 		makeAlert("coreweave/internal-action", "v2.0.0", risk.SeverityMedium),
@@ -133,6 +137,7 @@ func TestSuppressEntireRepo(t *testing.T) {
 }
 
 func TestGlobMatching(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		pattern string
 		value   string
@@ -154,6 +159,7 @@ func TestGlobMatching(t *testing.T) {
 }
 
 func TestReasonRequired(t *testing.T) {
+	t.Parallel()
 	yaml := `
 actions:
   - repo: actions/checkout
@@ -169,6 +175,7 @@ allow:
 }
 
 func TestSuppressedAlertsCounted(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		makeAlert("actions/checkout", "v4", risk.SeverityLow),
 		makeAlert("actions/setup-go", "v5", risk.SeverityLow),
@@ -197,6 +204,7 @@ func TestSuppressedAlertsCounted(t *testing.T) {
 }
 
 func TestSuppress_MultipleRulesMatch(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		makeAlert("actions/checkout", "v4", risk.SeverityLow),
 	}
@@ -231,6 +239,7 @@ func TestSuppress_MultipleRulesMatch(t *testing.T) {
 }
 
 func TestSuppress_RuleOrderDoesntMatter(t *testing.T) {
+	t.Parallel()
 	alertA := makeAlert("actions/checkout", "v4", risk.SeverityLow)
 	alertB := makeAlert("docker/build-push-action", "v5", risk.SeverityMedium)
 
@@ -266,6 +275,7 @@ func TestSuppress_RuleOrderDoesntMatter(t *testing.T) {
 }
 
 func TestSuppress_NoRules(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		makeAlert("actions/checkout", "v4", risk.SeverityLow),
 		makeAlert("docker/build-push-action", "v5", risk.SeverityMedium),
@@ -285,6 +295,7 @@ func TestSuppress_NoRules(t *testing.T) {
 }
 
 func TestSuppress_AllSuppressed(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		makeAlert("actions/checkout", "v4", risk.SeverityLow),
 		makeAlert("actions/setup-go", "v5", risk.SeverityMedium),
@@ -310,6 +321,7 @@ func TestSuppress_AllSuppressed(t *testing.T) {
 }
 
 func TestSuppress_CriticalNotSuppressed(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		{
 			Severity:    risk.SeverityCritical,

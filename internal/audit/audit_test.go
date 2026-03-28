@@ -17,6 +17,7 @@ import (
 )
 
 func TestClassifyRef(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		ref  string
 		want string
@@ -41,6 +42,7 @@ func TestClassifyRef(t *testing.T) {
 }
 
 func TestExtractRefs(t *testing.T) {
+	t.Parallel()
 	content := `name: CI
 on: push
 jobs:
@@ -82,6 +84,7 @@ jobs:
 }
 
 func TestExtractRefsSkipsLocalActions(t *testing.T) {
+	t.Parallel()
 	content := `steps:
   - uses: ./.github/actions/local-action
   - uses: actions/checkout@v4
@@ -96,6 +99,7 @@ func TestExtractRefsSkipsLocalActions(t *testing.T) {
 }
 
 func TestExtractRefsSkipsComments(t *testing.T) {
+	t.Parallel()
 	content := `steps:
   # - uses: actions/checkout@v3
   - uses: actions/checkout@v4
@@ -110,6 +114,7 @@ func TestExtractRefsSkipsComments(t *testing.T) {
 }
 
 func TestScoreAction(t *testing.T) {
+	t.Parallel()
 	falseVal := false
 	trueVal := true
 
@@ -179,6 +184,7 @@ func TestScoreAction(t *testing.T) {
 }
 
 func TestFormatReport(t *testing.T) {
+	t.Parallel()
 	falseVal := false
 	trueVal := true
 
@@ -258,6 +264,7 @@ func TestFormatReport(t *testing.T) {
 }
 
 func TestFormatConfig(t *testing.T) {
+	t.Parallel()
 	falseVal := false
 
 	result := &AuditResult{
@@ -304,6 +311,7 @@ func TestFormatConfig(t *testing.T) {
 }
 
 func TestFormatJSON(t *testing.T) {
+	t.Parallel()
 	result := &AuditResult{
 		Org:                "test-org",
 		ScannedAt:          time.Date(2026, 3, 21, 8, 0, 0, 0, time.UTC),
@@ -358,6 +366,7 @@ func TestFormatJSON(t *testing.T) {
 }
 
 func TestRunAuditEndToEnd(t *testing.T) {
+	t.Parallel()
 	// Mock GraphQL server for org repos
 	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		resp := map[string]interface{}{
@@ -504,6 +513,7 @@ func TestRunAuditEndToEnd(t *testing.T) {
 }
 
 func TestFmtInt(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		n    int
 		want string
@@ -523,6 +533,7 @@ func TestFmtInt(t *testing.T) {
 }
 
 func TestFormatManifest(t *testing.T) {
+	t.Parallel()
 	trueVal := true
 
 	result := &AuditResult{
@@ -583,6 +594,7 @@ func TestFormatManifest(t *testing.T) {
 
 // Ensure fmtInt handles larger numbers
 func TestFmtIntLarge(t *testing.T) {
+	t.Parallel()
 	_ = fmt.Sprintf("test") // avoid unused import
 	got := fmtInt(999999)
 	// This is a simple implementation; just verify it doesn't panic
@@ -592,6 +604,7 @@ func TestFmtIntLarge(t *testing.T) {
 }
 
 func TestAudit_RepoWithNoWorkflows(t *testing.T) {
+	t.Parallel()
 	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		resp := map[string]interface{}{
 			"data": map[string]interface{}{
@@ -660,6 +673,7 @@ func TestAudit_RepoWithNoWorkflows(t *testing.T) {
 }
 
 func TestAudit_ArchivedReposSkipped(t *testing.T) {
+	t.Parallel()
 	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		resp := map[string]interface{}{
 			"data": map[string]interface{}{
@@ -747,6 +761,7 @@ func TestAudit_ArchivedReposSkipped(t *testing.T) {
 }
 
 func TestAudit_ForkedReposSkipped(t *testing.T) {
+	t.Parallel()
 	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		resp := map[string]interface{}{
 			"data": map[string]interface{}{
@@ -836,6 +851,7 @@ func TestAudit_ForkedReposSkipped(t *testing.T) {
 }
 
 func TestAudit_UnprotectedWorkflowDetection(t *testing.T) {
+	t.Parallel()
 	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		resp := map[string]interface{}{
 			"data": map[string]interface{}{
@@ -916,6 +932,7 @@ func TestAudit_UnprotectedWorkflowDetection(t *testing.T) {
 }
 
 func TestAudit_ProtectedWorkflowDetection(t *testing.T) {
+	t.Parallel()
 	graphqlServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		resp := map[string]interface{}{
 			"data": map[string]interface{}{

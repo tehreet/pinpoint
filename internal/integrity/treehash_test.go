@@ -22,6 +22,7 @@ func writeFile(t *testing.T, dir, name, content string) {
 }
 
 func TestComputeTreeHash_Deterministic(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	writeFile(t, dir, "a.txt", "hello")
 	writeFile(t, dir, "b.txt", "world")
@@ -47,6 +48,7 @@ func TestComputeTreeHash_Deterministic(t *testing.T) {
 }
 
 func TestComputeTreeHash_ContentSensitive(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	writeFile(t, dir, "a.txt", "hello")
 	writeFile(t, dir, "b.txt", "world")
@@ -70,6 +72,7 @@ func TestComputeTreeHash_ContentSensitive(t *testing.T) {
 }
 
 func TestComputeTreeHash_OrderIndependent(t *testing.T) {
+	t.Parallel()
 	// Create dir1 with files written in order a, b, c
 	dir1 := t.TempDir()
 	writeFile(t, dir1, "a.txt", "aaa")
@@ -98,6 +101,7 @@ func TestComputeTreeHash_OrderIndependent(t *testing.T) {
 }
 
 func TestComputeTreeHash_SkipsGitDir(t *testing.T) {
+	t.Parallel()
 	// Dir without .git
 	dir1 := t.TempDir()
 	writeFile(t, dir1, "a.txt", "hello")
@@ -124,6 +128,7 @@ func TestComputeTreeHash_SkipsGitDir(t *testing.T) {
 }
 
 func TestComputeTreeHash_SkipsSymlinks(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	writeFile(t, dir, "a.txt", "hello")
 
@@ -148,6 +153,7 @@ func TestComputeTreeHash_SkipsSymlinks(t *testing.T) {
 }
 
 func TestComputeTreeHash_EmptyDir(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 
 	hash, err := ComputeTreeHash(dir)
@@ -170,6 +176,7 @@ func TestComputeTreeHash_EmptyDir(t *testing.T) {
 }
 
 func TestComputeTreeHash_NestedDirectories(t *testing.T) {
+	t.Parallel()
 	dir := t.TempDir()
 	writeFile(t, dir, "level1.txt", "l1")
 	writeFile(t, dir, "a/level2.txt", "l2")

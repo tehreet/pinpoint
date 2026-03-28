@@ -14,6 +14,7 @@ import (
 )
 
 func TestDownloadAndHash_Success(t *testing.T) {
+	t.Parallel()
 	content := []byte("test tarball content for hashing")
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(content)
@@ -35,6 +36,7 @@ func TestDownloadAndHash_Success(t *testing.T) {
 }
 
 func TestDownloadAndHash_Deterministic(t *testing.T) {
+	t.Parallel()
 	content := []byte("deterministic content check")
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write(content)
@@ -57,6 +59,7 @@ func TestDownloadAndHash_Deterministic(t *testing.T) {
 }
 
 func TestDownloadAndHash_DifferentContent(t *testing.T) {
+	t.Parallel()
 	ts1 := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("content A"))
 	}))
@@ -83,6 +86,7 @@ func TestDownloadAndHash_DifferentContent(t *testing.T) {
 }
 
 func TestDownloadAndHash_HTTPError(t *testing.T) {
+	t.Parallel()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 	}))
@@ -95,6 +99,7 @@ func TestDownloadAndHash_HTTPError(t *testing.T) {
 }
 
 func TestDownloadAndHash_SRIFormat(t *testing.T) {
+	t.Parallel()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("some content"))
 	}))
@@ -120,6 +125,7 @@ func TestDownloadAndHash_SRIFormat(t *testing.T) {
 }
 
 func TestDownloadAndHashBatch_Concurrent(t *testing.T) {
+	t.Parallel()
 	var requestCount atomic.Int32
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestCount.Add(1)
@@ -153,6 +159,7 @@ func TestDownloadAndHashBatch_Concurrent(t *testing.T) {
 }
 
 func TestDownloadAndHashBatch_Deduplication(t *testing.T) {
+	t.Parallel()
 	var requestCount atomic.Int32
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestCount.Add(1)

@@ -8,6 +8,7 @@ import (
 )
 
 func TestCritical_CheckoutPRHead(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   pull_request_target:
@@ -31,6 +32,7 @@ jobs:
 }
 
 func TestCritical_CheckoutHeadRef(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   pull_request_target:
@@ -53,6 +55,7 @@ jobs:
 }
 
 func TestHigh_RunWithPRInterpolation(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   pull_request_target:
@@ -73,6 +76,7 @@ jobs:
 }
 
 func TestHigh_MultiLineRunWithPRInterpolation(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   pull_request_target:
@@ -96,6 +100,7 @@ jobs:
 }
 
 func TestHigh_MultiLineRunFoldedStyle(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   pull_request_target:
@@ -117,6 +122,7 @@ jobs:
 }
 
 func TestMedium_MultiLineRunSafe(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   pull_request_target:
@@ -139,6 +145,7 @@ jobs:
 }
 
 func TestMedium_PullRequestTargetOnly(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   pull_request_target:
@@ -159,6 +166,7 @@ jobs:
 }
 
 func TestClean_PullRequest(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   pull_request:
@@ -177,6 +185,7 @@ jobs:
 }
 
 func TestClean_CommentedOut(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   push:
@@ -199,6 +208,7 @@ jobs:
 // === NEW: False positive regression tests ===
 
 func TestClean_PullRequestTargetInIfConditionOnly(t *testing.T) {
+	t.Parallel()
 	// puppet-falcon pattern: trigger is pull_request (NOT target),
 	// but pull_request_target appears in an if: condition.
 	// This was a false positive before the fix.
@@ -227,6 +237,7 @@ jobs:
 }
 
 func TestClean_AllJobsDisabledWithIfFalse(t *testing.T) {
+	t.Parallel()
 	// CrowdStrike ansible_collection_falcon pattern: pull_request_target trigger
 	// exists but every job has if: false — dead code.
 	content := `
@@ -261,6 +272,7 @@ jobs:
 }
 
 func TestClean_TestGoatRepo(t *testing.T) {
+	t.Parallel()
 	// StepSecurity github-actions-goat: intentionally vulnerable
 	content := `
 on:
@@ -281,6 +293,7 @@ jobs:
 }
 
 func TestClean_PlaygroundRepo(t *testing.T) {
+	t.Parallel()
 	content := `
 on:
   pull_request_target:
@@ -299,6 +312,7 @@ jobs:
 }
 
 func TestCritical_LiveJobWithDisabledSibling(t *testing.T) {
+	t.Parallel()
 	// One job is disabled, another is live with the dangerous pattern.
 	// Should still flag the live job.
 	content := `
@@ -333,6 +347,7 @@ jobs:
 // === Existing replay tests ===
 
 func TestTrivyAPIDiffReplay(t *testing.T) {
+	t.Parallel()
 	content := `
 name: API Diff
 on:
@@ -372,6 +387,7 @@ jobs:
 }
 
 func TestSpotbugsReplay(t *testing.T) {
+	t.Parallel()
 	content := `
 name: Build PR
 on:

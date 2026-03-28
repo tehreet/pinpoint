@@ -15,6 +15,7 @@ import (
 )
 
 func TestParseActionType_Composite(t *testing.T) {
+	t.Parallel()
 	yml := []byte(`name: Test
 runs:
   using: composite
@@ -28,6 +29,7 @@ runs:
 }
 
 func TestParseActionType_Node24(t *testing.T) {
+	t.Parallel()
 	yml := []byte(`name: Test
 runs:
   using: 'node24'
@@ -40,6 +42,7 @@ runs:
 }
 
 func TestParseActionType_Docker(t *testing.T) {
+	t.Parallel()
 	yml := []byte(`name: Test
 runs:
   using: docker
@@ -52,6 +55,7 @@ runs:
 }
 
 func TestParseActionType_Unknown(t *testing.T) {
+	t.Parallel()
 	got := ParseActionType([]byte("not valid yaml: [[["))
 	if got != "unknown" {
 		t.Errorf("expected unknown, got %q", got)
@@ -59,6 +63,7 @@ func TestParseActionType_Unknown(t *testing.T) {
 }
 
 func TestExtractUsesFromComposite_MultipleUses(t *testing.T) {
+	t.Parallel()
 	yml := []byte(`name: Test
 runs:
   using: composite
@@ -80,6 +85,7 @@ runs:
 }
 
 func TestExtractUsesFromComposite_SkipsLocal(t *testing.T) {
+	t.Parallel()
 	yml := []byte(`name: Test
 runs:
   using: composite
@@ -97,6 +103,7 @@ runs:
 }
 
 func TestExtractUsesFromComposite_SkipsEmpty(t *testing.T) {
+	t.Parallel()
 	yml := []byte(`name: Test
 runs:
   using: composite
@@ -121,6 +128,7 @@ func b64Content(content string) string {
 }
 
 func TestResolveTransitiveDeps_NodeAction(t *testing.T) {
+	t.Parallel()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "/contents/action.yml") {
 			fmt.Fprint(w, b64Content(`name: Test
@@ -147,6 +155,7 @@ runs:
 }
 
 func TestResolveTransitiveDeps_CompositeWithDeps(t *testing.T) {
+	t.Parallel()
 	depSHA := "ea165f8d65b6e75b540449e92b4886f43607fa02"
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
@@ -207,6 +216,7 @@ runs:
 }
 
 func TestResolveTransitiveDeps_DepthLimit(t *testing.T) {
+	t.Parallel()
 	// Every action.yml is composite that references itself
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "/contents/action.yml") {
@@ -237,6 +247,7 @@ runs:
 }
 
 func TestResolveTransitiveDeps_LocalRefSkipped(t *testing.T) {
+	t.Parallel()
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if strings.Contains(r.URL.Path, "/contents/action.yml") {
 			fmt.Fprint(w, b64Content(`name: Composite

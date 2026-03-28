@@ -13,6 +13,7 @@ import (
 )
 
 func TestFormatScanSARIF(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		{
 			Severity:    risk.SeverityCritical,
@@ -82,6 +83,7 @@ func TestFormatScanSARIF(t *testing.T) {
 }
 
 func TestFormatAuditSARIF(t *testing.T) {
+	t.Parallel()
 	boolFalse := false
 	result := &audit.AuditResult{
 		Org: "testorg",
@@ -148,6 +150,7 @@ func TestFormatAuditSARIF(t *testing.T) {
 }
 
 func TestSARIFSchema(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		{
 			Severity:    risk.SeverityLow,
@@ -227,6 +230,7 @@ func TestSARIFSchema(t *testing.T) {
 }
 
 func TestEmptyResults(t *testing.T) {
+	t.Parallel()
 	output, err := FormatScanSARIF(nil, "0.3.0")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -261,6 +265,7 @@ func TestEmptyResults(t *testing.T) {
 }
 
 func TestSARIF_ScanWithZeroAlerts(t *testing.T) {
+	t.Parallel()
 	output, err := FormatScanSARIF([]risk.Alert{}, "0.4.0")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -285,6 +290,7 @@ func TestSARIF_ScanWithZeroAlerts(t *testing.T) {
 }
 
 func TestSARIF_AuditWithAllClean(t *testing.T) {
+	t.Parallel()
 	trueVal := true
 	result := &audit.AuditResult{
 		Org: "clean-org",
@@ -320,6 +326,7 @@ func TestSARIF_AuditWithAllClean(t *testing.T) {
 }
 
 func TestSARIF_RuleIDsUnique(t *testing.T) {
+	t.Parallel()
 	alerts := []risk.Alert{
 		{
 			Severity:    risk.SeverityCritical,
@@ -353,6 +360,7 @@ func TestSARIF_RuleIDsUnique(t *testing.T) {
 }
 
 func TestSARIF_VersionFromBuild(t *testing.T) {
+	t.Parallel()
 	output, err := FormatScanSARIF([]risk.Alert{}, "1.2.3-custom")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

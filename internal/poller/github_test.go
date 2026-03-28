@@ -12,6 +12,7 @@ import (
 )
 
 func TestCompareCommitsReturnsAuthorsAndFiles(t *testing.T) {
+	t.Parallel()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"status":        "ahead",
@@ -54,6 +55,7 @@ func TestCompareCommitsReturnsAuthorsAndFiles(t *testing.T) {
 }
 
 func TestCompareCommitsNilAuthor(t *testing.T) {
+	t.Parallel()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]interface{}{
 			"status":        "ahead",
