@@ -29,9 +29,8 @@ Pinpoint detects and prevents GitHub Actions supply chain attacks. Single Go
 binary, one dependency. Built after the March 2026 Trivy attack (75 tags
 force-pushed to malicious commits). CoreWeave was directly affected.
 
-**Current state:** v0.7.0 released. 264 tests, 17,796 lines of Go, 77 commits.
-28 repos enforced in test org. 10/10 attack battery. First tool to verify
-Docker image digests.
+**Current state:** v0.7.0 released. 28 repos enforced in test org. 10/10
+attack battery. First tool to verify Docker image digests.
 
 **Read these files for full context before making architectural decisions:**
 - `PROJECT-CONTEXT.md` — Full project state, deployment status, attack battery results
@@ -69,7 +68,7 @@ internal/
   poller/github.go                — REST API client
   poller/graphql.go               — GraphQL client (50 repos/query, 1 point)
   poller/graphql_org.go           — FetchOrgWorkflows for audit
-  risk/score.go                   — Risk scoring (8 signals)
+  risk/score.go                   — Risk scoring (13 signals)
   sarif/sarif.go                  — SARIF 2.1.0 output
   store/store.go                  — JSON state with atomic writes
   suppress/suppress.go            — Allow-list false positive suppression
@@ -88,7 +87,7 @@ scripts/
 export PATH=$PATH:/usr/local/go/bin
 go build ./cmd/pinpoint/           # Build binary
 go vet ./...                       # Lint
-go test ./...                      # Run all 264 tests
+go test ./...                      # Run all tests
 go test ./internal/gate/ -v        # Verbose gate tests
 go test ./internal/manifest/ -v -run Docker  # Docker-specific tests
 ./pinpoint version                 # Verify binary
@@ -96,7 +95,7 @@ go test ./internal/manifest/ -v -run Docker  # Docker-specific tests
 
 Always run `go build` after changes to verify compilation.
 Always run `go vet` before committing.
-All 264 existing tests must pass before committing.
+All existing tests must pass before committing.
 
 ## Go Conventions for This Project
 
@@ -152,5 +151,4 @@ Read the relevant spec BEFORE implementing a feature.
 - Do not add a web framework (no gin, no echo, no fiber)
 - Do not add a CLI framework (no cobra, no urfave/cli)
 - Do not add a logging framework — `fmt.Fprintf(os.Stderr, ...)` is fine
-- Do not reorganize the package structure without explicit instruction
 - Do not make the user think — if a feature requires reading docs to use, it's not done yet

@@ -48,7 +48,6 @@ Single Go binary, one dependency (gopkg.in/yaml.v3). Detects and prevents GitHub
 
 ## Current State (v0.7.0 released)
 
-- 264 tests (all passing), 17,796 lines of Go, 77 commits
 - v0.7.0 tagged and released with 5-platform binaries on both repos
 - 24 specs written (001-024), all implemented
 - 28 repos in pinpoint-testing org with gate enforced
@@ -96,7 +95,7 @@ internal/
   poller/github.go             — REST API client
   poller/graphql.go            — GraphQL client (50 repos/query, 1 point)
   poller/graphql_org.go        — FetchOrgWorkflows for audit
-  risk/score.go                — Risk scoring (8 signals)
+  risk/score.go                — Risk scoring (13 signals)
   sarif/sarif.go               — SARIF 2.1.0 output
   store/store.go               — JSON state with atomic writes
   suppress/suppress.go         — Allow-list false positive suppression
@@ -191,9 +190,14 @@ Pinpoint is the **first GitHub Actions security tool** that verifies Docker imag
 |---|---|---|
 | MASS_REPOINT | +100 | >5 tags repointed at once |
 | OFF_BRANCH | +80 | New commit not a descendant |
+| IMPOSSIBLE_TIMESTAMP | +70 | Commit timestamp precedes parent |
 | SIZE_ANOMALY | +60 | Entry point size changed >50% (has floor, can't be cancelled) |
 | SEMVER_REPOINT | +50 | Exact version tag moved |
+| SIGNATURE_DROPPED | +45 | Release was signed, new one is not |
 | BACKDATED_COMMIT | +40 | Commit date >30 days old |
+| DIFF_ANOMALY | +40/+50 | Suspicious files in release diff (entrypoint, Dockerfile, action.yml) |
+| CONTRIBUTOR_ANOMALY | +35 | New contributor appeared in release commits |
+| RELEASE_CADENCE_ANOMALY | +25 | Release interval is a statistical outlier |
 | NO_RELEASE | +20 | No corresponding GitHub Release |
 | SELF_HOSTED | +15 | Self-hosted runners affected |
 | MAJOR_TAG_ADVANCE | -30 | Major tag moved forward to descendant |

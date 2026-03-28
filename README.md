@@ -256,8 +256,7 @@ Docker verification caveats.
 
 ## Stats
 
-264 tests. 17,796 lines of Go. 77 commits. Single binary, one dependency
-(`gopkg.in/yaml.v3`). GPL-3.0.
+Single binary, one dependency (`gopkg.in/yaml.v3`). GPL-3.0.
 
 ## License
 
