@@ -1,0 +1,385 @@
+{
+  "org": "elixir-lang",
+  "scanned_at": "2026-03-27T05:54:46Z",
+  "repos": {
+    "total": 11,
+    "with_workflows": 8,
+    "archived_skipped": 2,
+    "forked_skipped": 0
+  },
+  "references": {
+    "total": 107,
+    "sha_pinned": 69,
+    "tag_pinned": 34,
+    "branch_pinned": 4
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 21
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "erlef/setup-beam",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "ee09b1e59bb240681c382eb1f0abc6a04af72764",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "e6d7c94229049569db56a7ad5a540c051a010af9",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "668228422ae6a00e4ad889ee87cd7109ec5666a7",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "stefanzweifel/git-auto-commit-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "zizmorcore/zizmor-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "71321a20a9ded102f6e9ce5718a2fcec2c4f70d8",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "cachix/install-nix-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "1ca7d21a94afc7c957383a2d217460d980de4934",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "DeterminateSystems/magic-nix-cache-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "565684385bcd71bad329742eefe8d12f2e765b39",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "azure/login",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a457da9ea143d694b1b9c7c869ebb04ebe844ef5",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "googleapis/release-please-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "8bb7a2ed0f90c9802c83129a9488d235a1f31a7c",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "amannn/action-semantic-pull-request",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "48f256284bd46cdaab1048c3721360e808335d50",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "extractions/setup-just",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b",
+          "type": "sha",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "marocchino/sticky-pull-request-comment",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "70d2764d1a7d5d9560b100cbea0077fc8f633987",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "89a39a4e59826350b863aa6b6252a07ad50cf83e",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "mlugg/setup-zig",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "d1434d08867e3ee9daa34448df10607b98908d29",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tree-sitter/workflows",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "azure/trusted-signing-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "87c2e83e6868da99d3380aa309851b32ed9a8346",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "DavidAnson/markdownlint-cli2-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "07035fd053f7be764496c0f8d8f9f41f98305101",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/attest-sbom",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "07e74fc4e78d1aad915e867f9a094073a9f71527",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "expert",
+      "workflow_file": "lint-commit.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

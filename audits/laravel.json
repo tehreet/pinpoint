@@ -1,0 +1,789 @@
+{
+  "org": "laravel",
+  "scanned_at": "2026-03-27T05:59:06Z",
+  "repos": {
+    "total": 122,
+    "with_workflows": 75,
+    "archived_skipped": 15,
+    "forked_skipped": 2
+  },
+  "references": {
+    "total": 649,
+    "sha_pinned": 0,
+    "tag_pinned": 437,
+    "branch_pinned": 212
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 73,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 112
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 44
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "shivammathur/setup-php",
+      "used_in_repos": 66,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 129
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "laravel/.github",
+      "used_in_repos": 55,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 209
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 24,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 17
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "stefanzweifel/git-auto-commit-action",
+      "used_in_repos": 16,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 12
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 8
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "nick-fields/retry",
+      "used_in_repos": 12,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 30
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "pnpm/action-setup",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "RedCrafter07/release-notes-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "stefanzweifel/changelog-updater-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 7
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "dessant/support-requests",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "ramsey/composer-install",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "EndBug/add-and-commit",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v9",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "redhat-plumbers-in-action/differential-shellcheck",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "peter-evans/create-or-update-comment",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "jirevwe/typesense-github-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1.0.1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/setup-buildx-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/build-push-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/create-github-app-token",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "dessant/lock-threads",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "appleboy/ssh-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "boost",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "breeze",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "breeze-next",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "browser-kit-testing",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "cashier-paddle",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "cashier-stripe",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "cloud-cli",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "dusk",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "echo",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "envoy",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "folio",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "forge-cli",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "forge-sdk",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "fortify",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "framework",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "helpers",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "horizon",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "installer",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jetstream",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "laravel",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "lumen-framework",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "mcp",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "octane",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pail",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "passport",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pennant",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pint",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "precognition",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "prompts",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulse",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "ranger",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "reverb",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "roster",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "sail",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "sanctum",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "scout",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "sentinel",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "serializable-closure",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "slack-notification-channel",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "socialite",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "stream",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "surveyor",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "telescope",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "tinker",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "ui",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "valet",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vite-plugin",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vite-plugin-wayfinder",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vonage-notification-channel",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "wayfinder",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workos",
+      "workflow_file": "pull-requests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

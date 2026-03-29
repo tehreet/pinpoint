@@ -88,7 +88,7 @@ func ruleMatches(rule config.AllowRule, a risk.Alert, ctx risk.ScoreContext) boo
 	case "descendant":
 		return ctx.IsDescendant
 	case "release_within_5m":
-		return ctx.ReleaseExists
+		return false // ReleaseExists field was removed (never populated)
 	case "any", "":
 		return true
 	}

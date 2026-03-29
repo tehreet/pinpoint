@@ -1,0 +1,207 @@
+{
+  "org": "tailwindlabs",
+  "scanned_at": "2026-03-27T05:58:50Z",
+  "repos": {
+    "total": 27,
+    "with_workflows": 10,
+    "archived_skipped": 11,
+    "forked_skipped": 0
+  },
+  "references": {
+    "total": 158,
+    "sha_pinned": 0,
+    "tag_pinned": 158,
+    "branch_pinned": 0
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 10,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 19
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 10,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 15
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 16
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "pnpm/action-setup",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 13
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 9
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "discord-actions/message",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "cross-platform-actions/action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v0.25.0",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

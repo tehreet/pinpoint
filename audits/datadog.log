@@ -1,0 +1,38 @@
+Scanning datadog...
+  [1/24] Fetched 50/1162 repos (cost: 1 point, remaining: 4853)
+  [2/24] Fetched 100/1162 repos (cost: 1 point, remaining: 4852)
+  [3/24] Fetched 150/1162 repos (cost: 1 point, remaining: 4851)
+  [4/24] Fetched 200/1162 repos (cost: 1 point, remaining: 4850)
+  [5/24] Fetched 250/1162 repos (cost: 1 point, remaining: 4849)
+  [6/24] Fetched 300/1162 repos (cost: 1 point, remaining: 4848)
+  [7/24] Fetched 350/1162 repos (cost: 1 point, remaining: 4847)
+  [8/24] Fetched 400/1162 repos (cost: 1 point, remaining: 4846)
+  [9/24] Fetched 450/1162 repos (cost: 1 point, remaining: 4845)
+  [10/24] Fetched 500/1162 repos (cost: 1 point, remaining: 4833)
+  [11/24] Fetched 550/1162 repos (cost: 1 point, remaining: 4832)
+  [12/24] Fetched 600/1162 repos (cost: 1 point, remaining: 4831)
+  [13/24] Fetched 650/1162 repos (cost: 1 point, remaining: 4830)
+  [14/24] Fetched 700/1162 repos (cost: 1 point, remaining: 4829)
+  [15/24] Fetched 750/1162 repos (cost: 1 point, remaining: 4828)
+  [16/24] Fetched 800/1162 repos (cost: 1 point, remaining: 4827)
+  [17/24] Fetched 850/1162 repos (cost: 1 point, remaining: 4826)
+  [18/24] Fetched 900/1162 repos (cost: 1 point, remaining: 4825)
+  [19/24] Fetched 950/1162 repos (cost: 1 point, remaining: 4824)
+  [20/24] Fetched 1000/1162 repos (cost: 1 point, remaining: 4823)
+  [21/24] Fetched 1050/1162 repos (cost: 1 point, remaining: 4822)
+  [22/24] Fetched 1100/1162 repos (cost: 1 point, remaining: 4821)
+  [23/24] Fetched 1150/1162 repos (cost: 1 point, remaining: 4820)
+  [24/24] Fetched 1162/1162 repos (cost: 1 point, remaining: 4819)
+
+Analyzing 1224 workflow files...
+  Found 5189 action references across 216 unique actions.
+
+Checking upstream action security (216 actions)...
+  [50/216] checking immutable releases...
+  [100/216] checking immutable releases...
+  [150/216] checking immutable releases...
+  [200/216] checking immutable releases...
+  [216/216] checking immutable releases...
+
+Checking org policy...
+  admin:org scope not available, skipping policy check.

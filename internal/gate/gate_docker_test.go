@@ -11,6 +11,8 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	manifestpkg "github.com/tehreet/pinpoint/internal/manifest"
 )
 
 func TestGateDockerDigestVerification(t *testing.T) {
@@ -54,15 +56,15 @@ func TestGateDockerDigestVerification(t *testing.T) {
 			}))
 			defer registryTS.Close()
 
-			lockfile := Manifest{
+			lockfile := manifestpkg.Manifest{
 				Version: 2,
-				Actions: map[string]map[string]ManifestEntry{
+				Actions: map[string]map[string]manifestpkg.ManifestEntry{
 					"aquasecurity/trivy-action": {
 						"v0.28.0": {
 							SHA:       "abc123def456abc123def456abc123def456abc1",
 							Integrity: "sha256-AAAA",
 							Type:      "docker",
-							Docker: &DockerInfo{
+							Docker: &manifestpkg.DockerInfo{
 								Image:  "ghcr.io/aquasecurity/trivy",
 								Tag:    "0.58.1",
 								Digest: tt.manifestDigest,
@@ -125,15 +127,15 @@ func TestGateDockerDigestVerification(t *testing.T) {
 func TestGateDockerScenarioC_ImageRefChanged(t *testing.T) {
 	silenceOutput(t)
 
-	lockfile := Manifest{
+	lockfile := manifestpkg.Manifest{
 		Version: 2,
-		Actions: map[string]map[string]ManifestEntry{
+		Actions: map[string]map[string]manifestpkg.ManifestEntry{
 			"custom-org/scanner": {
 				"v1": {
 					SHA:       "abc123def456abc123def456abc123def456abc1",
 					Integrity: "sha256-OriginalHash",
 					Type:      "docker",
-					Docker: &DockerInfo{
+					Docker: &manifestpkg.DockerInfo{
 						Image:  "ghcr.io/safe-image",
 						Tag:    "v1",
 						Digest: "sha256:safe",
@@ -215,16 +217,16 @@ func TestGateDockerBaseImageVerification(t *testing.T) {
 	}))
 	defer registryTS.Close()
 
-	lockfile := Manifest{
+	lockfile := manifestpkg.Manifest{
 		Version: 2,
-		Actions: map[string]map[string]ManifestEntry{
+		Actions: map[string]map[string]manifestpkg.ManifestEntry{
 			"custom-org/builder": {
 				"v1": {
 					SHA:  "abc123def456abc123def456abc123def456abc1",
 					Type: "docker",
-					Docker: &DockerInfo{
+					Docker: &manifestpkg.DockerInfo{
 						Image: "Dockerfile",
-						BaseImages: []DockerBaseImage{
+						BaseImages: []manifestpkg.DockerBaseImage{
 							{Image: "alpine", Tag: "3.19", Digest: goodDigest},
 						},
 						Source: "Dockerfile",

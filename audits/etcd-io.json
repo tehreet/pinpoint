@@ -1,0 +1,271 @@
+{
+  "org": "etcd-io",
+  "scanned_at": "2026-03-27T05:53:35Z",
+  "repos": {
+    "total": 18,
+    "with_workflows": 8,
+    "archived_skipped": 4,
+    "forked_skipped": 1
+  },
+  "references": {
+    "total": 87,
+    "sha_pinned": 78,
+    "tag_pinned": 9,
+    "branch_pinned": 0
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 19
+        },
+        {
+          "ref": "8e8c483db84b4bee98b60c0593521ed34d9990e8",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "1af3b93b6815bc44a9784bd300feb67ff0d1eeb3",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "0ad4b8fadaa221de15dcec353f45205ec38ea70b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-go",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "4b73464bb391d4059bd26b0524d20df3927bd417",
+          "type": "sha",
+          "count": 21
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "ed597411d8f924073f98dfc5c65a23a2325f34cd",
+          "type": "sha",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "golangci/golangci-lint-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "1e7e51e771db61008b38414a730f564565cf7c20",
+          "type": "sha",
+          "count": 9
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/stale",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "b5d41d4e1d5dceea10e7104786b73624c18a190f",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v10",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "b1bff81932f5cdfc8695c7752dcee935dcd061c8",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "38697555549f1db7851b81482ff19f1fa5c4fedc",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "b45d80f862d83dbcd57f89517bcf500b2ab88fb2",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "goreleaser/goreleaser-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "ec59f474b9834571250b370d4735c50f8e2d1e29",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/dependency-review-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "antithesishq/antithesis-trigger-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f6221e2ba819fe0ac3e36bd67a281fa439a03fba",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ossf/scorecard-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4eaacf0543bb3f2c246792bd56e8cdeffafb205a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-java",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "arduino/setup-protoc",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "149f6c87b92550901b26acd1632e11c3662e381f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "bbolt",
+      "workflow_file": "gh-workflow-approve.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "etcd",
+      "workflow_file": "cherrypick-bot-ok-to-test.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "etcd",
+      "workflow_file": "gh-workflow-approve.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "etcd-operator",
+      "workflow_file": "gh-workflow-approve.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "raft",
+      "workflow_file": "gh-workflow-approve.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

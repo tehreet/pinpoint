@@ -1,0 +1,4827 @@
+{
+  "org": "hashicorp",
+  "scanned_at": "2026-03-27T04:45:03Z",
+  "repos": {
+    "total": 929,
+    "with_workflows": 351,
+    "archived_skipped": 329,
+    "forked_skipped": 58
+  },
+  "references": {
+    "total": 6237,
+    "sha_pinned": 5483,
+    "tag_pinned": 473,
+    "branch_pinned": 281
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 310,
+      "refs": [
+        {
+          "ref": "0ad4b8fadaa221de15dcec353f45205ec38ea70b",
+          "type": "sha",
+          "count": 735
+        },
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 657
+        },
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 282
+        },
+        {
+          "ref": "692973e3d937129bcbf40652eb9f2f61becf3332",
+          "type": "sha",
+          "count": 158
+        },
+        {
+          "ref": "08c6903cd8c0fde910a37f88322edcfb5dd907a8",
+          "type": "sha",
+          "count": 156
+        },
+        {
+          "ref": "3df4ab11eba7bda6032a0b82a6bb43b11571feac",
+          "type": "sha",
+          "count": 56
+        },
+        {
+          "ref": "8e5e7e5ab8b370d6c329ec480221332ada57f0ab",
+          "type": "sha",
+          "count": 52
+        },
+        {
+          "ref": "c85c95e3d7251135ab7dc9ce3241c5835cc595a9",
+          "type": "sha",
+          "count": 46
+        },
+        {
+          "ref": "8e8c483db84b4bee98b60c0593521ed34d9990e8",
+          "type": "sha",
+          "count": 44
+        },
+        {
+          "ref": "ac593985615ec2ede58e132d2e21d2b1cbd6127c",
+          "type": "sha",
+          "count": 44
+        },
+        {
+          "ref": "34e114876b0b11c390a56381ad16ebd13914f8d5",
+          "type": "sha",
+          "count": 37
+        },
+        {
+          "ref": "b4ffde65f46336ab88eb53be808477a3936bae11",
+          "type": "sha",
+          "count": 32
+        },
+        {
+          "ref": "93cb6efe18208431cddfb8368fd83d5badbf9bfd",
+          "type": "sha",
+          "count": 30
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 26
+        },
+        {
+          "ref": "8f4b7f84864484a7bf31766abe9204da3cbe65b3",
+          "type": "sha",
+          "count": 15
+        },
+        {
+          "ref": "a5ac7e51b41094c92402da3b24376905380afc29",
+          "type": "sha",
+          "count": 15
+        },
+        {
+          "ref": "1d96c772d19495a3b5c517cd2bc0cb401ea0529f",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "1e31de5234b9f8995739874a8ce0492dc87873e2",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "1af3b93b6815bc44a9784bd300feb67ff0d1eeb3",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "9bb56186c3b09b4f86b1c65136769dd318469633",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-go",
+      "used_in_repos": 226,
+      "refs": [
+        {
+          "ref": "0c52d547c9bc32b1aa3301fd7a9cb496313a4491",
+          "type": "sha",
+          "count": 302
+        },
+        {
+          "ref": "4b73464bb391d4059bd26b0524d20df3927bd417",
+          "type": "sha",
+          "count": 276
+        },
+        {
+          "ref": "cdcb36043654635271a94b9a6d1392de5bb323a7",
+          "type": "sha",
+          "count": 51
+        },
+        {
+          "ref": "44694675825211faa026b3c33043df3e48a5fa00",
+          "type": "sha",
+          "count": 46
+        },
+        {
+          "ref": "7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5",
+          "type": "sha",
+          "count": 45
+        },
+        {
+          "ref": "40f1582b2485089dde7abd97c1529aa768e1baff",
+          "type": "sha",
+          "count": 45
+        },
+        {
+          "ref": "93397bea11091df50f3d7e59dc26a7711a8bcfbe",
+          "type": "sha",
+          "count": 37
+        },
+        {
+          "ref": "0aaccfd150d50ccaeb58ebd88d36e91967a5f35b",
+          "type": "sha",
+          "count": 36
+        },
+        {
+          "ref": "4d34df0c2316fe8122ab82dc22947d607c0c91f9",
+          "type": "sha",
+          "count": 23
+        },
+        {
+          "ref": "f111f3307d8850f501ac008e886eec1fd1932a34",
+          "type": "sha",
+          "count": 19
+        },
+        {
+          "ref": "d35c59abb061a4a6fb18e82ac0862c26744d6ab5",
+          "type": "sha",
+          "count": 19
+        },
+        {
+          "ref": "0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32",
+          "type": "sha",
+          "count": 17
+        },
+        {
+          "ref": "6edd4406fa81c3da01a34fa6f6343087c207a568",
+          "type": "sha",
+          "count": 14
+        },
+        {
+          "ref": "fac708d6674e30b6ba41289acaab6d4b75aa0753",
+          "type": "sha",
+          "count": 12
+        },
+        {
+          "ref": "4dc6199c7b1a012772edbd06daecab0f50c9053c",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "3041bf56c941b39c61721a86cd11f3bb1338122a",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 160,
+      "refs": [
+        {
+          "ref": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f",
+          "type": "sha",
+          "count": 113
+        },
+        {
+          "ref": "65462800fd760344b1a7b4382951275a0abb4808",
+          "type": "sha",
+          "count": 97
+        },
+        {
+          "ref": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "type": "sha",
+          "count": 66
+        },
+        {
+          "ref": "b7c566a772e6b6bfb58ed0dc250532a479d7789f",
+          "type": "sha",
+          "count": 30
+        },
+        {
+          "ref": "65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08",
+          "type": "sha",
+          "count": 27
+        },
+        {
+          "ref": "330a01c490aca151604b8cf639adc76d48f6c5d4",
+          "type": "sha",
+          "count": 21
+        },
+        {
+          "ref": "5d5d22a31266ced268874388b861e4b58bb5c2f3",
+          "type": "sha",
+          "count": 15
+        },
+        {
+          "ref": "0b7f8abb1508181956e8e162db84b466c27e18ce",
+          "type": "sha",
+          "count": 15
+        },
+        {
+          "ref": "4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1",
+          "type": "sha",
+          "count": 14
+        },
+        {
+          "ref": "0b2256b8c012f0828dc542b3febcab082c67f72b",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "50769540e7f4bd5e21e526ee35c689e35e0d6874",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "a8a3f3ad30e3422c9c7b888a15615d19a852ae32",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "834a144ee995460fba8ed112a2fc961b36a5ec5a",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "golangci/golangci-lint-action",
+      "used_in_repos": 115,
+      "refs": [
+        {
+          "ref": "1e7e51e771db61008b38414a730f564565cf7c20",
+          "type": "sha",
+          "count": 52
+        },
+        {
+          "ref": "82d40c283aeb1f2b6595839195e95c2d6a49081b",
+          "type": "sha",
+          "count": 23
+        },
+        {
+          "ref": "08e2f20817b15149a52b5b3ebe7de50aff2ba8c5",
+          "type": "sha",
+          "count": 18
+        },
+        {
+          "ref": "4afd733a84b1f43292c63897423277bb7f4313a9",
+          "type": "sha",
+          "count": 16
+        },
+        {
+          "ref": "0a35821d5c230e903fcfe077583637dea1b27b47",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "3a919529898de77ec3da873e3063ca4b10e7f5cc",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "e7fa5ac41e1cf5b7d48e45e42232ce7ada589601",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "9fae48acfc02a90574d7c304a1758ef9895495fa",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "aaa42aa0628b4ae2578232a66b541047968fac86",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "d6238b002a20823d52840fda27e2d4891c5952dc",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "a4f60bb28d35aeee14e6880718e0c85ff1882e64",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "1481404843c368bc19ca9406f87d6e0fc97bdcfd",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/actions-generate-metadata",
+      "used_in_repos": 73,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 51
+        },
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 11
+        },
+        {
+          "ref": "f1d852525201cb7bbbf031dd2e985fb4c22307fc",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "fdbc8803a0e53bcbb912ddeee3808329033d6357",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v1.1.3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "hashicorp/setup-copywrite",
+      "used_in_repos": 66,
+      "refs": [
+        {
+          "ref": "32638da2d4e81d56a0764aa1547882fc4d209636",
+          "type": "sha",
+          "count": 55
+        },
+        {
+          "ref": "v1.1.3",
+          "type": "tag",
+          "count": 8
+        },
+        {
+          "ref": "867a1a2a064a0626db322392806428f7dc59cb3e",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v1.0.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1.1.2",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/actions-go-build",
+      "used_in_repos": 49,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 69
+        },
+        {
+          "ref": "b9e2cfba3013adccdc112b01cba922d83c78fac5",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v0.1.7",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        },
+        {
+          "ref": "d2504eb37c72b06b618352881e3f1d7b563517c5",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "37358f6098ef21b09542d84a9814ebb843aa4e3e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "hashicorp/actions-set-product-version",
+      "used_in_repos": 48,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 30
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "2ec1b51402b3070bccf7ca95306afbd039e574ff",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "d9b52fb778068099ca4c5e28e1ca0fee2544e114",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "hashicorp/setup-terraform",
+      "used_in_repos": 45,
+      "refs": [
+        {
+          "ref": "5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85",
+          "type": "sha",
+          "count": 53
+        },
+        {
+          "ref": "b9cd54a3c349d3f38e8881555d616ced269862dd",
+          "type": "sha",
+          "count": 11
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "a1502cd9e758c50496cc9ac5308c4843bcd56d36",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "633666f66e0061ca3b725c73b2ec20cd13a8fdd1",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dessant/lock-threads",
+      "used_in_repos": 42,
+      "refs": [
+        {
+          "ref": "7266a7ce5c1df01b1c6db85bf8cd86c737dadbe7",
+          "type": "sha",
+          "count": 35
+        },
+        {
+          "ref": "1bf7ec25051fe7c00bdd17e6a7cf3d7bfb7dc771",
+          "type": "sha",
+          "count": 7
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "goreleaser/goreleaser-action",
+      "used_in_repos": 40,
+      "refs": [
+        {
+          "ref": "ec59f474b9834571250b370d4735c50f8e2d1e29",
+          "type": "sha",
+          "count": 34
+        },
+        {
+          "ref": "7ec5c2b0c6cdda6e8bbb49444bc797dd33d74dd8",
+          "type": "sha",
+          "count": 16
+        },
+        {
+          "ref": "9c156ee8a17a598857849441385a2041ef570552",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "e435ccd777264be153ace6237001ef4d979d3a7a",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "3fa32b8bb5620a2c1afe798654bbad59f9da4906",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "f82d6c1c344bcacabba2c841718984797f664a6b",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "5fdedb94abba051217030cc86d4523cf3f02243d",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 38,
+      "refs": [
+        {
+          "ref": "60edb5dd545a775178f52524783378180af0d1f8",
+          "type": "sha",
+          "count": 54
+        },
+        {
+          "ref": "53b83947a5a98c8d113130e565377fae1a50d02f",
+          "type": "sha",
+          "count": 22
+        },
+        {
+          "ref": "6044e13b5dc448c55e2357c09f80417699197238",
+          "type": "sha",
+          "count": 19
+        },
+        {
+          "ref": "1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a",
+          "type": "sha",
+          "count": 16
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "cdca7365b2dadb8aad0a33bc7601856ffabcc48e",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "395ad3262231945c25e8478fd5baf05154b1d79f",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "1e60f620b9541d16bece96c5465dc8ee9832be0b",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "e33196f7422957bea03ed53f6fbb155025ffc7b8",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "2028fbc5c25fe9cf00d9f06a71cc4710d4507903",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/vault-workflows-common",
+      "used_in_repos": 38,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 151
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 33,
+      "refs": [
+        {
+          "ref": "65a9edc5881444af0b9093a5e628f2fe47ea3b2e",
+          "type": "sha",
+          "count": 73
+        },
+        {
+          "ref": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
+          "type": "sha",
+          "count": 22
+        },
+        {
+          "ref": "fa0a91b85d4f404e444e00e005971372dc801d16",
+          "type": "sha",
+          "count": 12
+        },
+        {
+          "ref": "9bc31d5ccc31df68ecc42ccf4149144866c47d8a",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "018cc2cf5baa6db3ef3c5f8a56943fffe632ef53",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "95815c38cf2ff2164869cbab79da8d1f422bc89e",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "37930b1c2abaa49bbe596cd826c3c89aef350131",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 30,
+      "refs": [
+        {
+          "ref": "668228422ae6a00e4ad889ee87cd7109ec5666a7",
+          "type": "sha",
+          "count": 66
+        },
+        {
+          "ref": "0057852bfaa89a56745cba8c7296529d2fc39830",
+          "type": "sha",
+          "count": 34
+        },
+        {
+          "ref": "cdf6c1fa76f9f475f3d7449005a359c84ca0f306",
+          "type": "sha",
+          "count": 14
+        },
+        {
+          "ref": "5a3ec84eff668545956fd18022155c47e93e2684",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "1bd1e32a3bdc45362d1e726936510720a7c30a57",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "0c907a75c2c80ebcb7f088228285e798b750cf8f",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "d4323d4df104b026a6aa633fdb11d772146be0bf",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "0400d5f644dc74513175e3cd8d07132dd4860809",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 29,
+      "refs": [
+        {
+          "ref": "60a0d83039c74a4aee543508d2ffcb1c3799cdea",
+          "type": "sha",
+          "count": 25
+        },
+        {
+          "ref": "d7906e4ad0b1822421a7e6a35d5ca353c962f410",
+          "type": "sha",
+          "count": 11
+        },
+        {
+          "ref": "ed597411d8f924073f98dfc5c65a23a2325f34cd",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "e69ef5462fd455e02edcaf4dd7708eda96b9eda0",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "f28e40c7f34bde8b3046d885e986cb6290c5673b",
+          "type": "sha",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "miniscruff/changie-action",
+      "used_in_repos": 28,
+      "refs": [
+        {
+          "ref": "5036dffa79ffc007110dc7f75eca7ef72780e147",
+          "type": "sha",
+          "count": 55
+        },
+        {
+          "ref": "6dcc2533cac0495148ed4046c438487e4dceaa23",
+          "type": "sha",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/actions-docker-build",
+      "used_in_repos": 27,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 31
+        },
+        {
+          "ref": "200254326a30d7b747745592f8f4d226bbe4abe4",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "11d43ef520c65f58683d048ce9b47d6617893c9a",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "e028f0fa0532e4e971c032e2f2fe6a3aec398f65",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 25,
+      "refs": [
+        {
+          "ref": "c4fb451437765abf5018c6fbf22cce1a7da1e5cc",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "9a866ed4524fc3422c3af1e446dab8efa3503411",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "99c9897648dded3fe63d6f328c46089dd57735ca",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "38697555549f1db7851b81482ff19f1fa5c4fedc",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "e4262713b504983e61c7728f5452be240d9385a7",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "c6c77c8c2d62cfd5b2e8d548817fd3d1582ac744",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "46a6823b81f2d7c67ddf123851eea88365bc8a67",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "8fd294e26a0e458834582b0fe4988d79966c7c0a",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "15bce5bb14748fcfd6fe32738ca1cba36e5f218f",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "8fcfedf57053e09257688fce7a0beeb18b1b9ae3",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "f9a7c6738f28efb36e31d49c53a201a9c5d6a476",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "3096afedf9873361b2b2f65e1445b13272c83eb8",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "hashicorp/actions-packaging-linux",
+      "used_in_repos": 25,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 19
+        },
+        {
+          "ref": "129994a18b8e7dc106937edf859fddd97af66365",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "514d75d0961adeddf1f928fb93b82f41735fc488",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "9a9ce398877672719e83026640662f3182931fde",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/hvd-module-gha",
+      "used_in_repos": 23,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 88
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/labeler",
+      "used_in_repos": 23,
+      "refs": [
+        {
+          "ref": "634933edcd8ababfe52f92936142cc22ac488b1b",
+          "type": "sha",
+          "count": 14
+        },
+        {
+          "ref": "8558fd74291d67161a8a78ce36a881fa63b766a9",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "ba790c862c380240c6d5e7427be5ace9a05c754b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tomhjp/gh-action-jira-search",
+      "used_in_repos": 23,
+      "refs": [
+        {
+          "ref": "04700b457f317c3e341ce90da5a3ff4ce058f2fa",
+          "type": "sha",
+          "count": 27
+        },
+        {
+          "ref": "v0.2.1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "atlassian/gajira-login",
+      "used_in_repos": 22,
+      "refs": [
+        {
+          "ref": "45fd029b9f1d6d8926c6f04175aa80c0e42c9026",
+          "type": "sha",
+          "count": 21
+        },
+        {
+          "ref": "ca13f8850ea309cf44a6e4e0c49d9aa48ac3ca4c",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "v2.0.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "slackapi/slack-github-action",
+      "used_in_repos": 17,
+      "refs": [
+        {
+          "ref": "af78098f536edbc4de71162a307590698245be95",
+          "type": "sha",
+          "count": 28
+        },
+        {
+          "ref": "70cd7be8e40a46e8b0eced40b0de447bdb42f68e",
+          "type": "sha",
+          "count": 17
+        },
+        {
+          "ref": "91efab103c0de0a537f72a35f6b8cda0ee76bf0a",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "e28cf165c92ffef168d23c5c9000cffc8a25e117",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "37ebaef184d7626c5f204ab8d3baff4262dd30f0",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "007b2c3c751a190b6f0f040e47ed024deaa72844",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "github/issue-labeler",
+      "used_in_repos": 17,
+      "refs": [
+        {
+          "ref": "c1b0f9f52a63158c4adc09425e858e87b32e9685",
+          "type": "sha",
+          "count": 19
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/setup-signore-package",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 15
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "CodelyTV/pr-size-labeler",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "4ec67706cd878fbc1c8db0a5dcd28b6bb412e85a",
+          "type": "sha",
+          "count": 11
+        },
+        {
+          "ref": "54ef36785e9f4cb5ecf1949cfc9b00dbb621d761",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "1c3422395d899286d5ee2c809fd5aed264d5eb9b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "atlassian/gajira-transition",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "38fc9cd61b03d6a53dd35fcccda172fe04b36de3",
+          "type": "sha",
+          "count": 35
+        },
+        {
+          "ref": "4749176faf14633954d72af7a44d7f2af01cc92b",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v2.0.1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tomhjp/gh-action-jira-create",
+      "used_in_repos": 14,
+      "refs": [
+        {
+          "ref": "3ed1789cad3521292e591a7cfa703215ec1348bf",
+          "type": "sha",
+          "count": 20
+        },
+        {
+          "ref": "v0.2.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tomhjp/gh-action-jira-comment",
+      "used_in_repos": 14,
+      "refs": [
+        {
+          "ref": "6eb6b9ead70221916b6badd118c24535ed220bd9",
+          "type": "sha",
+          "count": 18
+        },
+        {
+          "ref": "v0.2.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/stale",
+      "used_in_repos": 13,
+      "refs": [
+        {
+          "ref": "28ca1036281a5e5922ead5184a1bbf96e5fc984e",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "5bef64f19d7facfb25b37b414482c7164d639639",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "b5d41d4e1d5dceea10e7104786b73624c18a190f",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bloominlabs/setup-hashicorp-releases",
+      "used_in_repos": 10,
+      "refs": [
+        {
+          "ref": "24ba535809adca0a710fd39db83eef75cc90af0e",
+          "type": "sha",
+          "count": 18
+        },
+        {
+          "ref": "47e70332de2225670dedad7833c0e19229f751b5",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "aws-actions/configure-aws-credentials",
+      "used_in_repos": 10,
+      "refs": [
+        {
+          "ref": "8df5847569e6427dd6c4fb1cf565c83acfa8afa7",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "00943011d9042930efac3dcd3a170e4273319bc8",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "e3dd6a429d7300a6a4c196c26e071d42e0343502",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "61815dcd50bd041e203e49132bacad1fd04d2708",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v2.2.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "ruby/setup-ruby",
+      "used_in_repos": 10,
+      "refs": [
+        {
+          "ref": "922ebc4c5262cd14e07bb0e1db020984b6c064fe",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "3783f195e29b74ae398d7caca108814bbafde90e",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "a6e6f86333f0a2523ece813039b8b4be04560854",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "09a7688d3b55cf0e976497ff046b70949eeaccfd",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "250fcd6a742febb1123a77a841497ccaa8b9e939",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "1a615958ad9d422dd932dc1d5823942ee002799f",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "dffb23f65a78bba8db45d387d5ea1bbd6be3ef18",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "d697be2f83c6234b20877c3b5eac7a7f342f0d0c",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "52753b7da854d5c07df37391a986c76ab4615999",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "github/super-linter",
+      "used_in_repos": 10,
+      "refs": [
+        {
+          "ref": "4e51915f4a812abf59fed160bb14595c0a38a9e7",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "45fc0d88288beee4701c62761281edfee85655d7",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "454ba4482ce2cd0c505bc592e83c06e1e37ade61",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "e0fc164bba85f4b58c6cd17ba1dfd435d01e8a06",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "atlassian/gajira-create",
+      "used_in_repos": 9,
+      "refs": [
+        {
+          "ref": "59e177c4f6451399df5b4911c2211104f171e669",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "1ff0b6bd115a780592b47bfbb63fc4629132e6ec",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/two-stage-pr-approval",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "v0.1.0",
+          "type": "tag",
+          "count": 8
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "hashicorp/setup-golang",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "36878950ae8f21c1bc25accaf67a4df88c29b01d",
+          "type": "sha",
+          "count": 11
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/action-setup-bob",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "01076d9cc869139ac97693d0869f0e80a666cb3b",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "dorny/paths-filter",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "fbd0ab8f3e69293af611ebaee6363fc25e6d187d",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "de90cc6fb38fc0963ad72b210f1f284cd68cea36",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "autero1/action-gotestsum",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "7263b9d73912eec65f46337689e59fac865c425f",
+          "type": "sha",
+          "count": 9
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/build-push-action",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "2cdde995de11925a030ce8070c3d77a52ffcf1c0",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "d08e5c354a6adb9ed34480a06d141179aa583294",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "0565240e2d4ab88bba5387d719585280857ece09",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "471d1dc4e07e5cdedd4c2171150001c434f0b7a4",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "hashicorp/ghaction-terraform-provider-release",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "731f7d472982904b8b2cde767788c62ed14b1419",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "5f388ae147bcc1e1c34822571b2f2de40694c5d6",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "helm/kind-action",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "a1b0e391336a6ee6713a0583f8c6240d70863de3",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "0025e74a8c7512023d06dc019c617aa3cf561fde",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "92086f6be054225fa813e0a4b13787fc9088faab",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "ef37e7f390d99f746eb8b610417061a60e82a6cc",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "99576bfa6ddf9a8e612d83b513da5a75875caced",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions-ecosystem/action-remove-labels",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "2ce5d41b4b6aa8503e285553f75ed56e0a40bae0",
+          "type": "sha",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pnpm/action-setup",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "a7487c7e89a18df4991f7f222e4898a00d66ddda",
+          "type": "sha",
+          "count": 36
+        },
+        {
+          "ref": "41ff72655975bd51cab0327fa583b6e92b6d3061",
+          "type": "sha",
+          "count": 18
+        },
+        {
+          "ref": "fc06bc1257f339d1d5d8b3a19a8cae5388b55320",
+          "type": "sha",
+          "count": 11
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ncipollo/release-action",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "cdcc88a9acf3ca41c16c37bb7d21b9ad48560d87",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "2c591bcc8ecdcd2db72b97d6147f871fcd833ba5",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "339a81892b84b4eeb0f6e744e4574d79d0d9b8dd",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "a2e71bdd4e7dab70ca26a852f29600c98b33153e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/setup-buildx-action",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "d70bba72b1f3fd22344832f00baa16ece964efeb",
+          "type": "sha",
+          "count": 13
+        },
+        {
+          "ref": "2a1a44ac4aa01993040736bd95bb470da1a38365",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "f95db51fddba0c2d1ec667646a06c2ce06100226",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/setup-qemu-action",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "68827325e0b33c7199eb31dd4e31fbe9023e06e3",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "ce360397dd3f832beb865e1373c09c0e9f86d70a",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "29109295f81e9208d7d86ff1c6c12d2833863392",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dawidd6/action-download-artifact",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "07ab29fd4a977ae4d2b275087cf67563dfdf0295",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "ac66b43f0e6a346234dd65d4d0c8fbb31cb316e5",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/repository-dispatch",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "28959ce8df70de7be546dd1250a005dd32156697",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "ff45666b9427631e3450c54a1bcbee4d9ff4d7c0",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tj-actions/changed-files",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "2f7c5bfce28377bc069a65ba478de0a74aa0ca32",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "dcc7a0cba800f454d79fff4b993e8c3555bcc0a8",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "ec1e14cf27f4585783f463070881b2c499349a8a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "high"
+    },
+    {
+      "repo": "peter-evans/create-pull-request",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "c0f553fe549906ede9cf27b5156039d195d2ece0",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "crazy-max/ghaction-import-gpg",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "2dc316deee8e90f13e1a351ab510b4d5bc0c82cd",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "e89d40939c28e39f97cf32126055eeae86ba74ec",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "111c56156bcc6918c056dbef52164cfa583dc549",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "openpgp5",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "eregon/publish-release",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "01df127f5e9a3c26935118e22e738d95b59d10ce",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "46913fa2b3f7edc7345ae3c17f6d1b093a54916d",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/vault-action",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 50
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 28
+        },
+        {
+          "ref": "4c06c5ccf5c0761b6029f56cfb1dcf5565918a3b",
+          "type": "sha",
+          "count": 20
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "e92390c5fb421da1463c202d546fed0ec5c39f20",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "343f7c4344506bcbf9b4de18042ae17996df046d",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "marocchino/sticky-pull-request-comment",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "52423e01640425a022ef5fd42c6fb5f633a02728",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "331f8f5b4215f0445d3c07b4967662a32a2d3e31",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "773744901bac0e8cbb5a0dc842800d45e9b2b405",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "google-github-actions/auth",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "7c6bc770dae815cd3e89ee6cdf493a5fab2cc093",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "55bd3a7c6e2ae7cf1877fd1ccb9d54c0503c457c",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bufbuild/buf-setup-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "a47c93e0b1648d5651a065437926377d060baa99",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "eb60cd0de4f14f1f57cf346916b8cd69a9e7ed0b",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "0b2634d023322ed4186879e9a60c01783a8963d4",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "browser-actions/setup-chrome",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "4f8e94349a351df0f048634f25fec36c3c91eded",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "82b9ce628cc5595478a9ebadc480958a36457dc2",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-java",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "c1e323688fd81a25caa38c78aa6df2d33d3e20d9",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "be666c2fcd27ec809703dec50e508c2fdc7f6654",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "c5195efecf7bdfc987ee8bae7a71cb8b11521c00",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/setup-sentinel",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 3
+        },
+        {
+          "ref": "7ca61a3f25049e0e05048da83e926679468bcad0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "docker/metadata-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "8e5442c4ef9f78752691e2d8f8d19755c6f78e81",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "96383f45573cb7f253c731d3b3ab81c87ef81934",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "hashicorp/setup-signore",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        },
+        {
+          "ref": "d64bb29059259ffcbdc4c7066cdb296e45e828b3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "hashicorp/action-setup-enos",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "6ec106c8f809fe645162d73bea565c65f3269907",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "17b90fcf9591275b468a94aefb9dc6a93017de8a",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "hashicorp/web-platform-packages",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "5eee43c8a4a8f311e08f473132c617f757a8c6b5",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "69853727452b125f28e777ca7c1e71c82edd30aa",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "466e1433855584b2768858f3ef9915d1a2a81cd1",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/find-comment",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "3eae4d37986fb5a8592848f6a574fdf654e61f9e",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "b30e6a3c0ed37e7c023ccd3f1db5c6c0b0c23aad",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "azure/login",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "cb79c773a3cfa27f31f25eb3f677781210c9ce3d",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "8c334a195cbb38e46038007b304988d888bf676a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bflad/action-milestone-comment",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "ae6c9fdf5778064d4e09b4632604a16b7289096c",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "4618cbf8bf938d31af1c576beeaaa77f486f5af3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "e797f83bcb11b83ae66e0230d6156d7c80228e7c",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "a309ff8b426b58ec0e2a45f0f869d46889d02405",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/create-or-update-comment",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "71345be0265236311c031f5c7866368bd1eff043",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "e8674b075228eee787fea43ef493e45ece1004c9",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "google-github-actions/setup-gcloud",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "98ddc00a17442e89a24bbf282954a3b65ce6d200",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "aa5489c8933f4cc7a4f7d45035b3b1440c9c10db",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/actions-slack-status",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "1a3f63b30bd476aee1f3bd6f9d8f2aacc4f14d81",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "gaurav-nelson/github-action-markdown-link-check",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "d53a906aa6b22b8979d33bc86170567e619495ec",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "nick-fields/retry",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "ce71cc2ab81d554ebbe88c79ab5975992d79ba08",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "14672906e672a08bd6eeb15720e9ed3ce869cdd4",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "7152eba30c6575329ac0576536151aca5a72780e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "mhausenblas/mkdocs-deploy-gh-pages",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "d77dd03172e96abbcdb081d8c948224762033653",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "super-linter/super-linter",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "61abc07d755095a68f4987d1c2c3d1d64408f1f9",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "codelytv/pr-size-labeler",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "54ef36785e9f4cb5ecf1949cfc9b00dbb621d761",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "4ec67706cd878fbc1c8db0a5dcd28b6bb412e85a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "stefanzweifel/git-auto-commit-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "3ea6ae190baf489ba007f7c92608f33ce20ef04a",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "04702edda442b2e678b25b537cec683a1493fcb9",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "b863ae1933cb653a53c021fe36dbb774e1fb9403",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "changesets/action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "aba318e9165b45b7948c60273e0b72fce0a64eb9",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "6a0a831ff30acef54f2c6aa1cbbc1096b066edaf",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "e2f8e964d080ae97c874b19e27b12e0a8620fb6c",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "repo-sync/github-sync",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "3832fe8e2be32372e1b3970bbae8e7079edeec88",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "avto-dev/markdown-lint",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "04d43ee9191307b50935a753da3b775ab695eceb",
+          "type": "sha",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "crs-k/stale-branches",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "c6e09a3de1046d68b21eccdca23321d0ec277964",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-ruby",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp-forge/terraform-cloud-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "ceddc497db955594f0b0d5f0bee29c41f60d6d33",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "5583d5f554d268ac91b3c37fd0a5e9da2c78c017",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "brandonc/gajira-transition",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "cf0b950ee4576da50c03c8151b26a13563139a04",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "creyD/prettier_action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "31355f8eef017f8aeba2e0bc09d8502b13dbbad1",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "benc-uk/workflow-dispatch",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "25b02cc069be46d637e8fe2f1e8484008e9e9609",
+          "type": "sha",
+          "count": 9
+        },
+        {
+          "ref": "7a027648b88c2413826b6ddd6c76114894dc5ec4",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/gh-action-jira-search",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "96aebbb9218932983bfbe6984e4c1e3ec3bf710e",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/gh-action-jira-create",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "84c84ad564106f548729912dbda38d66ef117bb7",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "azure/setup-helm",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "b9e51907a09c216f16ebe8536097933489208112",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bahmutov/npm-install",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "237ded403e6012a48281f4572eab0c8eafe55b3f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "YakDriver/md-check-links",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "0a295ce2e08c544aae01cccc9b4c6801a8398942",
+          "type": "sha",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/gh-action-jira-comment",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "9e4a11098f8bd0d12745708d4d4b63c5a81df2fc",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/tfc-workflows-tooling",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "atlassian/gajira-comment",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "76589d6b6d0b94b1ca6b01171c01a6affb5d6701",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "164913891625fe50e9836957902e0bf7d9ef99a8",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/setup-packer",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        },
+        {
+          "ref": "ae6b3ed3bec089bbfb576ab7d714df7cbc4b88a4",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "lycheeverse/lychee-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "f613c4a64e50d792e0b31ec34bbcbba12263c6a6",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "7cd0af4c74a61395d455af97419279d86aafaede",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bufbuild/buf-lint-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "06f9dd823d873146471cfaaf108a993fe00e5325",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "bd48f53224baaaf0fc55de9a913e7680ca6dbea4",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/oss-core-library-dashboard-metrics",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "kentaro-m/auto-assign-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "f4648c0a9fdb753479e9e75fc251f507ce17bb7e",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/doormat-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "hmarr/auto-approve-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "f0939ea97e9205ef24d872e76833fa908a770363",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/packer-github-actions",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "terraform-docs/gh-actions",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "f6d59f89a280fa0a3febf55ef68f146784b20ba0",
+          "type": "sha",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/create-issue-from-file",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "e8ef132d6df98ed982188e460ebb3b5d4ef3a9cd",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "24452a72d85239eacf1468b0f1982a9f3fec4c94",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/create-github-app-token",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "f8d387b68d61c58ab83c6c016672934102569859",
+          "type": "sha",
+          "count": 7
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "test-summary/action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "31493c76ec9e7aa675f1585d3ed6f1da69269a86",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hanseltimeindustries/get-changed-files",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0b9ab9b0bdbe9384ab0202b4c119fd8f88747335",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/actions-persist-metadata",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4c07d5de3e4b78122d6e180657992d6e359d5ea1",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dependabot/fetch-metadata",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "21025c705c08248db411dc16f3619e6b5f9ea21a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "calibreapp/image-actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "d9c8ee5c3dc52ae4622c82ead88d658f4b16b65f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "kategengler/put-built-npm-package-contents-on-branch",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2.1.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "stefanbuck/github-issue-parser",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "2ea9b35a8c584529ed00891a8f7e41dc46d0441e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "release-plan/actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "Ilshidur/action-slack",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "addnab/docker-run-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4f65fabd2431ebc8d299f8e5a018d79a769ae185",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "breathingdust/firewatch",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "57f8dc8ee08fa407de395e64452f3d005b3a9c28",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "breathingdust/github-jira-tidy",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "25fc54d07fdd98ec9ad14c962fc2dfdc524c48f0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "breathingdust/github-team-slackbot",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "86aab12fa9d04755f51c543c9211acf6caa7005a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "terraform-linters/setup-tflint",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "19a52fbac37dacb22a09518e4ef6ee234f2d4987",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-dotnet",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "3447fd6a9f9e57506b15f895c5b76d3b197dc7c2",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "jidicula/go-fuzz-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "ea33f9835ea7f6071339827df940b777dfc78d11",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/actions-hc-releases-promote",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "811b5f3b44787dbb5c3aa21d3fe8a4e844eb41ed",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/reusable-workflows",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "95d9656793415e47f574f7967f3850ea3bf5a7ed",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "returntocorp/semgrep-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "713efdd345f3035192eaa63f56867b88e63e4e5d",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "hashicorp/ghaction-import-gpg",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2.1.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "hashicorp/setup-nomad-pack",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/add-to-project",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "244f685bbc3b7adfa8466e08b698b5577571133e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "Azure/setup-helm",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "fe7b79cd5ee1e45176fcad797de68ecaf3ca4814",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/actions-create-release-branch",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/actions-hc-releases-create-metadata",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0e93868399ba972826b3e12b56915bee475955a3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "golang/govulncheck-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "b625fbe08f3bccbe446d94fbf87fcc875a4f50ee",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp-forge/actions-pao-tool",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "6997f7457c338e008506005cc370e7b02f7fb421",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "Gamesight/slack-workflow-status",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "68bf00d0dbdbcb206c278399aa1ef6c14f74347a",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "93397bea11091df50f3d7e59dc26a7711a8bcfbe",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "sarahethompson/github-tag-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "fix-default-bump-none",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "repo-sync/pull-request",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7e79a9f5dc3ad0ce53138f01df2fad14a04831c5",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/hcp-auth-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "NuGet/setup-nuget",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "296fd3ccf8528660c91106efefe2364482f86d6f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bflad/action-migrate-issue",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "2e049d822b08e67d25b938343227051518f14d9a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "geekyeggo/delete-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "176a747ab7e287e3ff4787bf8a148716375ca118",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/dev-portal",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "475289345d312552b745224b46895f51cc5fc490",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "atlassian/gajira-find-issue-key",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7d9cbdfce900a0fcf608050ce728620a928be8b6",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "sarahethompson/go-update-mod-dependencies",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "./.github",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "latest",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "arduino/setup-task",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ibiqlik/action-yamllint",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "2576378a8e339169678f9939646ee3ee325e845c",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/setup-hc-releases",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a86464cdf5e68df8c68db52f0eb3d6d8557a85d8",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "aws-actions/amazon-ecr-login",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1.6.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "YakDriver/check-smarterr-config",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "afed5350c8ce432ad869983086dc4a582520c22e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tibdex/github-app-token",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "3beb63f4bd073e61482598c45c71c1019b59b73a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "rtCamp/action-slack-notify",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "licensee/setup-licensed",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0d52e575b3258417672be0dff2f115d7db8771d8",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bufbuild/buf-breaking-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "c57b3d842a5c3f3b454756ef65305a50a587c5ba",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/actions-validate-product-version",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "AndreasAugustin/actions-template-sync",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "bcb94410a4f1dffdfe5eaabc8234c3b8e76ebc5b",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/setup-nomad",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "thollander/actions-comment-pull-request",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "fabd468d3a1a0b97feee5f6b9e499eab0dd903f6",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/checkout",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0ad4b8fadaa221de15dcec353f45205ec38ea70b",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "redhat-plumbers-in-action/advanced-issue-labeler",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "b80ae64e3e156e9c111b075bfa04b295d54e8e2e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bufbuild/buf-push-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a654ff18effe4641ebea4a4ce242c49800728459",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "juliangruber/find-pull-request-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "3a4c7c62101755c3778d397dcb6a760a558992f1",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/terraform-provider-google",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "hashicorp/action-slack-status",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "hashicorp/terraform-provider-tfe",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions-ecosystem/action-get-latest-tag",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "b7c32daec3395a9616f88548363a42652b22d435",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/generate-metadata-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "guyarb/golang-test-annotations",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "2941118d7ef622b1b3771d1ff6eae9e90659eb26",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "aquasecurity/trivy-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "18f2510ee396bbf400402947b394f2dd8c87dbb0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "high"
+    },
+    {
+      "repo": "hashicorp/packer",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "act10ns/slack",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "backport-dummy",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "boundary",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "high",
+      "reason": "pull_request_target with PR data interpolated in run step — potential command injection"
+    },
+    {
+      "repo": "boundary",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "boundary-ui",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "boundary-ui",
+      "workflow_file": "oss-ent-merge-trigger.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "consul",
+      "workflow_file": "backport-assistant.yml",
+      "trigger": "pull_request_target",
+      "risk": "high",
+      "reason": "pull_request_target with PR data interpolated in run step — potential command injection"
+    },
+    {
+      "repo": "consul",
+      "workflow_file": "bot-auto-approve.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "consul",
+      "workflow_file": "ce-merge-trigger.yml",
+      "trigger": "pull_request_target",
+      "risk": "high",
+      "reason": "pull_request_target with PR data interpolated in run step — potential command injection"
+    },
+    {
+      "repo": "consul",
+      "workflow_file": "jira-pr.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "consul",
+      "workflow_file": "pr-labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "consul-dataplane",
+      "workflow_file": "backport-assistant.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "consul-dataplane",
+      "workflow_file": "bot-auto-approve.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "consul-dataplane",
+      "workflow_file": "jira-pr.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "consul-k8s",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "consul-k8s",
+      "workflow_file": "jira-pr.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "consul-terraform-sync",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "design-system",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "go-azure-sdk",
+      "workflow_file": "pr-labeler.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "go-tfe",
+      "workflow_file": "changelog.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "go-tfe",
+      "workflow_file": "merged-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "hcp-terraform-operator",
+      "workflow_file": "dependabot-pr.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "hcp-terraform-operator",
+      "workflow_file": "pr-labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "hvd-module-template",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "js-releases",
+      "workflow_file": "add-copyright-headers.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    },
+    {
+      "repo": "lineal",
+      "workflow_file": "plan-release.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "nomad",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer-plugin-amazon",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer-plugin-ansible",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer-plugin-azure",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer-plugin-docker",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer-plugin-googlecompute",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer-plugin-kubevirt",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer-plugin-qemu",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer-plugin-vagrant",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "packer-plugin-virtualbox",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "setup-boundary",
+      "workflow_file": "triage-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "syntax",
+      "workflow_file": "add-copyright-headers.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    },
+    {
+      "repo": "terraform",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform",
+      "workflow_file": "changelog.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform",
+      "workflow_file": "equivalence-test-update.yml",
+      "trigger": "pull_request_target",
+      "risk": "high",
+      "reason": "pull_request_target with PR data interpolated in run step — potential command injection"
+    },
+    {
+      "repo": "terraform-aws-boundary-enterprise-controller-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-aws-boundary-enterprise-worker-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-aws-consul-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-aws-nomad-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-aws-terraform-enterprise-eks-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-aws-terraform-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-aws-vault-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-azurerm-boundary-enterprise-controller-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-azurerm-boundary-enterprise-worker-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-azurerm-consul-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-azurerm-nomad-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-azurerm-terraform-enterprise-aks-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-azurerm-terraform-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-azurerm-vault-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-boundary-bootstrap-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-google-boundary-enterprise-controller-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-google-boundary-enterprise-worker-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-google-consul-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-google-nomad-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-google-terraform-enterprise-gke-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-google-terraform-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-google-vault-enterprise-hvd",
+      "workflow_file": "jira-sync.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-ls",
+      "workflow_file": "add-copyright-headers.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    },
+    {
+      "repo": "terraform-mcp-server",
+      "workflow_file": "changelog.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-archive",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-aws",
+      "workflow_file": "closed_items.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-aws",
+      "workflow_file": "community_note.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-aws",
+      "workflow_file": "maintainer_helpers.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-aws",
+      "workflow_file": "readiness_comment.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-aws",
+      "workflow_file": "triage.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-awscc",
+      "workflow_file": "label-notifications.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-awscc",
+      "workflow_file": "labelers.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-awscc",
+      "workflow_file": "projects.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-awscc",
+      "workflow_file": "pull_request_feed.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-awscc",
+      "workflow_file": "regressions.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-azuread",
+      "workflow_file": "link-milestone.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-azuread",
+      "workflow_file": "pull-request-new-commit.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-azuread",
+      "workflow_file": "pull-request.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-azurerm",
+      "workflow_file": "link-milestone.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-azurerm",
+      "workflow_file": "pull-request-new-commit.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-azurerm",
+      "workflow_file": "pull-request-type.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-azurerm",
+      "workflow_file": "pull-request.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-boundary",
+      "workflow_file": "jira.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-cloudinit",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-consul",
+      "workflow_file": "test.yaml",
+      "trigger": "pull_request_target",
+      "risk": "high",
+      "reason": "pull_request_target with PR data interpolated in run step — potential command injection"
+    },
+    {
+      "repo": "terraform-provider-dns",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-external",
+      "workflow_file": "dependabot-auto-merge.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-external",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-google",
+      "workflow_file": "pull-request-reviewer.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-google",
+      "workflow_file": "upstream-mm.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-google-beta",
+      "workflow_file": "pull-request-reviewer.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-google-beta",
+      "workflow_file": "upstream-mm.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-helm",
+      "workflow_file": "jira-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "high",
+      "reason": "pull_request_target with PR data interpolated in run step — potential command injection"
+    },
+    {
+      "repo": "terraform-provider-helm",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-http",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-kubernetes",
+      "workflow_file": "jira_pr.yaml",
+      "trigger": "pull_request_target",
+      "risk": "high",
+      "reason": "pull_request_target with PR data interpolated in run step — potential command injection"
+    },
+    {
+      "repo": "terraform-provider-kubernetes",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-local",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-null",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-random",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-time",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-tls",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-provider-vault",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "terraform-random-tfe-utility",
+      "workflow_file": "call-create-jira-issue.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vagrant",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault",
+      "workflow_file": "remove-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-action",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-auth-plugin-example",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-csi-provider",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-hcp-lib",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-helm",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-k8s",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-lambda-extension",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-alicloud",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-alicloud",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-azure",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-azure",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-centrify",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-cf",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-cf",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-gcp",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-gcp",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-jwt",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-jwt",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-kerberos",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-kerberos",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-kubernetes",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-kubernetes",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-oci",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-auth-oci",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-couchbase",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-couchbase",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-elasticsearch",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-elasticsearch",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-mongodbatlas",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-mongodbatlas",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-oracle",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-redis",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-redis",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-redis-elasticache",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-redis-elasticache",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-snowflake",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-database-snowflake",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-mock",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-mock",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-ad",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-ad",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-alicloud",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-alicloud",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-azure",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-azure",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-gcp",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-gcp",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-gcpkms",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-gcpkms",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-kubernetes",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-kubernetes",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-kv",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-kv",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-mongodbatlas",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-mongodbatlas",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-openldap",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-openldap",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-terraform",
+      "workflow_file": "backport.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-plugin-secrets-terraform",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-secrets-operator",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-service-broker",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-servicenow-credential-resolver",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vault-ssh-helper",
+      "workflow_file": "jira.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vscode-terraform",
+      "workflow_file": "add-copyright-headers.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    },
+    {
+      "repo": "web-unified-docs",
+      "workflow_file": "build-pr-preview.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    },
+    {
+      "repo": "web-unified-docs",
+      "workflow_file": "label-content-prs.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

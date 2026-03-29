@@ -21,6 +21,7 @@ prompt for Claude Code.
 | 014 | Integrity hashes + transitive deps | ✅ Implemented | v0.5.0 |
 | 015 | On-disk verification (TOCTOU elimination) | ✅ Implemented | v0.5.0 |
 | 016 | Performance testing + benchmarks | ✅ Implemented | v0.5.0 |
+| 016a | Addendum: runner benchmark workflow | ✅ Implemented | v0.5.0 |
 | 017 | GPG signature delta detection | ✅ Implemented | v0.5.0 |
 | 018 | Pull request target detection | ✅ Implemented | v0.5.0 |
 | 019 | Parent-child timestamp analysis | ✅ Implemented | v0.5.0 |
@@ -29,3 +30,4 @@ prompt for Claude Code.
 | 022 | Gate --warn mode for phased rollout | ✅ Implemented | v0.6.0 |
 | 023 | SHA-pinned ref verification | ✅ Implemented | v0.6.1 |
 | 024 | Docker action verification | ✅ Implemented | v0.7.0 |
+| 025 | Behavioral anomaly signals | 📋 Specified | — |

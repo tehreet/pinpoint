@@ -1,0 +1,3807 @@
+{
+  "org": "jenkinsci",
+  "scanned_at": "2026-03-27T05:52:24Z",
+  "repos": {
+    "total": 2728,
+    "with_workflows": 926,
+    "archived_skipped": 183,
+    "forked_skipped": 700
+  },
+  "references": {
+    "total": 3180,
+    "sha_pinned": 117,
+    "tag_pinned": 3040,
+    "branch_pinned": 23
+  },
+  "unique_actions": [
+    {
+      "repo": "jenkins-infra/jenkins-security-scan",
+      "used_in_repos": 720,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 715
+        },
+        {
+          "ref": "5b7d35e9eb25d47e2e82fcbcd64adb3e5169a8c0",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v2.2.1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "jenkins-infra/github-reusable-workflows",
+      "used_in_repos": 606,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 848
+        },
+        {
+          "ref": "e363d9f9c7b5a757ad75a3a40663fd1158ebc811",
+          "type": "sha",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "release-drafter/release-drafter",
+      "used_in_repos": 206,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 80
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 48
+        },
+        {
+          "ref": "139054aeaa9adc52ab36ddf67437541f039b88e2",
+          "type": "sha",
+          "count": 24
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 18
+        },
+        {
+          "ref": "v6.0.0",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v7.1.1",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v6.1.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v5.13.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v5.11.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v5.23.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v5.15.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v5.22.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v5.18.1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "3f0f87098bd6b5c5b9a36d49c41d998ea58f9348",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v5.21.1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v5.17.5",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v5.20.1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v5.7.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v5.14.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v6.2.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "569eb7ee3a85817ab916c8f8ff03a5bd96c9c83e",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v5.17.6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 163,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 197
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 58
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 53
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 22
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 15
+        },
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "v2.3.4",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "v6.0.1",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v2.4.0",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v2.3.2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3.5.1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3.0.2",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "b4ffde65f46336ab88eb53be808477a3936bae11",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/setup-java",
+      "used_in_repos": 118,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 111
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 33
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 24
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 19
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 15
+        },
+        {
+          "ref": "v4.2.1",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "be666c2fcd27ec809703dec50e508c2fdc7f6654",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "v3.12.0",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v3.0.0",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v5.1.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v2.5.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3.4.1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v3.5.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "1d018f9b8b9b505bb578a83b230fabcce01af93b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 40,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 67
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 23
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 14
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "38697555549f1db7851b81482ff19f1fa5c4fedc",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "1b1aada464948af03b950897e5eb522f92603cc2",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 33,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 23
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 10
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "b7c566a772e6b6bfb58ed0dc250532a479d7789f",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "330a01c490aca151604b8cf639adc76d48f6c5d4",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 29,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 18
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 8
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v2.1.4",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3.2.6",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v3.0.11",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "stCarolas/setup-maven",
+      "used_in_repos": 24,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 77
+        },
+        {
+          "ref": "d6af6abeda15e98926a57b5aa970a96bb37f97d1",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "jenkins-infra/jenkins-maven-cd-action",
+      "used_in_repos": 23,
+      "refs": [
+        {
+          "ref": "v1.2.0",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "v1.3.3",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 2
+        },
+        {
+          "ref": "v1.1.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1.3.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1.3.2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "5f5529707ac2bef1ff86da2553ce465ed669aa65",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "mheap/github-action-required-labels",
+      "used_in_repos": 21,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 19
+        },
+        {
+          "ref": "0ac283b4e65c1fb28ce6079dea5546ceca98ccbe",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "8afbe8ae6ab7647d0c9f0cfa7c2f939650d22509",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "kentaro-m/auto-assign-action",
+      "used_in_repos": 21,
+      "refs": [
+        {
+          "ref": "v2.0.2",
+          "type": "tag",
+          "count": 14
+        },
+        {
+          "ref": "v2.0.0",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v1.1.2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v2.0.1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "jenkins-infra/verify-ci-status-action",
+      "used_in_repos": 19,
+      "refs": [
+        {
+          "ref": "v1.2.0",
+          "type": "tag",
+          "count": 15
+        },
+        {
+          "ref": "7d194d0c5785a12623f350581db5243063542f90",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v1.2.2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1.2.1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/labeler",
+      "used_in_repos": 19,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 16
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "jenkins-infra/interesting-category-action",
+      "used_in_repos": 19,
+      "refs": [
+        {
+          "ref": "v1.0.0",
+          "type": "tag",
+          "count": 13
+        },
+        {
+          "ref": "v1.2.1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1.1.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "78f4b74509528c18790d9c36b2cccb5b21ed3451",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v1.2.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "advanced-security/filter-sarif",
+      "used_in_repos": 17,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 17
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "codecov/codecov-action",
+      "used_in_repos": 16,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "v5.5.2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "671740ac38dd9b0130fbe1cec585b89eea48d3de",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v5.5.1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v1.1.1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v4.0.1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "1af58845a975a7985b0beb0cbe6fbbb71a41dbad",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "umbrelladocs/action-linkspector",
+      "used_in_repos": 16,
+      "refs": [
+        {
+          "ref": "v1.4.1",
+          "type": "tag",
+          "count": 13
+        },
+        {
+          "ref": "v1.4.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1.3.2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "brpaz/action-label-syncer",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "0.2.0",
+          "type": "tag",
+          "count": 15
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "crowdin/github-action",
+      "used_in_repos": 13,
+      "refs": [
+        {
+          "ref": "v2.15.0",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v2.15.2",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v1.14.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v1.12.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v2.4.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v2.12.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "uhafner/quality-monitor",
+      "used_in_repos": 13,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 29
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "s4u/setup-maven-action",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "v1.19.0",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "v1.18.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/stale",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "v9",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v10.2.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v9.1.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v10",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "micnncim/action-label-syncer",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v1.3.0",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/configure-pages",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 7
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-pages-artifact",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 7
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/deploy-pages",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 7
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 8
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/create-pull-request",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "c5a7806660adbe173f04e3e038b0ccdcd758773c",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "c0f553fe549906ede9cf27b5156039d195d2ece0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "updatecli/updatecli-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "v2.100.0",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "v1.10.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "b45d80f862d83dbcd57f89517bcf500b2ab88fb2",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ad-m/github-push-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "emibcn/badge-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "v2.0.3",
+          "type": "tag",
+          "count": 18
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "153bb8e04406b158c6c84fc1615b65b24149a1fe",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "a74c6b72af54cfa997e81df42d94703d6313a2d0",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ludeeus/action-shellcheck",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/upload-release-asset",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v1.0.2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/setup-buildx-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v1.5.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/build-push-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v2.6.1",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "gradle/actions",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-go",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "s4u/maven-settings-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v4.0.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v2.2.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v4.0.2",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "ed597411d8f924073f98dfc5c65a23a2325f34cd",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "TriPSs/conventional-changelog-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tomasbjerre/.github",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/create-github-app-token",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "f8d387b68d61c58ab83c6c016672934102569859",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "avakar/tag-and-release",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1.0.0",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "cla-assistant/github-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v2.1.1-beta",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v2.3.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "jenkins-x-plugins/jx-release-version",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v2.6.11",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v2.8.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/setup-qemu-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "fountainhead/action-wait-for-check",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1.2.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v1.1.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions-ecosystem/action-remove-labels",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "mikepenz/action-junit-report",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "gaurav-nelson/github-action-markdown-link-check",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "1.0.15",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dawidd6/action-send-mail",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "d38f3f7cd391cdebfe0d38efc3998b935e951c4f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions-ecosystem/action-regex-match",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/dependency-review-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v4.9.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "3b139cfc5fae8b618d3eae3675e383bb1769c019",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/metadata-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v3.3.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "garethjevans/labeler",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/create-release",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "jfrog/frogbot",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pascalgn/automerge-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v0.16.4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "sonarsource/sonarqube-quality-gate-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "uhafner/autograding-github-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "oleksiyrudenko/gha-git-credentials",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2-latest",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hmarr/auto-approve-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f0939ea97e9205ef24d872e76833fa908a770363",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "shogo82148/actions-upload-release-asset",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "8f032eff0255912cc9c8455797fd6d72f25c7ab7",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "satak/webrequest-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "helm/kind-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "ef37e7f390d99f746eb8b610417061a60e82a6cc",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pre-commit/action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3.0.1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tiobe/tics-github-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "srealmoreno/label-sync-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "HCL-TECH-SOFTWARE/appscan-codesweep-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "HCL-TECH-SOFTWARE/appscan-sast-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1.0.1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "atlassian/gajira-create",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "1ff0b6bd115a780592b47bfbb63fc4629132e6ec",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "madhead/read-java-properties",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "latest",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "jenkins-infra/fetch-codeql-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 9
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "charmed-kubernetes/actions-operator",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "super-linter/super-linter",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "d5b0a2ab116623730dd094f15ddc1b6b25bf7b99",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "atlassian/gajira-login",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "ca13f8850ea309cf44a6e4e0c49d9aa48ac3ca4c",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ncipollo/release-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "339a81892b84b4eeb0f6e744e4574d79d0d9b8dd",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "returntocorp/semgrep-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "fcd5ab7459e8d91cb1777481980d1b18b4fc6735",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "peaceiris/actions-gh-pages",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "helm/chart-testing-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "6ec842c01de15ebb84c8627d2744a0c2f2755c9f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "checkmarx/ast-github-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "fa338ce82069b297c4852ac77e2d168db9fb56d8",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "scacap/action-surefire-report",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dependabot/fetch-metadata",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "dbb049abf0d677abbd7f7eee0375145b417fdd34",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "jenkinsci/checkmarx-ast-scanner-plugin",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "jenkinsci/core-changelog-generator",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "feb124ed2262f8586ac4561348436afb965812e1",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dev-drprasad/delete-older-releases",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "dfbe6be2a006e9475dfcbe5b8d201f1824c2a9fe",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "j178/prek-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "codecov/test-results-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "gr2m/twitter-together",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1.8.3",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v1.x",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "WyriHaximus/github-action-get-previous-tag",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "eps1lon/actions-label-merge-conflict",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "1df065ebe6e3310545d4f4c4e862e43bdca146f0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "roots/discourse-topic-github-release-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "557d74ea05b6cc0c47f555c1d5d28a89d904005b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "atlassian/gajira-transition",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4749176faf14633954d72af7a44d7f2af01cc92b",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "eskatos/gradle-command-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ph-fritsche/action-dispatch",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "redhat-actions/buildah-build",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ossf/scorecard-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0864cf19026789058feabb7e87baa5f140aac736",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "cicirello/jacoco-badge-generator",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f33476a5a3fd5a4f77cb5eef2ebe728c1dd5b921",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "DataDog/labeler",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "glob-all",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "github/super-linter",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "jfrog/.github",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "toolmantim/release-drafter",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v6.2.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "1Password/check-signed-commits-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "azure/setup-helm",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "dda3372f752e03dde6b3237bc9431cdc2f7a02a2",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "fsfe/reuse-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "Skitionek/notify-microsoft-teams",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1.0.8",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "nuget/setup-nuget",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "entimaniac/read-pom-version-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "1.0.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/dockerhub-description",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "helm/chart-releaser-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "cae68fefc6b5f367a0275617c9f83181ba54714f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "renovatebot/github-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "68a3ea99af6ad249940b5a9fdf44fc6d7f14378b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "redhat-actions/push-to-registry",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "step-security/harden-runner",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0080882f6c36860b6ba35c610c98ce87d4e2f26f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "xresloader/upload-to-github-release",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1.3.4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "mindsers/changelog-reader-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "32aa5b4c155d76c94e4ec883a223c947b2f02656",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "medyagh/setup-minikube",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "active-directory-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "analysis-model",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "analysis-model",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "analysis-model",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "analysis-model-api-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "analysis-pom-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "analysis-pom-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "ansible-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "ant-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "antisamy-markup-formatter-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "apache-httpcomponents-client-4-api-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "artifact-manager-s3-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "artifactory-artifact-manager-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "artifactory-client-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "artifactory-plugin",
+      "workflow_file": "cla.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "artifactory-plugin",
+      "workflow_file": "frogbot-scan-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    },
+    {
+      "repo": "artifactory-plugin",
+      "workflow_file": "removeLabel.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "artifactory-plugin",
+      "workflow_file": "tests.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    },
+    {
+      "repo": "asm-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "authentication-tokens-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "authorize-project-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "autograding-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "autograding-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "aws-global-configuration-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "basic-branch-build-strategies-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "bitbucket-kubernetes-credentials-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "bootstrap5-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "bootstrap5-api-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "bootstrap5-api-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "branch-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "build-history-metrics-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "build-token-root-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "byte-buddy-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "chinese-workday-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "cloudbees-folder-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "command-launcher-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "commons-math3-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "coverage-badges-extension-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "coverage-model",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "coverage-model",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "coverage-model",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "coverage-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "coverage-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "coverage-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "credentials-binding-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "credentials-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "data-tables-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "data-tables-api-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "data-tables-api-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "database-mariadb-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "database-sqlserver-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "docker-workflow-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "durable-task-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "echarts-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "echarts-api-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "echarts-api-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "elastic-axis-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "electricflow-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "embeddable-build-status-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "exclusive-labels-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "extended-read-permission-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "extension-filter-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "extra-tool-installers-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "file-operations-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "file-parameters-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "flyway-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "flyway-runner-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "font-awesome-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "font-awesome-api-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "font-awesome-api-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "forensics-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "forensics-api-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "forensics-api-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "git-client-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "git-forensics-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "git-forensics-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "git-forensics-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "git-forensics-plugin",
+      "workflow_file": "ui-tests.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "git-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "git-version-monitor-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "github-branch-source-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "gitlab-checks-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "gitlab-kubernetes-credentials-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "gitlab-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "groovy-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "gruvbox-theme-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "gson-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "hidden-parameter-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "htmlpublisher-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "implied-labels-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "instance-identity-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jackson3-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jcaptcha-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jdk-tool-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jenkins",
+      "workflow_file": "label-conflicting-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jenkins",
+      "workflow_file": "label-lts-prs.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jenkins",
+      "workflow_file": "require-changelog-label.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jfrog-plugin",
+      "workflow_file": "cla.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jfrog-plugin",
+      "workflow_file": "frogbot-scan-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    },
+    {
+      "repo": "jfrog-plugin",
+      "workflow_file": "jenkins-security-scan.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jfrog-plugin",
+      "workflow_file": "remove-label.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jfrog-plugin",
+      "workflow_file": "tests.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    },
+    {
+      "repo": "jjwt-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jnr-posix-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jobcacher-artifactory-storage-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jobcacher-oras-storage-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jobcacher-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "joda-time-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jquery3-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jquery3-api-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "json-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "json-path-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "jsoup-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "junit-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "kubernetes-client-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "kubernetes-ephemeral-container-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "kubernetes-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "locale-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "log-cli-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "login-theme-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "mailer-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "mariadb-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "markdown-formatter-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "mcp-server-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "metrics-aggregation-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "metrics-aggregation-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "metrics-aggregation-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "micrometer-core-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "mina-sshd-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "mock-load-builder-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "mock-security-realm-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "mock-slave-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "muuri-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "mysql-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "nested-data-reporting-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "next-executions-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "nodelabelparameter-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "nunit-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "oidc-provider-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "onepassword-secrets-plugin",
+      "workflow_file": "pr-check-signed-commits.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "openmfa-plugin",
+      "workflow_file": "require-changelog-label.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "openshift-k8s-credentials-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "oras-java-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "oras-parameters-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "oss-symbols-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "parallel-test-executor-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "parameter-separator-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-build-step-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-cloudwatch-logs-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-cps-http-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-cps-oras-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-github-lib-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-graph-analysis-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-groovy-lib-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-input-step-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-lib-oras-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-milestone-step-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-model-definition-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-npm-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-stage-step-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pipeline-stage-view-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "plain-credentials-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "platformlabeler-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "plugin-util-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "plugin-util-api-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "plugin-util-api-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pollscm-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "postgresql-fingerprint-storage-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "priority-sorter-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "prism-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "prism-api-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "prism-api-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pull-request-monitoring-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "s3-jobcacher-storage-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "schedule-build-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "scm-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "scm-filter-branch-pr-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "script-security-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "secure-requester-whitelist-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "select2-api-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "simple-priority-sorter-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "skip-notifications-trait-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "snakeyaml-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "snakeyaml-engine-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "sqlserver-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "sse-gateway-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "ssh-agent-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "ssh-credentials-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "sshd-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "structs-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "support-core-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "testng-plugin-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "vectorcast-execution-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "versioncolumn-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "warnings-ng-plugin",
+      "workflow_file": "assign-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "warnings-ng-plugin",
+      "workflow_file": "dependency-check.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "warnings-ng-plugin",
+      "workflow_file": "enforce-labels.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "webhook-secret-credentials-provider-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "webhook-step-plugin",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-aggregator-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-basic-steps-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-cps-global-lib-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-cps-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-durable-task-step-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-job-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-multibranch-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-scm-step-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-step-api-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "workflow-support-plugin",
+      "workflow_file": "auto-merge-safe-deps.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

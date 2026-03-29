@@ -128,7 +128,7 @@ pinpoint watch --config .pinpoint.yml --interval 5m
 
 ## What It Catches
 
-Pinpoint blocks 10 distinct attack vectors:
+Pinpoint blocks these attack vectors:
 
 | Attack | Detection |
 |--------|-----------|
@@ -198,14 +198,9 @@ Four signals: release SHA match, GPG signature continuity, chronology check
 
 ## Scale
 
-| Metric | Value |
-|--------|-------|
-| 142 repos, 7,736 tags | 3 GraphQL points, 34 seconds |
-| Gate per CI run (SHA-only) | 3 API calls, <2 seconds |
-| Gate per CI run (on-disk) | 3 API calls + 28ms disk I/O |
-| Lock (15 actions, parallel) | ~15 seconds, 16MB RSS |
-| Org audit (277 repos) | 6 points, <2 minutes |
-| GraphQL wall | ~20,000 repos at 5-min intervals |
+Gate runs in seconds per CI job. Org audits handle hundreds of repos in
+minutes. GraphQL batching (50 repos per query) keeps API costs minimal.
+Run `go test ./tests/perf/...` to see current benchmarks.
 
 ## Configuration
 

@@ -1,0 +1,24 @@
+Scanning cloudflare...
+  [1/12] Fetched 50/554 repos (cost: 1 point, remaining: 4887)
+  [2/12] Fetched 100/554 repos (cost: 1 point, remaining: 4884)
+  [3/12] Fetched 150/554 repos (cost: 1 point, remaining: 4880)
+  [4/12] Fetched 200/554 repos (cost: 1 point, remaining: 4875)
+  [5/12] Fetched 250/554 repos (cost: 1 point, remaining: 4871)
+  [6/12] Fetched 300/554 repos (cost: 1 point, remaining: 4866)
+  [7/12] Fetched 350/554 repos (cost: 1 point, remaining: 4863)
+  [8/12] Fetched 400/554 repos (cost: 1 point, remaining: 4862)
+  [9/12] Fetched 450/554 repos (cost: 1 point, remaining: 4859)
+  [10/12] Fetched 500/554 repos (cost: 1 point, remaining: 4857)
+  [11/12] Fetched 550/554 repos (cost: 1 point, remaining: 4855)
+  [12/12] Fetched 554/554 repos (cost: 1 point, remaining: 4854)
+
+Analyzing 759 workflow files...
+  Found 2056 action references across 133 unique actions.
+
+Checking upstream action security (133 actions)...
+  [50/133] checking immutable releases...
+  [100/133] checking immutable releases...
+  [133/133] checking immutable releases...
+
+Checking org policy...
+  admin:org scope not available, skipping policy check.

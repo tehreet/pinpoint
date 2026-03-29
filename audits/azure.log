@@ -1,0 +1,29 @@
+Scanning azure...
+  [1/54] Fetched 50/2669 repos (cost: 1 point, remaining: 4572)
+  [2/54] Fetched 100/2669 repos (cost: 1 point, remaining: 4563)
+  [3/54] Fetched 150/2669 repos (cost: 1 point, remaining: 4555)
+  [4/54] Fetched 200/2669 repos (cost: 1 point, remaining: 4545)
+  [5/54] Fetched 250/2669 repos (cost: 1 point, remaining: 4541)
+  [6/54] Fetched 300/2669 repos (cost: 1 point, remaining: 4538)
+  [7/54] Fetched 350/2669 repos (cost: 1 point, remaining: 4535)
+  [8/54] Fetched 400/2669 repos (cost: 1 point, remaining: 4529)
+  [9/54] Fetched 450/2669 repos (cost: 1 point, remaining: 4523)
+  [10/54] Fetched 500/2669 repos (cost: 1 point, remaining: 4519)
+  [11/54] Fetched 550/2669 repos (cost: 1 point, remaining: 4515)
+  [12/54] Fetched 600/2669 repos (cost: 1 point, remaining: 4510)
+  [13/54] Fetched 650/2669 repos (cost: 1 point, remaining: 4503)
+  [14/54] Fetched 700/2669 repos (cost: 1 point, remaining: 4500)
+  [15/54] Fetched 750/2669 repos (cost: 1 point, remaining: 4497)
+  [16/54] Fetched 800/2669 repos (cost: 1 point, remaining: 4495)
+  [17/54] Fetched 850/2669 repos (cost: 1 point, remaining: 4494)
+  [18/54] Fetched 900/2669 repos (cost: 1 point, remaining: 4492)
+  [19/54] Fetched 950/2669 repos (cost: 1 point, remaining: 4489)
+  [20/54] Fetched 1000/2669 repos (cost: 1 point, remaining: 4486)
+Audit error: fetching org repos: org query page 21: GraphQL API returned 502: <html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+

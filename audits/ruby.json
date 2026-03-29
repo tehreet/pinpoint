@@ -1,0 +1,1151 @@
+{
+  "org": "ruby",
+  "scanned_at": "2026-03-27T05:54:37Z",
+  "repos": {
+    "total": 184,
+    "with_workflows": 140,
+    "archived_skipped": 10,
+    "forked_skipped": 6
+  },
+  "references": {
+    "total": 1586,
+    "sha_pinned": 588,
+    "tag_pinned": 877,
+    "branch_pinned": 121
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 138,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 293
+        },
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 116
+        },
+        {
+          "ref": "1af3b93b6815bc44a9784bd300feb67ff0d1eeb3",
+          "type": "sha",
+          "count": 36
+        },
+        {
+          "ref": "v6.0.2",
+          "type": "tag",
+          "count": 36
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 36
+        },
+        {
+          "ref": "0c366fd6a839edf440554fa01a7085ccba70ac98",
+          "type": "sha",
+          "count": 14
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "8e8c483db84b4bee98b60c0593521ed34d9990e8",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "08c6903cd8c0fde910a37f88322edcfb5dd907a8",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "0ad4b8fadaa221de15dcec353f45205ec38ea70b",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "ruby/setup-ruby",
+      "used_in_repos": 130,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 241
+        },
+        {
+          "ref": "d5126b9b3579e429dd52e51e68624dda2e05be25",
+          "type": "sha",
+          "count": 44
+        },
+        {
+          "ref": "319994f95fa847cf3fb3cd3dbe89f6dcde9f178f",
+          "type": "sha",
+          "count": 39
+        },
+        {
+          "ref": "09a7688d3b55cf0e976497ff046b70949eeaccfd",
+          "type": "sha",
+          "count": 22
+        },
+        {
+          "ref": "13e7a03dc3ac6c3798f4570bfead2aed4d96abfb",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "eaecf785f6a34567a6d97f686bbb7bccc1ac1e5c",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "f26937343756480a8cb3ae1f623b9c8d89ed6984",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 2
+        },
+        {
+          "ref": "a4effe49ee8ee5b8b5091268c473a4628afb5651",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "8aeb6ff8030dd539317f8e1769a044873b56ea71",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "e34163cd15f4bb403dcd72d98e295997e6a55798",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "a6e6f86333f0a2523ece813039b8b4be04560854",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "ab177d40ee5483edb974554986f56b33477e21d0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "ruby/actions",
+      "used_in_repos": 93,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 103
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "critical"
+    },
+    {
+      "repo": "step-security/harden-runner",
+      "used_in_repos": 65,
+      "refs": [
+        {
+          "ref": "fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594",
+          "type": "sha",
+          "count": 58
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "a90bcbc6539c36a85cdfeb73f7e2f433735f215b",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "20cf305ff2072d973412fa9b1e3a4f227bda3c76",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "91182cccc01eb5e619899d80e4e971d6181294a7",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "rubygems/release-gem",
+      "used_in_repos": 61,
+      "refs": [
+        {
+          "ref": "e9a6361a0b14562539327c2a02373edc56dd3169",
+          "type": "sha",
+          "count": 51
+        },
+        {
+          "ref": "1c162a739e8b4cb21a676e97b087e8268d8fc40b",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "612653d273a73bdae1df8453e090060bb4db5f31",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "a25424ba2ba8b387abc8ef40807c2c85b96cbe32",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/create-github-app-token",
+      "used_in_repos": 47,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 41
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "29824e69f54612133e76f7eaac726eef6c875baf",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "convictional/trigger-workflow-and-wait",
+      "used_in_repos": 47,
+      "refs": [
+        {
+          "ref": "v1.6.5",
+          "type": "tag",
+          "count": 46
+        },
+        {
+          "ref": "f69fa9eedd3c62a599220f4d5745230e237904be",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 21,
+      "refs": [
+        {
+          "ref": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f",
+          "type": "sha",
+          "count": 22
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 17
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/deploy-pages",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 13
+        },
+        {
+          "ref": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-pages-artifact",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 12
+        },
+        {
+          "ref": "7b1f4a764d45c48632c6b24a0339c27f5614fb0b",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/configure-pages",
+      "used_in_repos": 13,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "983d7736d9b0ae728b81ab479565c72886d7745b",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "rubygems/configure-rubygems-credentials",
+      "used_in_repos": 11,
+      "refs": [
+        {
+          "ref": "v1.0.0",
+          "type": "tag",
+          "count": 11
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 9,
+      "refs": [
+        {
+          "ref": "cdf6c1fa76f9f475f3d7449005a359c84ca0f306",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "668228422ae6a00e4ad889ee87cd7109ec5666a7",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v5.0.3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3",
+          "type": "sha",
+          "count": 24
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "ed597411d8f924073f98dfc5c65a23a2325f34cd",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dependabot/fetch-metadata",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "21025c705c08248db411dc16f3619e6b5f9ea21a",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-java",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "be666c2fcd27ec809703dec50e508c2fdc7f6654",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "msys2/setup-msys2",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "4f806de0a5a7294ffabaff804b38a9b435a73bda",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "cafece8e6baf9247cf9b1bf95097b0b983cc558d",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "b45d80f862d83dbcd57f89517bcf500b2ab88fb2",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/build-push-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "d08e5c354a6adb9ed34480a06d141179aa583294",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "38697555549f1db7851b81482ff19f1fa5c4fedc",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "89a39a4e59826350b863aa6b6252a07ad50cf83e",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/setup-buildx-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "lewagon/wait-on-check-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "74049309dfeff245fe8009a0137eacf28136cb3c",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v1.5.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "eregon/keep-last-n-releases",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ossf/scorecard-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "4eaacf0543bb3f2c246792bd56e8cdeffafb205a",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ruby/setup-ruby-pkgs",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/create-pull-request",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "c0f553fe549906ede9cf27b5156039d195d2ece0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/setup-qemu-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "ce360397dd3f832beb865e1373c09c0e9f86d70a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions-rust-lang/setup-rust-toolchain",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "150fca883cd4034361b621bd4e6a9d34e5143606",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ruby/action-slack",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "54175162371f1f7c8eb94d7c8644ee2479fcd375",
+          "type": "sha",
+          "count": 39
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "rust-lang/crates-io-auth-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "advanced-security/filter-sarif",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "2da736ff05ef065cb2894ac6892e47b5eac2c3c0",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "cloudflare/wrangler-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "eregon/clean-path",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "joshmfrankel/simplecov-check-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "zizmorcore/zizmor-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "71321a20a9ded102f6e9ce5718a2fcec2c4f70d8",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "snapcore/action-publish",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "214b86e5ca036ead1668c79afb81e550e6c54d40",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-go",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ruby/ruby-builder",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "taiki-e/install-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7627fb428e65e78e2ec9a24ae5c5bd5f8553f182",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "diddlesnaps/snapcraft-multiarch-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "cfd7a246fad6bea65bb92f69a1c8d07898c231e5",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/metadata-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "dtolnay/rust-toolchain",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "oxidize-rb/actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "re-actors/alls-green",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "05ac9388f0aebcb5727afa17fcccfecd6f8ec5fe",
+          "type": "sha",
+          "count": 8
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "snapcore/action-build",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "3bdaa03e1ba6bf59a65f84a751d943d549a54e79",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "necojackarc/auto-request-review",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "e89da1a8cd7c8c16d9de9c6e763290b6b0e3d424",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "Ubuntu/WSL",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "codespell-project/actions-codespell",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "astral-sh/setup-uv",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "5a095e7a2014a4212f075830d4f7277575a9d098",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/labeler",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "634933edcd8ababfe52f92936142cc22ac488b1b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "cygwin/cygwin-install-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "gem_rbs_collection",
+      "workflow_file": "welcome_comment.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "rbs",
+      "workflow_file": "dependabot.yml",
+      "trigger": "pull_request_target",
+      "risk": "high",
+      "reason": "pull_request_target with PR data interpolated in run step — potential command injection"
+    },
+    {
+      "repo": "ruby",
+      "workflow_file": "auto_request_review.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "ruby",
+      "workflow_file": "auto_review_pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "ruby",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "ruby",
+      "workflow_file": "pr-playground.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

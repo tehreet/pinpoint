@@ -1,0 +1,250 @@
+{
+  "org": "openjdk",
+  "scanned_at": "2026-03-27T05:54:32Z",
+  "repos": {
+    "total": 135,
+    "with_workflows": 58,
+    "archived_skipped": 59,
+    "forked_skipped": 0
+  },
+  "references": {
+    "total": 863,
+    "sha_pinned": 0,
+    "tag_pinned": 863,
+    "branch_pinned": 0
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 58,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 299
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 32
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 20
+        },
+        {
+          "ref": "v4.1.1",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 50,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 117
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 23
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 14
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 41,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 79
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 16
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 14
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 38,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 32
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/setup-java",
+      "used_in_repos": 9,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "gradle/actions",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 120
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 31
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 27
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "stCarolas/setup-maven",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v4.4",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v4.5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "gradle/wrapper-validation-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "oracle-actions/setup-java",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1.3.4",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "vmactions/freebsd-vm",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

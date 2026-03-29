@@ -1,0 +1,591 @@
+{
+  "org": "fastify",
+  "scanned_at": "2026-03-27T05:58:56Z",
+  "repos": {
+    "total": 139,
+    "with_workflows": 104,
+    "archived_skipped": 25,
+    "forked_skipped": 2
+  },
+  "references": {
+    "total": 304,
+    "sha_pinned": 59,
+    "tag_pinned": 244,
+    "branch_pinned": 1
+  },
+  "unique_actions": [
+    {
+      "repo": "fastify/workflows",
+      "used_in_repos": 90,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 95
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 18,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 70
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 17,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 55
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "fastify/github-action-merge-dependabot",
+      "used_in_repos": 10,
+      "refs": [
+        {
+          "ref": "1b2ed42db8f9d81a46bac83adedfc03eb5149dff",
+          "type": "sha",
+          "count": 14
+        },
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/dependency-review-action",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "05fe4576374b728f0c523d6a13d64c25081e0803",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "3c4e3dcb1aa7874d2c16be7d79418e9b7efd6261",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "pnpm/action-setup",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "41ff72655975bd51cab0327fa583b6e92b6d3061",
+          "type": "sha",
+          "count": 8
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/upload-pages-artifact",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/deploy-pages",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "nearform-actions/optic-release-automation-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "9e3518763346efacba15d729d0faaa4cbd8fdd52",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "lycheeverse/lychee-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "8646ba30535128ac92d33dfc9133794bfdd9b411",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "nearform-actions/github-action-notify-release",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "1a1c03a2b8c9a41a7a88f9a8de05b2b6582f0966",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "google-github-actions/deploy-cloudrun",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "2028e2d7d30a78c6910e0632e48dd561b064884d",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "calibreapp/image-actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f32575787d333b0579f0b7d506ff03be63a669d1",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "asdf-vm/actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "b7bcd026f18772e44fe1026d729e1611cc435d47",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "peaceiris/actions-gh-pages",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "373f7f263a76c20808c831209c920827a82a2847",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "changesets/action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "e0145edc7d9d8679003495b11f87bd8ef63c0cba",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "github-actions-x/commit",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "722d56b8968bf00ced78407bbe2ead81062d8baa",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "denoland/setup-deno",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "e95548e56dfa95d4e1a28d6f422fafe75c4c26fb",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "fastify/action-pr-title",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "oven-sh/setup-bun",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "3d267786b128fe76c2f16a390aa2448b815359f3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "nodesource/setup-nsolid",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "1ca68d2589d3d56ecd3881dfe6ffa87eeda9c939",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/labeler",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "oprypin/find-latest-tag",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "dd2729fe78b0bb55523ae2b2a310c6773a652bd1",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "jsumners/lock-threads",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "e460dfeb36e731f3aeb214be6b0c9a9d9a67eda6",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "google-github-actions/auth",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7c6bc770dae815cd3e89ee6cdf493a5fab2cc093",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/configure-pages",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "tj-actions/verify-changed-files",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a1c6acee9df209257a246f2cc6ae8cb6581c1edf",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "tibdex/backport",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "9565281eda0731b1d20c4025c43339fb0a23812e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "nearform-actions/github-action-test-compare",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "d50bc37a05e736bb40db0eebc8fdad3e33ece136",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "octokit/request-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2.x",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "peter-evans/create-pull-request",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "c0f553fe549906ede9cf27b5156039d195d2ece0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "netlify/actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "3185065f4ab2f6df6f2ef41ee013626e1c02a426",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "nearform-actions/github-action-check-linked-issues",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7140e2e01aa0c18b8ac61bddf5e89abde1ca760e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "xt0rted/markdownlint-problem-matcher",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "1a5fabfb577370cfdf5af944d418e4be3ea06f27",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "JustinBeckwith/linkinator-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f62ba0c110a76effb2ee6022cc6ce4ab161085e3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "fastify",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "fastify",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "github-action-merge-dependabot",
+      "workflow_file": "check-linked-issues.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "website",
+      "workflow_file": "preview.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

@@ -1,0 +1,22 @@
+Scanning paloaltonetworks...
+  [1/11] Fetched 50/507 repos (cost: 1 point, remaining: 4722)
+  [2/11] Fetched 100/507 repos (cost: 1 point, remaining: 4721)
+  [3/11] Fetched 150/507 repos (cost: 1 point, remaining: 4720)
+  [4/11] Fetched 200/507 repos (cost: 1 point, remaining: 4719)
+  [5/11] Fetched 250/507 repos (cost: 1 point, remaining: 4718)
+  [6/11] Fetched 300/507 repos (cost: 1 point, remaining: 4717)
+  [7/11] Fetched 350/507 repos (cost: 1 point, remaining: 4716)
+  [8/11] Fetched 400/507 repos (cost: 1 point, remaining: 4715)
+  [9/11] Fetched 450/507 repos (cost: 1 point, remaining: 4714)
+  [10/11] Fetched 500/507 repos (cost: 1 point, remaining: 4713)
+  [11/11] Fetched 507/507 repos (cost: 1 point, remaining: 4712)
+
+Analyzing 189 workflow files...
+  Found 628 action references across 68 unique actions.
+
+Checking upstream action security (68 actions)...
+  [50/68] checking immutable releases...
+  [68/68] checking immutable releases...
+
+Checking org policy...
+  admin:org scope not available, skipping policy check.

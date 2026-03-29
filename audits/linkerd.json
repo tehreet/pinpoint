@@ -1,0 +1,481 @@
+{
+  "org": "linkerd",
+  "scanned_at": "2026-03-27T05:54:06Z",
+  "repos": {
+    "total": 41,
+    "with_workflows": 14,
+    "archived_skipped": 7,
+    "forked_skipped": 10
+  },
+  "references": {
+    "total": 275,
+    "sha_pinned": 220,
+    "tag_pinned": 51,
+    "branch_pinned": 4
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 14,
+      "refs": [
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 103
+        },
+        {
+          "ref": "8e8c483db84b4bee98b60c0593521ed34d9990e8",
+          "type": "sha",
+          "count": 20
+        },
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "94c2de7",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 2
+        },
+        {
+          "ref": "722adc63f1aa60a57ec37892e133b1d319cae598",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "722adc6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "linkerd/dev",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "v48",
+          "type": "tag",
+          "count": 27
+        },
+        {
+          "ref": "v44",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "DavidAnson/markdownlint-cli2-action",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "07035fd053f7be764496c0f8d8f9f41f98305101",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "a23dae216ce3fee4db69da41fed90d2a4af801cf",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "153bb8e04406b158c6c84fc1615b65b24149a1fe",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "d99959edae48b5ffffd7b00da66dcdb0a33a52ee",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "a06a81a03ee405af7f2048a818ed3f03bbf83c7b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "b7c566a772e6b6bfb58ed0dc250532a479d7789f",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v6.0.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "3446296876d12d4e3a0f3145a3c87e67bf0a16b5",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
+          "type": "sha",
+          "count": 9
+        },
+        {
+          "ref": "v7.0.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "EmbarkStudios/cargo-deny-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "3fd3802e88374d3fe9159b834c7714ec57d6c979",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "sigstore/cosign-installer",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "ba7bc0a3fef59531c69a25acd34668d6d3fe6f22",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "Swatinem/rust-cache",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "f0deed1e0edfc6a9be95417288c0e1099b1eeec3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/setup-buildx-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "b45d80f862d83dbcd57f89517bcf500b2ab88fb2",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tj-actions/changed-files",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "8cba46e29c11878d930bca7870bb54394d3e8b21",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "22103cc46bda19c2b464ffe86db46df6922fd323",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "high"
+    },
+    {
+      "repo": "codecov/codecov-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "1af58845a975a7985b0beb0cbe6fbbb71a41dbad",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-go",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "4b73464bb391d4059bd26b0524d20df3927bd417",
+          "type": "sha",
+          "count": 12
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/setup-qemu-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "ce360397dd3f832beb865e1373c09c0e9f86d70a",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "zentered/markdown-seo-check",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1.1.2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions-rs/cargo",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "e8634b4",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "668228422ae6a00e4ad889ee87cd7109ec5666a7",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "engineerd/setup-kind",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v0.4.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/repository-dispatch",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "28959ce8df70de7be546dd1250a005dd32156697",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dessant/lock-threads",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7266a7ce5c1df01b1c6db85bf8cd86c737dadbe7",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/build-push-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "d08e5c354a6adb9ed34480a06d141179aa583294",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "golangci/golangci-lint-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions-rs/toolchain",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4d38309",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "olix0r/cargo-action-fmt",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "9269f3aa1ff01775d95efc97037e2cbdb41d9684",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "google-github-actions/auth",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7c6bc770dae815cd3e89ee6cdf493a5fab2cc093",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "extractions/setup-just",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f8a3cce218d9f83db3a2ecd90e41ac3de6cdfd9b",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

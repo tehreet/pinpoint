@@ -1,0 +1,61 @@
+{
+  "org": "istio",
+  "scanned_at": "2026-03-27T05:53:22Z",
+  "repos": {
+    "total": 41,
+    "with_workflows": 1,
+    "archived_skipped": 15,
+    "forked_skipped": 6
+  },
+  "references": {
+    "total": 3,
+    "sha_pinned": 0,
+    "tag_pinned": 2,
+    "branch_pinned": 1
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "istio/get-istioctl",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

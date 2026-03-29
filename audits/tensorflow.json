@@ -1,0 +1,934 @@
+{
+  "org": "tensorflow",
+  "scanned_at": "2026-03-27T05:57:28Z",
+  "repos": {
+    "total": 107,
+    "with_workflows": 28,
+    "archived_skipped": 45,
+    "forked_skipped": 1
+  },
+  "references": {
+    "total": 512,
+    "sha_pinned": 211,
+    "tag_pinned": 293,
+    "branch_pinned": 8
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 26,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 43
+        },
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 42
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 38
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 25
+        },
+        {
+          "ref": "8e8c483db84b4bee98b60c0593521ed34d9990e8",
+          "type": "sha",
+          "count": 13
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "v4.1.7",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "ac593985615ec2ede58e132d2e21d2b1cbd6127c",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "1af3b93b6815bc44a9784bd300feb67ff0d1eeb3",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "755da8c3cf115ac066823e79a1e1788f8940201b",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "08eba0b27e820071cde6df949e0beb9ba4906955",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "8e5e7e5ab8b370d6c329ec480221332ada57f0ab",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 20,
+      "refs": [
+        {
+          "ref": "42375524e23c412d93fb67b49958b491fce71c38",
+          "type": "sha",
+          "count": 21
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 16
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 15
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 12
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "v5.1.1",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "13ae5bb136fac2878aff31522b9efb785519f984",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "e797f83bcb11b83ae66e0230d6156d7c80228e7c",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "83679a892e2d95755f2dac6acb0bfd1e9ac5d548",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1",
+          "type": "sha",
+          "count": 17
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 12
+        },
+        {
+          "ref": "83fd05a356d7e2593de66fc9913b3002723633cb",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "b7c566a772e6b6bfb58ed0dc250532a479d7789f",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v4.4.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 11,
+      "refs": [
+        {
+          "ref": "cc203385981b70ca67e1cc392babf9cc229d5806",
+          "type": "sha",
+          "count": 39
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v4.1.8",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v4.1.7",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pypa/gh-action-pypi-publish",
+      "used_in_repos": 9,
+      "refs": [
+        {
+          "ref": "release",
+          "type": "branch",
+          "count": 7
+        },
+        {
+          "ref": "76f52bc884231f62b9a034ebfe128415bbaabdfc",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v1.1.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 8
+        },
+        {
+          "ref": "0c907a75c2c80ebcb7f088228285e798b750cf8f",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/stale",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "997185467fa4f803885201cee163a9f38240193d",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v9",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v10",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pre-commit/action",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v3.0.1",
+          "type": "tag",
+          "count": 7
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bazel-contrib/setup-bazel",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "0.18.0",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "0.14.0",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "529dbc2648ea79358c64f2bfa5f3ec98f07859e4",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "0.8.5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "f3f50ea6791b9b0f4c4eeabba4507422426462f5",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "5d4e8d1aca955e8d8589aabd499c5cae939e33c7",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "896079047b4bb059ba6f150a5d87d47dde99e6e5",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "6bb031afdd8eb862ea3fc1848194185e076637e5",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "0.3.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "ed597411d8f924073f98dfc5c65a23a2325f34cd",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ossf/scorecard-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "15c10fcf1cf912bd22260bfec67569a359ab87da",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "f49aabe0b5af0936a0987cfb85d86b75731b0186",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "4eaacf0543bb3f2c246792bd56e8cdeffafb205a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/create-pull-request",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "c0f553fe549906ede9cf27b5156039d195d2ece0",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "98357b18bf14b5342f975ff684046ec3b2a07725",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "271a8d0340265f705b14b6d32b9829c1cb33d45e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "FirebaseExtended/action-hosting-deploy",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v0",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "trilom/file-changes-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "a6ca26c14274c33b15e6499323aac178af06ad4b",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v1.2.4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "zofrex/mirror-branch",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0be56f4c8077a288a635a491b306ba0bb1c810e6",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dawidd6/action-download-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "etils-actions/pypi-auto-publish",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ARM-software/cmsis-actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "rhysd/github-action-benchmark",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "d48d326b4ca9ba73ca0cd0d59f108f9e02a381c7",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "egor-tensin/vs-shell",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "9a932a62d05192eae18ca370155cf877eecc2202",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dorny/paths-filter",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "de90cc6fb38fc0963ad72b210f1f284cd68cea36",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "Gaurav0/backport",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "d69fd1d2469762a7b4007f671857e4f94deed0af",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "mamba-org/setup-micromamba",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "subosito/flutter-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "48cafc24713cca54bbe03cdc3a423187d413aafa",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "einaregilsson/build-number",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "46decf22c413b48c8923e98b2b5836f8aaf7781e",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "arduino/setup-protoc",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "release-drafter/release-drafter",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "74e7c423dafbb406c9c18b1638334f67a7c891c3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "citation-file-format/cffconvert-github-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4cf11baa70a673bfdf9dad0acc7ee33b3f4b6084",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/configure-pages",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/upload-pages-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "reviewdog/action-suggester",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a3026c6020837c23b61a79d12db223a00df19e6a",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "google/osv-scanner-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2.3.1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "dtolnay/rust-toolchain",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "5f2e2a7aff63d8cbdacb4832218a30fa7a37ee6e",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/build-push-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "471d1dc4e07e5cdedd4c2171150001c434f0b7a4",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "9780b0c442fbb1117ed29e0efdff1e18412f7567",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/deploy-pages",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/setup-buildx-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "nick-fields/retry",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "pypa/cibuildwheel",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2.23.3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "DoozyX/clang-format-lint-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0138140a2adaafd3032a3ff37f66366fd7dc88e0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "haya14busa/action-cond",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "msys2/setup-msys2",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "jlumbroso/free-disk-space",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/setup-java",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 5
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/labeler",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "model-optimization",
+      "workflow_file": "labeler.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "tflite-micro",
+      "workflow_file": "check_bug_id.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "tflite-micro",
+      "workflow_file": "pr_test.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

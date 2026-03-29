@@ -1,0 +1,368 @@
+{
+  "org": "modal-labs",
+  "scanned_at": "2026-03-27T05:58:17Z",
+  "repos": {
+    "total": 77,
+    "with_workflows": 15,
+    "archived_skipped": 6,
+    "forked_skipped": 31
+  },
+  "references": {
+    "total": 116,
+    "sha_pinned": 94,
+    "tag_pinned": 22,
+    "branch_pinned": 0
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 17
+        },
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 12
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "f43a0e5ff2bd294095638e18286ca9a3d1956744",
+          "type": "sha",
+          "count": 9
+        },
+        {
+          "ref": "08c6903cd8c0fde910a37f88322edcfb5dd907a8",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "1af3b93b6815bc44a9784bd300feb67ff0d1eeb3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "8d9ed9ac5c53483de85588cdf95a591a75ab9f55",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "a26af69be951a213d495a4c3e4e4022e16d87065",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "astral-sh/setup-uv",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "caf0cab7a618c569241d31dcd442f54681755d39",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "22695119d769bdb6f7032ad67b9bca0ef8c4a174",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "5a095e7a2014a4212f075830d4f7277575a9d098",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "5a7eac68fb9809dea845d802897dc5c723910fa3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "b8d3b6e8af63cde30bdc382c0bc28114f4346c88",
+          "type": "sha",
+          "count": 9
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/setup-go",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "d35c59abb061a4a6fb18e82ac0862c26744d6ab5",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "40f1582b2485089dde7abd97c1529aa768e1baff",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "astral-sh/ruff-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "golangci/golangci-lint-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "1e7e51e771db61008b38414a730f564565cf7c20",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "1481404843c368bc19ca9406f87d6e0fc97bdcfd",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/create-github-app-token",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "a8d616148505b5069dccd32f177bb87d7f39123b",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "29824e69f54612133e76f7eaac726eef6c875baf",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "cdca7365b2dadb8aad0a33bc7601856ffabcc48e",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "2028fbc5c25fe9cf00d9f06a71cc4710d4507903",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/deploy-pages",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/stale",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "5bef64f19d7facfb25b37b414482c7164d639639",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/upload-pages-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7b1f4a764d45c48632c6b24a0339c27f5614fb0b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "stefanzweifel/git-auto-commit-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "fpicalausa/remove-stale-branches",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "bfaf2b7f95cfd85485960c9d2d98a0702c84a74c",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "arduino/setup-protoc",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "c65c819552d16ad3c9b72d9dfd5ba5237b9c906b",
+          "type": "sha",
+          "count": 5
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions-rust-lang/rustfmt",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "559aa3035a47390ba96088dffa783b5d26da9326",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions-rust-lang/setup-rust-toolchain",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "9399c7bb15d4c7d47b27263d024f0a4978346ba4",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "aws-actions/configure-aws-credentials",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "be2e7ad815e27b890489a89ce2717b0f9e26b56e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "tibdex/github-app-token",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "32691ba7c9e7063bd457bd8f2a5703138591fa58",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "modal-client",
+      "workflow_file": "approve-copybara.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

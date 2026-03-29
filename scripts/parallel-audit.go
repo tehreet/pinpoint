@@ -18,8 +18,8 @@ import (
 
 const (
 	workers   = 8
-	outputDir = "/home/joshf/pinpoint/audits"
-	binary    = "/tmp/pp"
+	outputDir = "audits"
+	binary    = "pinpoint"
 )
 
 func main() {

@@ -1,0 +1,37 @@
+Scanning grafana...
+  [1/20] Fetched 50/970 repos (cost: 1 point, remaining: 4934)
+  [2/20] Fetched 100/970 repos (cost: 1 point, remaining: 4931)
+  [3/20] Fetched 150/970 repos (cost: 1 point, remaining: 4925)
+  [4/20] Fetched 200/970 repos (cost: 1 point, remaining: 4915)
+  [5/20] Fetched 250/970 repos (cost: 1 point, remaining: 4912)
+  [6/20] Fetched 300/970 repos (cost: 1 point, remaining: 4910)
+  [7/20] Fetched 350/970 repos (cost: 1 point, remaining: 4908)
+  [8/20] Fetched 400/970 repos (cost: 1 point, remaining: 4905)
+  [9/20] Fetched 450/970 repos (cost: 1 point, remaining: 4903)
+  [10/20] Fetched 500/970 repos (cost: 1 point, remaining: 4899)
+  [11/20] Fetched 550/970 repos (cost: 1 point, remaining: 4896)
+  [12/20] Fetched 600/970 repos (cost: 1 point, remaining: 4894)
+  [13/20] Fetched 650/970 repos (cost: 1 point, remaining: 4890)
+  [14/20] Fetched 700/970 repos (cost: 1 point, remaining: 4886)
+  [15/20] Fetched 750/970 repos (cost: 1 point, remaining: 4882)
+  [16/20] Fetched 800/970 repos (cost: 1 point, remaining: 4878)
+  [17/20] Fetched 850/970 repos (cost: 1 point, remaining: 4876)
+  [18/20] Fetched 900/970 repos (cost: 1 point, remaining: 4873)
+  [19/20] Fetched 950/970 repos (cost: 1 point, remaining: 4870)
+  [20/20] Fetched 970/970 repos (cost: 1 point, remaining: 4868)
+
+Analyzing 1579 workflow files...
+  Found 5959 action references across 256 unique actions.
+
+Checking upstream action security (256 actions)...
+  [50/256] checking immutable releases...
+  [100/256] checking immutable releases...
+  Warning: could not check grafana/auto-mate: releases API returned 404 for grafana/auto-mate: {"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}
+  [150/256] checking immutable releases...
+  [200/256] checking immutable releases...
+  Warning: could not check grafana/security-patch-actions: releases API returned 404 for grafana/security-patch-actions: {"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}
+  [250/256] checking immutable releases...
+  [256/256] checking immutable releases...
+
+Checking org policy...
+  admin:org scope not available, skipping policy check.

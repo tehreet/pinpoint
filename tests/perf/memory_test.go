@@ -1,7 +1,7 @@
-//go:build integration
-
 // Copyright (C) 2026 CoreWeave, Inc.
 // SPDX-License-Identifier: GPL-3.0-only
+
+//go:build integration
 
 package perf
 

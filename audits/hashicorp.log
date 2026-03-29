@@ -1,0 +1,37 @@
+Scanning hashicorp...
+  [1/19] Fetched 50/929 repos (cost: 1 point, remaining: 4933)
+  [2/19] Fetched 100/929 repos (cost: 1 point, remaining: 4930)
+  [3/19] Fetched 150/929 repos (cost: 1 point, remaining: 4921)
+  [4/19] Fetched 200/929 repos (cost: 1 point, remaining: 4914)
+  [5/19] Fetched 250/929 repos (cost: 1 point, remaining: 4911)
+  [6/19] Fetched 300/929 repos (cost: 1 point, remaining: 4909)
+  [7/19] Fetched 350/929 repos (cost: 1 point, remaining: 4906)
+  [8/19] Fetched 400/929 repos (cost: 1 point, remaining: 4902)
+  [9/19] Fetched 450/929 repos (cost: 1 point, remaining: 4898)
+  [10/19] Fetched 500/929 repos (cost: 1 point, remaining: 4893)
+  [11/19] Fetched 550/929 repos (cost: 1 point, remaining: 4891)
+  [12/19] Fetched 600/929 repos (cost: 1 point, remaining: 4888)
+  [13/19] Fetched 650/929 repos (cost: 1 point, remaining: 4885)
+  [14/19] Fetched 700/929 repos (cost: 1 point, remaining: 4881)
+  [15/19] Fetched 750/929 repos (cost: 1 point, remaining: 4877)
+  [16/19] Fetched 800/929 repos (cost: 1 point, remaining: 4872)
+  [17/19] Fetched 850/929 repos (cost: 1 point, remaining: 4869)
+  [18/19] Fetched 900/929 repos (cost: 1 point, remaining: 4864)
+  [19/19] Fetched 929/929 repos (cost: 1 point, remaining: 4861)
+
+Analyzing 1718 workflow files...
+  Found 6237 action references across 174 unique actions.
+
+Checking upstream action security (174 actions)...
+  [50/174] checking immutable releases...
+  [100/174] checking immutable releases...
+  Warning: could not check hashicorp/oss-core-library-dashboard-metrics: releases API returned 404 for hashicorp/oss-core-library-dashboard-metrics: {"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}
+  Warning: could not check hashicorp/doormat-action: releases API returned 404 for hashicorp/doormat-action: {"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}
+  Warning: could not check actions/actions: releases API returned 404 for actions/actions: {"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}
+  Warning: could not check ./.github: releases API returned 404 for ./.github: {"message":"Not Found","documentation_url":"https://docs.github.com/rest/repos/repos#get-a-repository","status":"404"}
+  [150/174] checking immutable releases...
+  Warning: could not check hashicorp/generate-metadata-action: releases API returned 404 for hashicorp/generate-metadata-action: {"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}
+  [174/174] checking immutable releases...
+
+Checking org policy...
+  admin:org scope not available, skipping policy check.

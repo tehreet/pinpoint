@@ -1,0 +1,272 @@
+{
+  "org": "mistralai",
+  "scanned_at": "2026-03-27T05:58:24Z",
+  "repos": {
+    "total": 25,
+    "with_workflows": 6,
+    "archived_skipped": 4,
+    "forked_skipped": 10
+  },
+  "references": {
+    "total": 82,
+    "sha_pinned": 82,
+    "tag_pinned": 0,
+    "branch_pinned": 0
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "08eba0b27e820071cde6df949e0beb9ba4906955",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "08c6903cd8c0fde910a37f88322edcfb5dd907a8",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "f43a0e5ff2bd294095638e18286ca9a3d1956744",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "a26af69be951a213d495a4c3e4e4022e16d87065",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "7f4fc3e22c37d6ff65e88745f38bd3157c663f7c",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "42375524e23c412d93fb67b49958b491fce71c38",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "astral-sh/setup-uv",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "d0cc045d04ccac9d8b7881df0226f9e82c39688e",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "1e862dfacbd1d6d858c55d9b792c756523627244",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "d0d8abe699bfb85fec6de9f7adb5ae17292296ff",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "speakeasy-api/sdk-generation-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "a658ca0a4a9b11bbcd7d3fb4e3063fa843afabff",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "7951d9dce457425b900b2dd317253499d98c2587",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "0057852bfaa89a56745cba8c7296529d2fc39830",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "53b83947a5a98c8d113130e565377fae1a50d02f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "330a01c490aca151604b8cf639adc76d48f6c5d4",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "634f93cb2916e3fdff6788551b99b062d0335ce0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a06a81a03ee405af7f2048a818ed3f03bbf83c7b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f28e40c7f34bde8b3046d885e986cb6290c5673b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "huacnlee/zed-extension-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "8cd592a0d24e1e41157740f1a529aeabddc88a1b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "pypa/gh-action-pypi-publish",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "cachix/install-nix-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4e002c8ec80594ecd40e759629461e26c8abed15",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "stefanbuck/github-issue-parser",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "25f1485edffc1fee3ea68eb9f59a72e58720ffc4",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "peter-evans/create-pull-request",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "c5a7806660adbe173f04e3e038b0ccdcd758773c",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

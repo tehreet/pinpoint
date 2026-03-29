@@ -45,52 +45,6 @@ type Warning struct {
 	Message string // "not in manifest", "branch-pinned", etc.
 }
 
-// Manifest represents the .pinpoint-manifest.json file.
-type Manifest struct {
-	Version     int                                 `json:"version"`
-	GeneratedAt string                              `json:"generated_at"`
-	Actions     map[string]map[string]ManifestEntry `json:"actions"`
-}
-
-// ManifestEntry holds a single tag→SHA mapping.
-type ManifestEntry struct {
-	SHA           string          `json:"sha"`
-	Integrity     string          `json:"integrity,omitempty"`
-	DiskIntegrity string          `json:"disk_integrity,omitempty"`
-	GPGSigned     *bool           `json:"gpg_signed,omitempty"`
-	GPGSigner     string          `json:"gpg_signer,omitempty"`
-	RecordedAt    string          `json:"recorded_at,omitempty"`
-	Type          string          `json:"type,omitempty"`
-	Docker        *DockerInfo     `json:"docker,omitempty"`
-	Dependencies  []TransitiveDep `json:"dependencies,omitempty"`
-}
-
-// TransitiveDep represents a dependency discovered in a composite action.
-type TransitiveDep struct {
-	Action        string          `json:"action"`
-	Ref           string          `json:"ref"`
-	Integrity     string          `json:"integrity,omitempty"`
-	DiskIntegrity string          `json:"disk_integrity,omitempty"`
-	Type          string          `json:"type,omitempty"`
-	Dependencies  []TransitiveDep `json:"dependencies"`
-}
-
-// DockerInfo holds Docker image information from the lockfile.
-type DockerInfo struct {
-	Image      string            `json:"image"`
-	Tag        string            `json:"tag,omitempty"`
-	Digest     string            `json:"digest,omitempty"`
-	BaseImages []DockerBaseImage `json:"base_images,omitempty"`
-	Source     string            `json:"source"`
-}
-
-// DockerBaseImage holds a resolved base image from a Dockerfile.
-type DockerBaseImage struct {
-	Image  string `json:"image"`
-	Tag    string `json:"tag"`
-	Digest string `json:"digest"`
-}
-
 // GateOptions holds configuration for the gate check.
 type GateOptions struct {
 	Repo                  string // "owner/repo"
@@ -235,7 +189,7 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 		}
 	}
 
-	var manifest Manifest
+	var manifest manifestpkg.Manifest
 	if err := json.Unmarshal(manifestContent, &manifest); err != nil {
 		return nil, fmt.Errorf("parse manifest: %w\n\nThe manifest file at %s is not valid JSON. Regenerate with: pinpoint audit --org <name> --output manifest", err, opts.ManifestPath)
 	}
@@ -877,9 +831,9 @@ func isPullRequestEvent(eventName string) bool {
 }
 
 // checkTransitiveDeps compares expected transitive deps against discovered ones.
-func checkTransitiveDeps(result *GateResult, expected []TransitiveDep, discovered []manifestpkg.TransitiveDep, action, tag string) {
+func checkTransitiveDeps(result *GateResult, expected []manifestpkg.TransitiveDep, discovered []manifestpkg.TransitiveDep, action, tag string) {
 	// Build map of expected deps by action
-	expectedMap := make(map[string]TransitiveDep)
+	expectedMap := make(map[string]manifestpkg.TransitiveDep)
 	for _, dep := range expected {
 		expectedMap[dep.Action] = dep
 	}

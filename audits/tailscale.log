@@ -1,0 +1,7 @@
+Scanning tailscale...
+  [1/3] Fetched 50/114 repos (cost: 1 point, remaining: 3806)
+  [2/3] Fetched 100/114 repos (cost: 1 point, remaining: 3803)
+Audit error: fetching org repos: org query page 3: GraphQL API returned 403: {
+  "documentation_url": "https://docs.github.com/graphql/overview/rate-limits-and-node-limits-for-the-graphql-api#secondary-rate-limits",
+  "message": "You have exceeded a secondary rate limit. Please wait a few minutes before you try again. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) If you reach out to GitHub Support for help, please include the request ID A030:3439A5:EF3643:D11454:69C61D8E."
+}

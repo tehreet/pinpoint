@@ -41,18 +41,14 @@ type ScoreContext struct {
 	CommitAuthor    string
 	CommitEmail     string
 	CommitDate      time.Time
-	OldCommitDate   time.Time
 	EntryPointOld   int64  // File size at old SHA (-1 if not found)
 	EntryPointNew   int64  // File size at new SHA (-1 if not found)
-	ReleaseExists   bool
 	SelfHosted      bool
 	BatchSize       int    // Number of tags repointed in same polling interval
 	ParentSHA       string    // SHA of the new commit's first parent
 	ParentDate      time.Time // Date of the parent commit
 	WasGPGSigned    bool   // Was the commit GPG-signed at lock time?
 	IsGPGSigned     bool   // Is the current commit GPG-signed?
-	VerifiedSigner  string // e.g. "web-flow" — who signed the original
-
 	// Behavioral anomaly fields (spec 025)
 	NewContributors      []string      // Logins not seen in previous releases (nil = first lock)
 	SuspiciousFiles      []string      // Files in the diff matching suspicious patterns
@@ -177,12 +173,6 @@ func Score(ctx ScoreContext) (Severity, []string) {
 	}
 
 	// === MEDIUM SIGNALS ===
-
-	// No corresponding release
-	if !ctx.ReleaseExists {
-		score += 20
-		signals = append(signals, "NO_RELEASE: no GitHub Release associated with this tag")
-	}
 
 	// Self-hosted runners affected
 	if ctx.SelfHosted {

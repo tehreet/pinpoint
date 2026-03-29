@@ -29,8 +29,8 @@ Pinpoint detects and prevents GitHub Actions supply chain attacks. Single Go
 binary, one dependency. Built after the March 2026 Trivy attack (75 tags
 force-pushed to malicious commits). CoreWeave was directly affected.
 
-**Current state:** v0.7.0 released. 28 repos enforced in test org. 10/10
-attack battery. First tool to verify Docker image digests.
+**Current state:** See `PROJECT-CONTEXT.md` for current deployment status.
+First tool to verify Docker image digests.
 
 **Read these files for full context before making architectural decisions:**
 - `PROJECT-CONTEXT.md` — Full project state, deployment status, attack battery results
@@ -62,13 +62,13 @@ internal/
   manifest/transitive.go          — Composite action.yml parsing, transitive dep resolution
   manifest/docker.go              — OCI registry client (ghcr.io, Docker Hub, quay.io),
                                      ParseDockerRef, ParseDockerfile, ResolveDigest
-  manifest/docker_test.go         — 30+ Docker test cases
+  manifest/docker_test.go         — Docker test cases
   manifest/lockpath.go            — ResolveLockfilePath (new/legacy path detection)
   manifest/templates.go           — Embedded workflow YAML templates
   poller/github.go                — REST API client
   poller/graphql.go               — GraphQL client (50 repos/query, 1 point)
   poller/graphql_org.go           — FetchOrgWorkflows for audit
-  risk/score.go                   — Risk scoring (13 signals)
+  risk/score.go                   — Risk scoring
   sarif/sarif.go                  — SARIF 2.1.0 output
   store/store.go                  — JSON state with atomic writes
   suppress/suppress.go            — Allow-list false positive suppression
@@ -77,8 +77,8 @@ tests/
   harness/                        — Integration tests (attack scenarios + real-world replays)
   perf/                           — Performance benchmarks + memory pressure tests
 scripts/
-  attack-battery.sh               — 10+ attack automated regression test
-  chaos-test.sh                   — 5 attack scenarios against deployed infra
+  attack-battery.sh               — Automated attack regression test
+  chaos-test.sh                   — Attack scenarios against deployed infra
 ```
 
 ## Build & Test Commands
@@ -141,9 +141,10 @@ The lockfile at `.github/actions-lock.json` contains:
 
 ## Spec Files
 
-All 24 implementation specs live in `specs/`. Key recent ones:
+Implementation specs live in `specs/`. Key recent ones:
 - `specs/023-verify-sha-pinned.md` — SHA-pinned ref verification
 - `specs/024-docker-action-verification.md` — Docker digest resolution + verification
+- `specs/025-behavioral-anomaly-signals.md` — Contributor, diff, and release cadence anomaly signals
 Read the relevant spec BEFORE implementing a feature.
 
 ## What NOT to Do

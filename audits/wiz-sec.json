@@ -1,0 +1,74 @@
+{
+  "org": "wiz-sec",
+  "scanned_at": "2026-03-27T05:47:55Z",
+  "repos": {
+    "total": 11,
+    "with_workflows": 1,
+    "archived_skipped": 0,
+    "forked_skipped": 9
+  },
+  "references": {
+    "total": 5,
+    "sha_pinned": 5,
+    "tag_pinned": 0,
+    "branch_pinned": 0
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "sigstore/cosign-installer",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "3454372f43399081ed03b604cb2d021dabca52bb",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "74a5d142397b4f367a81961eba4e8cd7edddf772",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "da05d552573ad5aba039eaac05058a918a7bf631",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

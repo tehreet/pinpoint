@@ -14,6 +14,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	manifestpkg "github.com/tehreet/pinpoint/internal/manifest"
 )
 
 // silenceOutput redirects gate messages to a buffer during tests.
@@ -1268,17 +1270,17 @@ func TestGate_LargeWorkflow_50Actions(t *testing.T) {
 	wf := wfBuilder.String()
 
 	// Build manifest with all 50 actions
-	actions := make(map[string]map[string]ManifestEntry)
+	actions := make(map[string]map[string]manifestpkg.ManifestEntry)
 	graphqlRepos := make(map[string]map[string]string)
 	for i := 0; i < 50; i++ {
 		key := fmt.Sprintf("org%d/action%d", i, i)
 		sha := fmt.Sprintf("%040x", i+1)
-		actions[key] = map[string]ManifestEntry{
+		actions[key] = map[string]manifestpkg.ManifestEntry{
 			"v1": {SHA: sha},
 		}
 		graphqlRepos[key] = map[string]string{"v1": sha}
 	}
-	manifestObj := Manifest{Version: 1, Actions: actions}
+	manifestObj := manifestpkg.Manifest{Version: 1, Actions: actions}
 	manifestBytes, _ := json.Marshal(manifestObj)
 
 	restServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

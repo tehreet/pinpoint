@@ -41,17 +41,14 @@ Single Go binary, one dependency (gopkg.in/yaml.v3). Detects and prevents GitHub
 
 - **Canonical:** `tehreet/pinpoint` (private, Josh's personal account)
 - **Test org mirror:** `pinpoint-testing/pinpoint` (private, org copy with action.yml pointing to org releases)
-- **Test org:** `pinpoint-testing` — 32 repos (all private), realistic workflows for testing
+- **Test org:** `pinpoint-testing` (all private), realistic workflows for testing
 - **VPS:** ubuntu-32gb-hil-1, user joshf, IP 5.78.91.92
 - **Project path on VPS:** /home/joshf/pinpoint
 - **Go version:** 1.24.1 (at /usr/local/go/bin)
 
-## Current State (v0.7.0 released)
+## Current State
 
-- v0.7.0 tagged and released with 5-platform binaries on both repos
-- 24 specs written (001-024), all implemented
-- 28 repos in pinpoint-testing org with gate enforced
-- 10/10 attack battery passing, Docker digest attack verified against live Docker Hub
+Run `pinpoint version` to see the current version. Run `./scripts/attack-battery.sh` to see attack battery status.
 
 ## Commands (all implemented)
 
@@ -95,7 +92,7 @@ internal/
   poller/github.go             — REST API client
   poller/graphql.go            — GraphQL client (50 repos/query, 1 point)
   poller/graphql_org.go        — FetchOrgWorkflows for audit
-  risk/score.go                — Risk scoring (13 signals)
+  risk/score.go                — Risk scoring
   sarif/sarif.go               — SARIF 2.1.0 output
   store/store.go               — JSON state with atomic writes
   suppress/suppress.go         — Allow-list false positive suppression
@@ -104,8 +101,8 @@ tests/
   harness/                     — Integration tests (attack scenarios + real-world replays + live tests)
   perf/                        — Performance benchmarks + memory pressure tests
 scripts/
-  attack-battery.sh            — 10+ attack automated regression test (v2, SHA-matched gate runs)
-  chaos-test.sh                — 5 attack scenarios against deployed infrastructure
+  attack-battery.sh            — Automated attack regression test (SHA-matched gate runs)
+  chaos-test.sh                — Attack scenarios against deployed infrastructure
 ```
 
 ## Lockfile Format (v2)
@@ -159,7 +156,7 @@ These are INDEPENDENT flags, not a staircase. --on-disk does NOT imply --integri
 - `--all-workflows` — Scan all `.github/workflows/*.yml` files, not just the triggering workflow. Required for comprehensive coverage.
 - `--warn` — Log violations without blocking. For phased rollout.
 
-## Docker Action Verification (v0.7.0)
+## Docker Action Verification
 
 Pinpoint is the **first GitHub Actions security tool** that verifies Docker image digests.
 
@@ -168,7 +165,7 @@ Pinpoint is the **first GitHub Actions security tool** that verifies Docker imag
 - Supports both `docker://` image references and Dockerfile `FROM` parsing
 - Verified against live Docker Hub: pushed evil image to same tag, gate caught `DOCKER IMAGE REPOINTED`
 
-## Attack Battery (10/10 blocked)
+## Attack Battery
 
 | # | Attack | How Pinpoint Catches It |
 |---|---|---|
@@ -208,9 +205,9 @@ Pinpoint is the **first GitHub Actions security tool** that verifies Docker imag
 
 **Phase 1: Audit cron** — Runs daily 8am UTC + manual trigger on `pinpoint-testing/pinpoint`
 
-**Phase 2: Lockfile generation** — Deployed to all 28 repos. Uses GitHub App (`pinpoint-test-bot`, App ID 3160618) for cross-repo auth. Creates PRs when lockfile changes.
+**Phase 2: Lockfile generation** — Deployed to test org repos. Uses GitHub App (`pinpoint-test-bot`, App ID 3160618) for cross-repo auth. Creates PRs when lockfile changes.
 
-**Phase 3+4: Gate enforced** — All 28 repos running enforced gate via shared reusable workflow at `pinpoint-testing/shared-workflows`. Flags: `--all-workflows --fail-on-missing --fail-on-unpinned`. Shared workflow pinned to SHA.
+**Phase 3+4: Gate enforced** — Test org repos running enforced gate via shared reusable workflow at `pinpoint-testing/shared-workflows`. Flags: `--all-workflows --fail-on-missing --fail-on-unpinned`. Shared workflow pinned to SHA.
 
 ### GitHub App: pinpoint-test-bot (App ID 3160618)
 - Installed on `pinpoint-testing` org, all repositories
@@ -221,8 +218,8 @@ Pinpoint is the **first GitHub Actions security tool** that verifies Docker imag
 
 ### Shared Reusable Workflow
 - Location: `pinpoint-testing/shared-workflows/.github/workflows/pinpoint-gate.yml`
-- All 28 repos call it via SHA-pinned reference
-- When updating: change shared workflow → get new SHA → update all 28 repos' gate.yml with new SHA → regen lockfiles → merge lockfile PRs
+- All test org repos call it via SHA-pinned reference
+- When updating: change shared workflow → get new SHA → update all repos' gate.yml with new SHA → regen lockfiles → merge lockfile PRs
 
 ## Competitive Landscape
 

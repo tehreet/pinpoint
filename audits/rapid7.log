@@ -1,0 +1,17 @@
+Scanning rapid7...
+  [1/7] Fetched 50/308 repos (cost: 1 point, remaining: 4681)
+  [2/7] Fetched 100/308 repos (cost: 1 point, remaining: 4680)
+  [3/7] Fetched 150/308 repos (cost: 1 point, remaining: 4679)
+  [4/7] Fetched 200/308 repos (cost: 1 point, remaining: 4678)
+  [5/7] Fetched 250/308 repos (cost: 1 point, remaining: 4677)
+  [6/7] Fetched 300/308 repos (cost: 1 point, remaining: 4676)
+  [7/7] Fetched 308/308 repos (cost: 1 point, remaining: 4675)
+
+Analyzing 87 workflow files...
+  Found 233 action references across 24 unique actions.
+
+Checking upstream action security (24 actions)...
+  [24/24] checking immutable releases...
+
+Checking org policy...
+  admin:org scope not available, skipping policy check.

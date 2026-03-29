@@ -1,0 +1,998 @@
+{
+  "org": "bridgecrewio",
+  "scanned_at": "2026-03-27T05:39:38Z",
+  "repos": {
+    "total": 100,
+    "with_workflows": 25,
+    "archived_skipped": 9,
+    "forked_skipped": 40
+  },
+  "references": {
+    "total": 351,
+    "sha_pinned": 210,
+    "tag_pinned": 95,
+    "branch_pinned": 46
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 25,
+      "refs": [
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 30
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 29
+        },
+        {
+          "ref": "b4ffde65f46336ab88eb53be808477a3936bae11",
+          "type": "sha",
+          "count": 27
+        },
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 5
+        },
+        {
+          "ref": "ee0669bd1cc54295c223e0bb666b733df41de1c5",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "8ade135a41bc03ea155e62e844d188df1ea18608",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "ac593985615ec2ede58e132d2e21d2b1cbd6127c",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        },
+        {
+          "ref": "c85c95e3d7251135ab7dc9ce3241c5835cc595a9",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 14,
+      "refs": [
+        {
+          "ref": "39cd14951b08e74b54015e9e001cdefcf80e669f",
+          "type": "sha",
+          "count": 21
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 10
+        },
+        {
+          "ref": "65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236",
+          "type": "sha",
+          "count": 9
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "e9aba2c848f5ebd159c070c61ea2c4e2b122355e",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "0f07f7f756721ebd886c2462646a35f78a8bc4de",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "anothrNick/github-tag-action",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 4
+        },
+        {
+          "ref": "a2c70ae13a881faf2b4953baaa9e49731997ab36",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "31c05bec812d1a339edacdf9fbf5b068691a65b2",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "1ffbb2e04bd950cffea99066469cb16d69a7887e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "bridgecrewio/checkov-action",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 5
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "cdca7365b2dadb8aad0a33bc7601856ffabcc48e",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "stefanzweifel/git-auto-commit-action",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "8756aa072ef5b4a080af5dc8fef36c5d586e521d",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "3ea6ae190baf489ba007f7c92608f33ce20ef04a",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "2fde6fc18d3b24c2561ba4b73a8e015e863cef85",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "b863ae1933cb653a53c021fe36dbb774e1fb9403",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/create-pull-request",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "153407881ec5c347639a548ade7d8ad1d6740e38",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "271a8d0340265f705b14b6d32b9829c1cb33d45e",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "18f7dc018cc2cd597073088f7c7591b9d1c02672",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/terraform-github-actions",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 14
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "pypa/gh-action-pypi-publish",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "b7f401de30cb6434a1e19f805ff006643653240e",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        },
+        {
+          "ref": "76f52bc884231f62b9a034ebfe128415bbaabdfc",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "dschep/install-pipenv-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "aaac0310d5f4a052d150e5f490b44354e08fbb8c",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tj-actions/verify-changed-files",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "a1c6acee9df209257a246f2cc6ae8cb6581c1edf",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "7f1b21ceb7ef533b97b46e89e2f882ee5cb17ae0",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "cedd7096b7f23ae0307d7d82f516d666580579b3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bridgecrewio/gha-reusable-workflows",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 7
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "pre-commit/action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v2.0.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "646c83fcd040023954eafda54b4db0192ce70507",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v2.0.3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "45775bd8235c68ba998cffa5171334d58593da47",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "b56ba49b26e50535fa1e7f7db0f4f7b4bf65d80d",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "0b7f8abb1508181956e8e162db84b466c27e18ce",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "694cdabd8bdb0f10b2cea11669e1bf5453eed0a6",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bridgecrewio/yor-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "edplato/trufflehog-actions-scan",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "0af17d9dd1410283f740eb76b0b8f6b696cadefc",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "chabad360/hugo-gh-pages",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "sigstore/cosign-installer",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "1fc5bd396d372bee37d608f955b336615edf79c8",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "11086d25041f77fe8fe7b9ea4e48e3b9192b8f19",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "azure/setup-helm",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "5119fcb9089d432beecbf79bb2c7915207344b78",
+          "type": "sha",
+          "count": 9
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "bridgecrewio/bridgecrew-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "343f7c4344506bcbf9b4de18042ae17996df046d",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "elgohr/Publish-Docker-Github-Action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "d0321869e187cfd3124343ea2b39b1db31f89685",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "43dc228e327224b2eda11c8883232afd5b34943b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/build-push-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "0565240e2d4ab88bba5387d719585280857ece09",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "4a13e500e55cf31b7a5d59a38ab2040ab0f42f56",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/setup-buildx-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "f95db51fddba0c2d1ec667646a06c2ce06100226",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "reviewdog/action-golangci-lint",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "94d61e3205b61acf4ddabfeb13c5f8a13eb4167b",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "da05d552573ad5aba039eaac05058a918a7bf631",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/setup-qemu-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "68827325e0b33c7199eb31dd4e31fbe9023e06e3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/metadata-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "96383f45573cb7f253c731d3b3ab81c87ef81934",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "thehanimo/pr-title-checker",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7fbfe05602bdd86f926d3fb3bccb6f3aed43bc70",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/setup-terraform",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "633666f66e0061ca3b725c73b2ec20cd13a8fdd1",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/deploy-pages",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/configure-pages",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "983d7736d9b0ae728b81ab479565c72886d7745b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-release-asset",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tj-actions/coverage-badge-go",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "7f447a2281e6c95d57526e53b2e800dfb3c07425",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "jacobtomlinson/gha-find-replace",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a51bbcd94d000df9ca0fcb54ec8be69aad8374b0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "stefanzweifel/changelog-updater-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a938690fad7edf25368f37e43a1ed1b34303eb36",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "goreleaser/goreleaser-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f82d6c1c344bcacabba2c841718984797f664a6b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "google-github-actions/release-please-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "db8f2c60ee802b3748b512940dde88eabd7b7e01",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "jpetrucciani/bandit-check",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "74c5ecc4297e374c7e9283bc81f649287bb14f34",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "crazy-max/ghaction-import-gpg",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "e89d40939c28e39f97cf32126055eeae86ba74ec",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "amannn/action-semantic-pull-request",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5.0.2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-pages-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0252fc4ba7626f0298f0cf00902a25c6afc77fa8",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "mikepenz/release-changelog-builder-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "5f3409748e2230350e149a7f7b5b8e9bcd785d44",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "tj-actions/changed-files",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "ed68ef82c095e0d48ec87eccea555d944a631a4c",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "high"
+    },
+    {
+      "repo": "returntocorp/semgrep-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "imranismail/setup-kustomize",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a76db1c6419124d51470b1e388c4b29476f495f1",
+          "type": "sha",
+          "count": 9
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 7
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/jekyll-build-pages",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "44a6e6beabd48582f863aeeb6cb2151cc1716697",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "EndBug/add-and-commit",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "securego/gosec",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "55d79496019a560e16e73e1948dee20a1fad631a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/dockerhub-description",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "dc67fad7001ef9e8e3c124cb7a64e16d0a63d864",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-go",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0c52d547c9bc32b1aa3301fd7a9cb496313a4491",
+          "type": "sha",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ad-m/github-push-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "devmasx/merge-branch",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "cdk-validator-checkov",
+      "workflow_file": "pull-request-lint.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "checkov",
+      "workflow_file": "security.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "yor",
+      "workflow_file": "security.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

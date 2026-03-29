@@ -1,0 +1,449 @@
+{
+  "org": "crystal-lang",
+  "scanned_at": "2026-03-27T05:54:59Z",
+  "repos": {
+    "total": 36,
+    "with_workflows": 17,
+    "archived_skipped": 10,
+    "forked_skipped": 2
+  },
+  "references": {
+    "total": 186,
+    "sha_pinned": 41,
+    "tag_pinned": 144,
+    "branch_pinned": 1
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 17,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 63
+        },
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "crystal-lang/install-crystal",
+      "used_in_repos": 11,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 16
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "cachix/install-nix-action",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "1ca7d21a94afc7c957383a2d217460d980de4934",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "4e002c8ec80594ecd40e759629461e26c8abed15",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v31",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "51f3067b56fe8ae331890c77d4e454f6d60615ff",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "cachix/cachix-action",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "3ba601ff5bbb07c7220846facfa2cd81eeee15a1",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "v17",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "1eb2ef646ac0255473d23a5907ad7b04ce94065c",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 16
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "aws-actions/configure-aws-credentials",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "8df5847569e6427dd6c4fb1cf565c83acfa8afa7",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/create-pull-request",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "c0f553fe549906ede9cf27b5156039d195d2ece0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/deploy-pages",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-pages-artifact",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "oprypin/install-crystal",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "mig4/setup-bats",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pre-commit-ci/lite-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "5d6cc0eb514c891a40562a58a8e71576c5c7fb43",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ilammy/msvc-dev-cmd",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "0b201ec74fa43914dc39ae48a89fd1d8cb592756",
+          "type": "sha",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "mwilliamson/setup-wasmtime-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "bf814d7d8fc3c3a77dfe114bd9fb8a2c575f6ad6",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "msys2/setup-msys2",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4f806de0a5a7294ffabaff804b38a9b435a73bda",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "falti/dotenv-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1.2.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "ad-m/github-push-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "cygwin/cygwin-install-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "711d29f3da23c9f4a1798e369a6f01198c13b11a",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "crate-ci/typos",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "631208b7aac2daa8b707f55e7331f9112b0e062d",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "shogo82148/actions-setup-mysql",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "ilammy/setup-nasm",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "72793074d3c8cdda771dba85f6deafe00623038b",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "korthout/backport-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4aaf0e03a94ff0a619c9a511b61aeb42adea5b02",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "Analog-inc/asciidoctor-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "328aa83fd20efb2e8899a34716db60c9ddf2d9a0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "crystal",
+      "workflow_file": "backport.yml",
+      "trigger": "pull_request_target",
+      "risk": "critical",
+      "reason": "pull_request_target with checkout of PR head ref — attacker-controlled code runs with repo secrets"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

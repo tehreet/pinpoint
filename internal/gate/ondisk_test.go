@@ -16,6 +16,7 @@ import (
 	"testing"
 
 	"github.com/tehreet/pinpoint/internal/integrity"
+	manifestpkg "github.com/tehreet/pinpoint/internal/manifest"
 )
 
 // setupOnDiskAction creates a mock actions directory at actionsDir/owner/repo/ref/
@@ -58,7 +59,7 @@ func b64Str(s string) string {
 }
 
 // onDiskGateTest runs a gate with the given options and returns the result.
-func onDiskGateTest(t *testing.T, workflowYAML string, manifestData Manifest, opts GateOptions) *GateResult {
+func onDiskGateTest(t *testing.T, workflowYAML string, manifestData manifestpkg.Manifest, opts GateOptions) *GateResult {
 	t.Helper()
 
 	// Suppress gate messages during tests
@@ -145,9 +146,9 @@ func TestGateOnDisk_Match(t *testing.T) {
 	}
 	actionsDir, treeHash := setupOnDiskAction(t, "actions", "checkout", "v4", files)
 
-	manifest := Manifest{
+	manifest := manifestpkg.Manifest{
 		Version: 2,
-		Actions: map[string]map[string]ManifestEntry{
+		Actions: map[string]map[string]manifestpkg.ManifestEntry{
 			"actions/checkout": {
 				"v4": {
 					SHA:           actionSHA,
@@ -183,9 +184,9 @@ func TestGateOnDisk_Mismatch(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	manifest := Manifest{
+	manifest := manifestpkg.Manifest{
 		Version: 2,
-		Actions: map[string]map[string]ManifestEntry{
+		Actions: map[string]map[string]manifestpkg.ManifestEntry{
 			"actions/checkout": {
 				"v4": {
 					SHA:           actionSHA,
@@ -222,9 +223,9 @@ func TestGateOnDisk_MissingAction(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	manifest := Manifest{
+	manifest := manifestpkg.Manifest{
 		Version: 2,
-		Actions: map[string]map[string]ManifestEntry{
+		Actions: map[string]map[string]manifestpkg.ManifestEntry{
 			"actions/checkout": {
 				"v4": {
 					SHA:           actionSHA,
@@ -263,9 +264,9 @@ func TestGateOnDisk_MissingDiskIntegrity(t *testing.T) {
 	files := map[string]string{"action.yml": "name: test\n"}
 	actionsDir, _ := setupOnDiskAction(t, "actions", "checkout", "v4", files)
 
-	manifest := Manifest{
+	manifest := manifestpkg.Manifest{
 		Version: 2,
-		Actions: map[string]map[string]ManifestEntry{
+		Actions: map[string]map[string]manifestpkg.ManifestEntry{
 			"actions/checkout": {
 				"v4": {
 					SHA: actionSHA,
@@ -308,9 +309,9 @@ func TestGateOnDisk_NoRunnerWorkspace(t *testing.T) {
 	}()
 
 	actionSHA := "abc123abc123abc123abc123abc123abc123abc1"
-	manifest := Manifest{
+	manifest := manifestpkg.Manifest{
 		Version: 2,
-		Actions: map[string]map[string]ManifestEntry{
+		Actions: map[string]map[string]manifestpkg.ManifestEntry{
 			"actions/checkout": {
 				"v4": {
 					SHA:           actionSHA,
@@ -395,9 +396,9 @@ func TestGateOnDisk_CustomActionsDir(t *testing.T) {
 	}
 	actionsDir, treeHash := setupOnDiskAction(t, "actions", "checkout", "v4", files)
 
-	manifest := Manifest{
+	manifest := manifestpkg.Manifest{
 		Version: 2,
-		Actions: map[string]map[string]ManifestEntry{
+		Actions: map[string]map[string]manifestpkg.ManifestEntry{
 			"actions/checkout": {
 				"v4": {
 					SHA:           actionSHA,

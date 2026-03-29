@@ -1,0 +1,20 @@
+Scanning netlify...
+  [1/8] Fetched 50/375 repos (cost: 1 point, remaining: 4795)
+  [2/8] Fetched 100/375 repos (cost: 1 point, remaining: 4794)
+  [3/8] Fetched 150/375 repos (cost: 1 point, remaining: 4793)
+  [4/8] Fetched 200/375 repos (cost: 1 point, remaining: 4792)
+  [5/8] Fetched 250/375 repos (cost: 1 point, remaining: 4780)
+  [6/8] Fetched 300/375 repos (cost: 1 point, remaining: 4779)
+  [7/8] Fetched 350/375 repos (cost: 1 point, remaining: 4778)
+  [8/8] Fetched 375/375 repos (cost: 1 point, remaining: 4777)
+
+Analyzing 187 workflow files...
+  Found 454 action references across 51 unique actions.
+
+Checking upstream action security (51 actions)...
+  Warning: could not check netlify/security-workflows: releases API returned 404 for netlify/security-workflows: {"message":"Not Found","documentation_url":"https://docs.github.com/rest/releases/releases#list-releases","status":"404"}
+  [50/51] checking immutable releases...
+  [51/51] checking immutable releases...
+
+Checking org policy...
+  admin:org scope not available, skipping policy check.

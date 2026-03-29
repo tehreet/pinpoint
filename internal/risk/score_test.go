@@ -16,7 +16,7 @@ func TestSizeAnomalyOverridesMajorTagAdvance(t *testing.T) {
 		IsDescendant:  true,
 		EntryPointOld: 1000,
 		EntryPointNew: 5000, // +400%
-		ReleaseExists: true,
+
 	})
 	if sev != SeverityCritical {
 		t.Errorf("expected CRITICAL, got %s (signals: %v)", sev, signals)
@@ -55,7 +55,7 @@ func TestScoreMassRepoint(t *testing.T) {
 func TestScoreLegitimateAdvance(t *testing.T) {
 	t.Parallel()
 	sev, _ := Score(ScoreContext{
-		TagName: "v4", IsDescendant: true, ReleaseExists: true,
+		TagName: "v4", IsDescendant: true,
 	})
 	if sev != SeverityLow {
 		t.Errorf("expected LOW for legitimate major tag advance, got %s", sev)
@@ -71,16 +71,16 @@ func TestScore_AllSignalsCritical(t *testing.T) {
 		EntryPointNew: 5000,
 		TagName:       "v1.2.3",
 		CommitDate:    time.Now().Add(-180 * 24 * time.Hour),
-		ReleaseExists: false,
+
 		SelfHosted:    true,
 	})
 	if sev != SeverityCritical {
 		t.Errorf("expected CRITICAL, got %s", sev)
 	}
-	if len(signals) < 7 {
-		t.Errorf("expected at least 7 signals, got %d: %v", len(signals), signals)
+	if len(signals) < 6 {
+		t.Errorf("expected at least 6 signals, got %d: %v", len(signals), signals)
 	}
-	expected := []string{"MASS_REPOINT", "OFF_BRANCH", "SIZE_ANOMALY", "SEMVER_REPOINT", "BACKDATED_COMMIT", "NO_RELEASE", "SELF_HOSTED"}
+	expected := []string{"MASS_REPOINT", "OFF_BRANCH", "SIZE_ANOMALY", "SEMVER_REPOINT", "BACKDATED_COMMIT", "SELF_HOSTED"}
 	for _, prefix := range expected {
 		found := false
 		for _, s := range signals {
@@ -102,7 +102,7 @@ func TestScore_MajorTagDescendantWithSizeAnomaly(t *testing.T) {
 		IsDescendant:  true,
 		EntryPointOld: 1000,
 		EntryPointNew: 5000,
-		ReleaseExists: true,
+
 		CommitDate:    time.Now(), // prevent BACKDATED from firing
 	})
 	if sev != SeverityCritical {
@@ -127,7 +127,7 @@ func TestScore_MajorTagDescendantNoAnomaly(t *testing.T) {
 		IsDescendant:  true,
 		EntryPointOld: 0,
 		EntryPointNew: 0,
-		ReleaseExists: true,
+
 	})
 	if sev != SeverityLow {
 		t.Errorf("expected LOW, got %s", sev)
@@ -140,7 +140,7 @@ func TestScore_SingleTagNonDescendant(t *testing.T) {
 		TagName:       "v1.5.0",
 		IsDescendant:  false,
 		AheadBy:       0,
-		ReleaseExists: true,
+
 	})
 	if sev != SeverityCritical {
 		t.Errorf("expected CRITICAL (SEMVER_REPOINT+OFF_BRANCH=130), got %s", sev)
@@ -152,7 +152,7 @@ func TestScore_BackdatedWithRelease(t *testing.T) {
 	sev, _ := Score(ScoreContext{
 		TagName:       "v1",
 		CommitDate:    time.Now().Add(-60 * 24 * time.Hour),
-		ReleaseExists: true,
+
 		IsDescendant:  true,
 	})
 	if sev != SeverityLow {
@@ -166,7 +166,7 @@ func TestScore_ZeroBatchSize(t *testing.T) {
 		BatchSize:     0,
 		TagName:       "v1",
 		IsDescendant:  true,
-		ReleaseExists: true,
+
 	})
 	for _, s := range signals {
 		if strings.HasPrefix(s, "MASS_REPOINT") {
@@ -213,7 +213,7 @@ func TestNormalTimestampOrder(t *testing.T) {
 		ParentDate: time.Now().Add(-24 * time.Hour),
 		ParentSHA:  "abc123",
 		IsDescendant: true,
-		ReleaseExists: true,
+
 	})
 	for _, s := range signals {
 		if strings.HasPrefix(s, "IMPOSSIBLE_TIMESTAMP") {
@@ -232,7 +232,7 @@ func TestSameDate(t *testing.T) {
 		ParentDate: now,
 		ParentSHA:  "abc123",
 		IsDescendant: true,
-		ReleaseExists: true,
+
 	})
 	for _, s := range signals {
 		if strings.HasPrefix(s, "IMPOSSIBLE_TIMESTAMP") {
@@ -295,7 +295,7 @@ func TestTrivyFullReplay(t *testing.T) {
 		CommitDate:    time.Date(2022, 6, 15, 0, 0, 0, 0, time.UTC),
 		ParentDate:    time.Date(2026, 3, 19, 0, 0, 0, 0, time.UTC),
 		ParentSHA:     "57a97c7e",
-		ReleaseExists: false,
+
 		SelfHosted:    false,
 		WasGPGSigned:  true,
 		IsGPGSigned:   false,
@@ -306,7 +306,7 @@ func TestTrivyFullReplay(t *testing.T) {
 	expected := []string{
 		"MASS_REPOINT", "OFF_BRANCH", "IMPOSSIBLE_TIMESTAMP",
 		"SIZE_ANOMALY", "SEMVER_REPOINT", "BACKDATED_COMMIT",
-		"SIGNATURE_DROPPED", "NO_RELEASE",
+		"SIGNATURE_DROPPED",
 	}
 	for _, prefix := range expected {
 		found := false
@@ -320,8 +320,8 @@ func TestTrivyFullReplay(t *testing.T) {
 			t.Errorf("missing signal %s in %v", prefix, signals)
 		}
 	}
-	if len(signals) < 8 {
-		t.Errorf("expected at least 8 signals, got %d: %v", len(signals), signals)
+	if len(signals) < 7 {
+		t.Errorf("expected at least 7 signals, got %d: %v", len(signals), signals)
 	}
 }
 
@@ -357,7 +357,7 @@ func TestSignatureStillSigned(t *testing.T) {
 		WasGPGSigned: true,
 		IsGPGSigned:  true,
 		IsDescendant: true,
-		ReleaseExists: true,
+
 	})
 	for _, s := range signals {
 		if strings.HasPrefix(s, "SIGNATURE_DROPPED") {
@@ -373,7 +373,7 @@ func TestSignatureNeverSigned(t *testing.T) {
 		WasGPGSigned: false,
 		IsGPGSigned:  false,
 		IsDescendant: true,
-		ReleaseExists: true,
+
 	})
 	for _, s := range signals {
 		if strings.HasPrefix(s, "SIGNATURE_DROPPED") {
@@ -389,7 +389,7 @@ func TestSignatureLockfileNoData(t *testing.T) {
 		WasGPGSigned: false,
 		IsGPGSigned:  true,
 		IsDescendant: true,
-		ReleaseExists: true,
+
 	})
 	for _, s := range signals {
 		if strings.HasPrefix(s, "SIGNATURE_DROPPED") {
@@ -440,7 +440,7 @@ func TestContributorAnomaly_NewContributor(t *testing.T) {
 	sev, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
-		ReleaseExists:   true,
+
 		CommitDate:      time.Now(),
 		NewContributors: []string{"attacker-account"},
 	})
@@ -465,7 +465,7 @@ func TestContributorAnomaly_AllKnown(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
-		ReleaseExists:   true,
+
 		CommitDate:      time.Now(),
 		NewContributors: []string{},
 	})
@@ -481,7 +481,7 @@ func TestContributorAnomaly_FirstLock(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
-		ReleaseExists:   true,
+
 		CommitDate:      time.Now(),
 		NewContributors: nil,
 	})
@@ -497,7 +497,7 @@ func TestDiffAnomaly_SuspiciousMixedWithNormal(t *testing.T) {
 	sev, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
-		ReleaseExists:   true,
+
 		CommitDate:      time.Now(),
 		SuspiciousFiles: []string{"dist/index.js"},
 		DiffOnly:        false,
@@ -522,7 +522,7 @@ func TestDiffAnomaly_NormalOnly(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
-		ReleaseExists:   true,
+
 		CommitDate:      time.Now(),
 		SuspiciousFiles: []string{},
 	})
@@ -538,7 +538,7 @@ func TestDiffAnomaly_SuspiciousOnly(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
-		ReleaseExists:   true,
+
 		CommitDate:      time.Now(),
 		SuspiciousFiles: []string{".github/workflows/ci.yml"},
 		DiffOnly:        true,
@@ -563,7 +563,7 @@ func TestDiffAnomaly_NilSuspicious(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:         "v4",
 		IsDescendant:    true,
-		ReleaseExists:   true,
+
 		CommitDate:      time.Now(),
 		SuspiciousFiles: nil,
 	})
@@ -579,7 +579,7 @@ func TestReleaseCadence_BurstRelease(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
-		ReleaseExists:        true,
+
 		CommitDate:           time.Now(),
 		MeanReleaseInterval:  30 * 24 * time.Hour,
 		TimeSinceLastRelease: 2 * time.Hour,
@@ -602,7 +602,7 @@ func TestReleaseCadence_NormalTiming(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
-		ReleaseExists:        true,
+
 		CommitDate:           time.Now(),
 		MeanReleaseInterval:  30 * 24 * time.Hour,
 		TimeSinceLastRelease: 20 * 24 * time.Hour,
@@ -620,7 +620,7 @@ func TestReleaseCadence_HighCadenceExcluded(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
-		ReleaseExists:        true,
+
 		CommitDate:           time.Now(),
 		MeanReleaseInterval:  2 * 24 * time.Hour,
 		TimeSinceLastRelease: 1 * time.Hour,
@@ -638,7 +638,7 @@ func TestReleaseCadence_TooFewReleases(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
-		ReleaseExists:        true,
+
 		CommitDate:           time.Now(),
 		MeanReleaseInterval:  30 * 24 * time.Hour,
 		TimeSinceLastRelease: 1 * time.Hour,
@@ -656,7 +656,7 @@ func TestReleaseCadence_DormantAction(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
-		ReleaseExists:        true,
+
 		CommitDate:           time.Now(),
 		MeanReleaseInterval:  30 * 24 * time.Hour,
 		TimeSinceLastRelease: 180 * 24 * time.Hour,
@@ -679,7 +679,7 @@ func TestReleaseCadence_RapidFire(t *testing.T) {
 	_, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
-		ReleaseExists:        true,
+
 		CommitDate:           time.Now(),
 		MeanReleaseInterval:  30 * 24 * time.Hour,
 		TimeSinceLastRelease: 1 * time.Hour,
@@ -705,7 +705,7 @@ func TestComposite_AllBehavioralSignals_Critical(t *testing.T) {
 	sev, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
-		ReleaseExists:        true,
+
 		CommitDate:           time.Now(),
 		NewContributors:      []string{"attacker"},
 		SuspiciousFiles:      []string{"dist/index.js", "action.yml"},
@@ -737,7 +737,7 @@ func TestComposite_LegitimateRelease_Low(t *testing.T) {
 	sev, signals := Score(ScoreContext{
 		TagName:              "v4",
 		IsDescendant:         true,
-		ReleaseExists:        true,
+
 		CommitDate:           time.Now(),
 		NewContributors:      []string{},
 		SuspiciousFiles:      []string{},

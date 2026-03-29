@@ -1,0 +1,21 @@
+{
+  "org": "woodpecker-ci",
+  "scanned_at": "2026-03-27T05:52:23Z",
+  "repos": {
+    "total": 27,
+    "with_workflows": 0,
+    "archived_skipped": 11,
+    "forked_skipped": 1
+  },
+  "references": {
+    "total": 0,
+    "sha_pinned": 0,
+    "tag_pinned": 0,
+    "branch_pinned": 0
+  },
+  "unique_actions": null,
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

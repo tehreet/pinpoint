@@ -1,0 +1,5 @@
+Scanning open-policy-agent...
+Audit error: fetching org repos: org query page 1: GraphQL API returned 403: {
+  "documentation_url": "https://docs.github.com/graphql/overview/rate-limits-and-node-limits-for-the-graphql-api#secondary-rate-limits",
+  "message": "You have exceeded a secondary rate limit. Please wait a few minutes before you try again. For more on scraping GitHub and how it may affect your rights, please review our Terms of Service (https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) If you reach out to GitHub Support for help, please include the request ID CCA2:14BBAD:1095884:E9CF82:69C61DA9."
+}

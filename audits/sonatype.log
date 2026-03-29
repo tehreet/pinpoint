@@ -1,0 +1,16 @@
+Scanning sonatype...
+  [1/6] Fetched 50/280 repos (cost: 1 point, remaining: 4674)
+  [2/6] Fetched 100/280 repos (cost: 1 point, remaining: 4673)
+  [3/6] Fetched 150/280 repos (cost: 1 point, remaining: 4672)
+  [4/6] Fetched 200/280 repos (cost: 1 point, remaining: 4671)
+  [5/6] Fetched 250/280 repos (cost: 1 point, remaining: 4670)
+  [6/6] Fetched 280/280 repos (cost: 1 point, remaining: 4669)
+
+Analyzing 12 workflow files...
+  Found 34 action references across 14 unique actions.
+
+Checking upstream action security (14 actions)...
+  [14/14] checking immutable releases...
+
+Checking org policy...
+  admin:org scope not available, skipping policy check.

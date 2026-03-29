@@ -1,0 +1,4087 @@
+{
+  "org": "pulumi",
+  "scanned_at": "2026-03-27T05:27:06Z",
+  "repos": {
+    "total": 419,
+    "with_workflows": 178,
+    "archived_skipped": 110,
+    "forked_skipped": 40
+  },
+  "references": {
+    "total": 14776,
+    "sha_pinned": 11966,
+    "tag_pinned": 2397,
+    "branch_pinned": 413
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 178,
+      "refs": [
+        {
+          "ref": "8e8c483db84b4bee98b60c0593521ed34d9990e8",
+          "type": "sha",
+          "count": 1838
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 188
+        },
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 145
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 143
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 75
+        },
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 72
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 62
+        },
+        {
+          "ref": "34e114876b0b11c390a56381ad16ebd13914f8d5",
+          "type": "sha",
+          "count": 42
+        },
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 30
+        },
+        {
+          "ref": "08c6903cd8c0fde910a37f88322edcfb5dd907a8",
+          "type": "sha",
+          "count": 15
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 15
+        },
+        {
+          "ref": "v2.3.1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        },
+        {
+          "ref": "44c2b7a8a4ea60a981eaca3cf939b5f4305c123b",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "692973e3d937129bcbf40652eb9f2f61becf3332",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "pulumi/esc-action",
+      "used_in_repos": 139,
+      "refs": [
+        {
+          "ref": "9eb774255b1a4afb7855678ae8d4a77359da0d9b",
+          "type": "sha",
+          "count": 1663
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 175
+        },
+        {
+          "ref": "6cf9520e68354d86f81c455e8d43eabd58f5c9f5",
+          "type": "sha",
+          "count": 107
+        },
+        {
+          "ref": "9840934db12128a33f6afb60b17d9de8f7ec5519",
+          "type": "sha",
+          "count": 32
+        },
+        {
+          "ref": "b69006bca3bc6e514fb7e08d1593e8d9c49bd064",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-go",
+      "used_in_repos": 131,
+      "refs": [
+        {
+          "ref": "4dc6199c7b1a012772edbd06daecab0f50c9053c",
+          "type": "sha",
+          "count": 289
+        },
+        {
+          "ref": "44694675825211faa026b3c33043df3e48a5fa00",
+          "type": "sha",
+          "count": 76
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 54
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 37
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 28
+        },
+        {
+          "ref": "d35c59abb061a4a6fb18e82ac0862c26744d6ab5",
+          "type": "sha",
+          "count": 28
+        },
+        {
+          "ref": "f111f3307d8850f501ac008e886eec1fd1932a34",
+          "type": "sha",
+          "count": 26
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 21
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 19
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 12
+        },
+        {
+          "ref": "0aaccfd150d50ccaeb58ebd88d36e91967a5f35b",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "4b73464bb391d4059bd26b0524d20df3927bd417",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 124,
+      "refs": [
+        {
+          "ref": "6044e13b5dc448c55e2357c09f80417699197238",
+          "type": "sha",
+          "count": 84
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 41
+        },
+        {
+          "ref": "53b83947a5a98c8d113130e565377fae1a50d02f",
+          "type": "sha",
+          "count": 37
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 27
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 23
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 18
+        },
+        {
+          "ref": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "type": "sha",
+          "count": 15
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 15
+        },
+        {
+          "ref": "1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a",
+          "type": "sha",
+          "count": 12
+        },
+        {
+          "ref": "cdca7365b2dadb8aad0a33bc7601856ffabcc48e",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "0a44ba7841725637a19e28fa30b79a866c81b0a6",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 123,
+      "refs": [
+        {
+          "ref": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f",
+          "type": "sha",
+          "count": 193
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 184
+        },
+        {
+          "ref": "b7c566a772e6b6bfb58ed0dc250532a479d7789f",
+          "type": "sha",
+          "count": 158
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 21
+        },
+        {
+          "ref": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "type": "sha",
+          "count": 12
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 10
+        },
+        {
+          "ref": "65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v4.6.2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/create-github-app-token",
+      "used_in_repos": 116,
+      "refs": [
+        {
+          "ref": "29824e69f54612133e76f7eaac726eef6c875baf",
+          "type": "sha",
+          "count": 1267
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 25
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "f8d387b68d61c58ab83c6c016672934102569859",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/esc-export-secrets-action",
+      "used_in_repos": 113,
+      "refs": [
+        {
+          "ref": "9d6485759b6adff2538ae91f1b77cc96265c9dad",
+          "type": "sha",
+          "count": 93
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 21
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "aws-actions/configure-aws-credentials",
+      "used_in_repos": 111,
+      "refs": [
+        {
+          "ref": "61815dcd50bd041e203e49132bacad1fd04d2708",
+          "type": "sha",
+          "count": 173
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 43
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 15
+        },
+        {
+          "ref": "7474bc4690e29a8392af63c5b98e7449536d5c3a",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "e3dd6a429d7300a6a4c196c26e071d42e0343502",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "ececac1a45f3b08a01d2dd070d28d111c5fe6722",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1-node16",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "00943011d9042930efac3dcd3a170e4273319bc8",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 105,
+      "refs": [
+        {
+          "ref": "37930b1c2abaa49bbe596cd826c3c89aef350131",
+          "type": "sha",
+          "count": 312
+        },
+        {
+          "ref": "70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3",
+          "type": "sha",
+          "count": 108
+        },
+        {
+          "ref": "fa0a91b85d4f404e444e00e005971372dc801d16",
+          "type": "sha",
+          "count": 25
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 18
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 15
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 13
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 12
+        },
+        {
+          "ref": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "95815c38cf2ff2164869cbab79da8d1f422bc89e",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "thollander/actions-comment-pull-request",
+      "used_in_repos": 104,
+      "refs": [
+        {
+          "ref": "24bffb9b452ba05a4f3f77933840a6a841d1b32b",
+          "type": "sha",
+          "count": 282
+        },
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 5
+        },
+        {
+          "ref": "1.0.1",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "71efef56b184328c7ef1f213577c3a90edaa4aff",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "peter-evans/slash-command-dispatch",
+      "used_in_repos": 103,
+      "refs": [
+        {
+          "ref": "5c11dc7efead556e3bdabf664302212f79eb26fa",
+          "type": "sha",
+          "count": 83
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 16
+        },
+        {
+          "ref": "13bc09769d122a64f75aa5037256f6f2d78be8c4",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "40877f718dce0101edfc7aea2b3800cc192f9ed5",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/create-or-update-comment",
+      "used_in_repos": 102,
+      "refs": [
+        {
+          "ref": "e8674b075228eee787fea43ef493e45ece1004c9",
+          "type": "sha",
+          "count": 252
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 8
+        },
+        {
+          "ref": "71345be0265236311c031f5c7866368bd1eff043",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "c9fcb64660bc90ec1cc535646af190c992007c32",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "a35cf36e5301d70b76f316e867e7788a55a31dae",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "codecov/codecov-action",
+      "used_in_repos": 100,
+      "refs": [
+        {
+          "ref": "5a1091511ad55cbe89839c7260b706298ca349f7",
+          "type": "sha",
+          "count": 116
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "13ce06bfc6bbe3ecf90edbbf1bc32fe5978ca1d3",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "0565863a31f2c772f9f0395002a31e3f06189574",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "jdx/mise-action",
+      "used_in_repos": 93,
+      "refs": [
+        {
+          "ref": "c1a019b8d2586943b4dbebc456323b516910e310",
+          "type": "sha",
+          "count": 976
+        },
+        {
+          "ref": "146a28175021df8ca24f8ee1828cc2a60f980bd5",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "v3.6.1",
+          "type": "tag",
+          "count": 8
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v3.4.0",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "pulumi/git-status-check-action",
+      "used_in_repos": 92,
+      "refs": [
+        {
+          "ref": "54000b91124a8dd9fd6a872cb41f5dd246a46e7c",
+          "type": "sha",
+          "count": 90
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 83
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "guibranco/github-status-action-v2",
+      "used_in_repos": 91,
+      "refs": [
+        {
+          "ref": "631f55ea0251f0fb284525ad86c30e9f7a8dd284",
+          "type": "sha",
+          "count": 85
+        },
+        {
+          "ref": "0849440ec82c5fa69b2377725b9b7852a3977e76",
+          "type": "sha",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/provider-version-action",
+      "used_in_repos": 90,
+      "refs": [
+        {
+          "ref": "3a647064cf4697c7c6352b9a1d9e554450cbe957",
+          "type": "sha",
+          "count": 297
+        },
+        {
+          "ref": "f96d032a2758fdda7939e5728eff6c0d980ae894",
+          "type": "sha",
+          "count": 25
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/cache",
+      "used_in_repos": 89,
+      "refs": [
+        {
+          "ref": "9255dc7a253b0ccc959486e2bca901246202afeb",
+          "type": "sha",
+          "count": 223
+        },
+        {
+          "ref": "cdf6c1fa76f9f475f3d7449005a359c84ca0f306",
+          "type": "sha",
+          "count": 26
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 13
+        },
+        {
+          "ref": "0057852bfaa89a56745cba8c7296529d2fc39830",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "1bd1e32a3bdc45362d1e726936510720a7c30a57",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 88,
+      "refs": [
+        {
+          "ref": "a06a81a03ee405af7f2048a818ed3f03bbf83c7b",
+          "type": "sha",
+          "count": 75
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "c95fe1489396fe8a9eb87c0abf8aa5b2ef267fda",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/publish-go-sdk-action",
+      "used_in_repos": 86,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 97
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "pulumi/action-release-by-pr-label",
+      "used_in_repos": 86,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 246
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "critical"
+    },
+    {
+      "repo": "jlumbroso/free-disk-space",
+      "used_in_repos": 86,
+      "refs": [
+        {
+          "ref": "54081f138730dfa15788a46383842cd2f914a1be",
+          "type": "sha",
+          "count": 132
+        },
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 6
+        },
+        {
+          "ref": "v1.3.1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "dorny/paths-filter",
+      "used_in_repos": 86,
+      "refs": [
+        {
+          "ref": "de90cc6fb38fc0963ad72b210f1f284cd68cea36",
+          "type": "sha",
+          "count": 166
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "anthropics/claude-code-action",
+      "used_in_repos": 86,
+      "refs": [
+        {
+          "ref": "8341a564b0c1693e9fa29c681852ee3714980098",
+          "type": "sha",
+          "count": 166
+        },
+        {
+          "ref": "beta",
+          "type": "branch",
+          "count": 7
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "pose/stale-issue-cleanup",
+      "used_in_repos": 83,
+      "refs": [
+        {
+          "ref": "d2922f61fc5669f4154408689f9bb2a981996112",
+          "type": "sha",
+          "count": 83
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "MOZGIII/install-ldid-action",
+      "used_in_repos": 81,
+      "refs": [
+        {
+          "ref": "d5ab465f3a66a4d60a59882b935eb30e18e8d043",
+          "type": "sha",
+          "count": 75
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 9
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/license-check-action",
+      "used_in_repos": 75,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 75
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "critical"
+    },
+    {
+      "repo": "pulumi/pulumi-package-publisher",
+      "used_in_repos": 74,
+      "refs": [
+        {
+          "ref": "3ec1409d3e894142b9825c7859be8e57d362762a",
+          "type": "sha",
+          "count": 148
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/pulumi-upgrade-provider-action",
+      "used_in_repos": 70,
+      "refs": [
+        {
+          "ref": "12996503de2aaddd72c7426efc43331a8970894f",
+          "type": "sha",
+          "count": 207
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/repository-dispatch",
+      "used_in_repos": 70,
+      "refs": [
+        {
+          "ref": "28959ce8df70de7be546dd1250a005dd32156697",
+          "type": "sha",
+          "count": 68
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "jaxxstorm/action-install-gh-release",
+      "used_in_repos": 46,
+      "refs": [
+        {
+          "ref": "6096f2a2bbfee498ced520b6922ac2c06e990ed2",
+          "type": "sha",
+          "count": 46
+        },
+        {
+          "ref": "v1.5.0",
+          "type": "tag",
+          "count": 33
+        },
+        {
+          "ref": "cd6b2b78ad38bdd294341cda064ec0692b06215b",
+          "type": "sha",
+          "count": 27
+        },
+        {
+          "ref": "v1.7.1",
+          "type": "tag",
+          "count": 26
+        },
+        {
+          "ref": "v1.1.0",
+          "type": "tag",
+          "count": 16
+        },
+        {
+          "ref": "v1.10.0",
+          "type": "tag",
+          "count": 13
+        },
+        {
+          "ref": "v2.1.0",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "4304621e8c48d66093a8a214af5d5b5bc3b3d943",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "71d17cb091aa850acb2a1a4cf87258d183eb941b",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v1.2.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v1.14.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v1.11.0",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v2.0.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "bac361b47a0ddfb167924dcb4f0e725251478e29",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "goreleaser/goreleaser-action",
+      "used_in_repos": 40,
+      "refs": [
+        {
+          "ref": "5742e2a039330cbb23ebf35f046f814d4c6ff811",
+          "type": "sha",
+          "count": 37
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 17
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "e435ccd777264be153ace6237001ef4d979d3a7a",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "9c156ee8a17a598857849441385a2041ef570552",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "9ed2f89a662bf1735a48bc8557fd212fa902bebf",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 33,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 20
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 17
+        },
+        {
+          "ref": "42375524e23c412d93fb67b49958b491fce71c38",
+          "type": "sha",
+          "count": 12
+        },
+        {
+          "ref": "a26af69be951a213d495a4c3e4e4022e16d87065",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "8d9ed9ac5c53483de85588cdf95a591a75ab9f55",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "0b93645e9fea7318ecaed2b359559ac225c90a2b",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "83679a892e2d95755f2dac6acb0bfd1e9ac5d548",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v5.2.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "82c7e631bb3cdc910f68e0081d67478d79c6982d",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-dotnet",
+      "used_in_repos": 32,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 21
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 14
+        },
+        {
+          "ref": "3951f0dfe7a07e2313ec93c75700083e2005cbab",
+          "type": "sha",
+          "count": 12
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "67a3573c9a986a3f9c594539f4ab511d57bb3ce9",
+          "type": "sha",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/action-install-pulumi-cli",
+      "used_in_repos": 25,
+      "refs": [
+        {
+          "ref": "v1.0.1",
+          "type": "tag",
+          "count": 65
+        },
+        {
+          "ref": "v2.0.0",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "b374ceb6168550de27c6eba92e01c1a774040e11",
+          "type": "sha",
+          "count": 7
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "actions-ecosystem/action-add-labels",
+      "used_in_repos": 23,
+      "refs": [
+        {
+          "ref": "18f1af5e3544586314bbe15c0273249c770b2daf",
+          "type": "sha",
+          "count": 36
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 14
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/github-script",
+      "used_in_repos": 21,
+      "refs": [
+        {
+          "ref": "ed597411d8f924073f98dfc5c65a23a2325f34cd",
+          "type": "sha",
+          "count": 633
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/actions",
+      "used_in_repos": 21,
+      "refs": [
+        {
+          "ref": "13b8b7177d6fb736766875dac9b78aab07bd785f",
+          "type": "sha",
+          "count": 22
+        },
+        {
+          "ref": "8582a9e8cc630786854029b4e09281acd6794b58",
+          "type": "sha",
+          "count": 22
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 7
+        },
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 6
+        },
+        {
+          "ref": "9519177da243fd32cab35cdbf19cce1ab7472fcc",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "github/gh-aw",
+      "used_in_repos": 18,
+      "refs": [
+        {
+          "ref": "v0.56.2",
+          "type": "tag",
+          "count": 124
+        },
+        {
+          "ref": "3ee4953368106e9b73aa588623c0f53c58013df7",
+          "type": "sha",
+          "count": 32
+        },
+        {
+          "ref": "32b3a711a9ee97d38e3989c90af0385aff0066a7",
+          "type": "sha",
+          "count": 20
+        },
+        {
+          "ref": "f1073c5498ee46fec1530555a7c953445417c69b",
+          "type": "sha",
+          "count": 10
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "golangci/golangci-lint-action",
+      "used_in_repos": 16,
+      "refs": [
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "55c2c1448f86e01eaae002a5a3a9624417608d84",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v9",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "2226d7cb06a077cd73e56eedd38eecad18e5d837",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "4afd733a84b1f43292c63897423277bb7f4313a9",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "8398a7/action-slack",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "77eaa4f1c608a7d68b38af4e3f739dcd8cba273e",
+          "type": "sha",
+          "count": 180
+        },
+        {
+          "ref": "28ba43ae48961b90635b50953d216767a6bea486",
+          "type": "sha",
+          "count": 22
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 15
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "JS-DevTools/npm-publish",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 16
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/add-to-project",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "v0.4.0",
+          "type": "tag",
+          "count": 12
+        },
+        {
+          "ref": "v1.0.2",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "244f685bbc3b7adfa8466e08b698b5577571133e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "pulumi/auth-actions",
+      "used_in_repos": 15,
+      "refs": [
+        {
+          "ref": "1c89817aab0c66407723cdef72b05266e7376640",
+          "type": "sha",
+          "count": 42
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 7
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pypa/gh-action-pypi-publish",
+      "used_in_repos": 14,
+      "refs": [
+        {
+          "ref": "release",
+          "type": "branch",
+          "count": 14
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "gradle/actions",
+      "used_in_repos": 13,
+      "refs": [
+        {
+          "ref": "4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2",
+          "type": "sha",
+          "count": 20
+        },
+        {
+          "ref": "ac638b010cf58a27ee6c972d7336334ccaf61c96",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "d9c87d481d55275bb5441eef3fe0e46805f9ef70",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "GoTestTools/gotestfmt-action",
+      "used_in_repos": 12,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 46
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "pulumi/verify-provider-release",
+      "used_in_repos": 10,
+      "refs": [
+        {
+          "ref": "679d5e6838ac4f68696bfa1bf9e2c5da94509dd6",
+          "type": "sha",
+          "count": 33
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/setup-java",
+      "used_in_repos": 9,
+      "refs": [
+        {
+          "ref": "3a4f6e1af504cf6a31855fa899c6aa5355ba6c12",
+          "type": "sha",
+          "count": 13
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 9
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 5
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "c1e323688fd81a25caa38c78aa6df2d33d3e20d9",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "google-github-actions/auth",
+      "used_in_repos": 9,
+      "refs": [
+        {
+          "ref": "7c6bc770dae815cd3e89ee6cdf493a5fab2cc093",
+          "type": "sha",
+          "count": 17
+        },
+        {
+          "ref": "c200f3691d83b41bf9bbd8638997a462592937ed",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "71f986410dfbc7added4569d411d040a91dc6935",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "google-github-actions/setup-gcloud",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "aa5489c8933f4cc7a4f7d45035b3b1440c9c10db",
+          "type": "sha",
+          "count": 17
+        },
+        {
+          "ref": "e427ad8a34f8676edf47cf7d7925499adf3eb74f",
+          "type": "sha",
+          "count": 8
+        },
+        {
+          "ref": "77e7a554d41e2ee56fc945c52dfd3f33d12def9a",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "9780b0c442fbb1117ed29e0efdff1e18412f7567",
+          "type": "sha",
+          "count": 20
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "b45d80f862d83dbcd57f89517bcf500b2ab88fb2",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "e92390c5fb421da1463c202d546fed0ec5c39f20",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "helm/kind-action",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "92086f6be054225fa813e0a4b13787fc9088faab",
+          "type": "sha",
+          "count": 13
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "a1b0e391336a6ee6713a0583f8c6240d70863de3",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "0025e74a8c7512023d06dc019c617aa3cf561fde",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/create-pull-request",
+      "used_in_repos": 7,
+      "refs": [
+        {
+          "ref": "v8",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v7",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "98357b18bf14b5342f975ff684046ec3b2a07725",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "cirrus-actions/rebase",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "1.2",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "50007412be906b9cc222db3dfc469f325031f1b2",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "b87d48154a87a85666003575337e27b8cd65f691",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "c-hive/gha-remove-artifacts",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "repo-sync/pull-request",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 8
+        },
+        {
+          "ref": "v2.12.1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "7e79a9f5dc3ad0ce53138f01df2fad14a04831c5",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v2.6.2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "bffd034ab1518ad839a542b8a7356e13a240e076",
+          "type": "sha",
+          "count": 6
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 6
+        },
+        {
+          "ref": "48ab28a6f5dbc2a99bf1e0131198dd8f1df78169",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "ccf74c947955fd1cf117aef6a0e4e66191ef6f61",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "oven-sh/setup-bun",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "735343b667d3e6f658f44d0eca948eb6282f2b76",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "sigstore/cosign-installer",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "59acb6260d9c0ba8f4a2f9d9b48431a222b68e20",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "11086d25041f77fe8fe7b9ea4e48e3b9192b8f19",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v3.3.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/setup-buildx-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "e468171a9de216ec08956ac3ada2f0791b6bd435",
+          "type": "sha",
+          "count": 10
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 4
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "miniscruff/changie-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "astral-sh/setup-uv",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "gradle/gradle-build-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "ac2d340dc04d9e1113182899e983b5400c17cda1",
+          "type": "sha",
+          "count": 15
+        },
+        {
+          "ref": "v3.5.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "Actions-R-Us/actions-tagger",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "latest",
+          "type": "branch",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "docker/setup-qemu-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "29109295f81e9208d7d86ff1c6c12d2833863392",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/build-push-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "ncipollo/release-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "3d2de22e3d0beab188d8129c27f103d8e91bf13a",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "stefanzweifel/git-auto-commit-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "baptiste0928/cargo-install",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "bf6758885262d0e6f61089a9d8c8790d3ac3368f",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "30f432979e99f3ea66a8fa2eede53c07063995d8",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "b687c656bda5733207e629b50a22bf68974a0305",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/create-release",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "0cb9c9b65d5d1901c1f53e5e66eaf4afd303e70e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "helm/chart-testing-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "e6669bcd63d7cb57cb4380c33043eebe5d111992",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "0d28d3144d3a25ea2cc349d6e59901c4ff469b3b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "peter-evans/find-comment",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "1769778a0c5bd330272d749d12c036d65e70d39d",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp-forge/go-test-split-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v2.0.0",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hashicorp/setup-terraform",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "b9cd54a3c349d3f38e8881555d616ced269862dd",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "azure/setup-helm",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "b9e51907a09c216f16ebe8536097933489208112",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "5119fcb9089d432beecbf79bb2c7915207344b78",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "hmarr/auto-approve-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "helm/chart-releaser-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "a917fd15b20e8b64b94d9158ad54cd6345335584",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/publish-immutable-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v0.0.4",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/upload-release-asset",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "e8f9f06c4b078e705bd2ea027f0926603fc9b4d5",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "docker/metadata-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "peaceiris/actions-hugo",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 17
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "aquasecurity/trivy-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "18f2510ee396bbf400402947b394f2dd8c87dbb0",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "b2933f565dbc598b29947660e66259e3c7bc8561",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "high"
+    },
+    {
+      "repo": "reviewdog/action-actionlint",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v1.70.0",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "v1.67.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "benc-uk/workflow-dispatch",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "e2e5e9a103e331dad343f381a29e654aea3cf8fc",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "proudust/gh-describe",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "alstr/todo-to-issue-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v5",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "armory-io/plugin-metadata-updater",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "snyk/actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 6
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "gotesttools/gotestfmt-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "raven-actions/actionlint",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "super-linter/super-linter",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "12150456a73e248bdc94d0794898f94e23127c88",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "treosh/lighthouse-ci-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v12",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "limitusus/json-syntax-check",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "gradle/wrapper-validation-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "e6e38bacfdf1a337459f332974bb2327a31aaf4b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "backstage/actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "25145dd4117d50e1da9330e9ed2893bc6b75373e",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "opentofu/setup-opentofu",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/pulumi-converter-terraform",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "Swatinem/rust-cache",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "6720f05bc48b77f96918929a9019fb2203ff71f8",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/pulumi-go-provider",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "amannn/action-semantic-pull-request",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/pulumi-str",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "crazy-max/ghaction-dump-context",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2.3.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "blampe/mise-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "blampe",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "crazy-max/ghaction-import-gpg",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "e89d40939c28e39f97cf32126055eeae86ba74ec",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "Cyberboss/install-winget",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "1c6f189175e9f015bf1aa113cd1cc6c73efb9d47",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/pulumi-yaml",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "ad-m/github-push-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "snok/install-poetry",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "manusa/actions-setup-minikube",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "5d9440a1b535e8b4f541eaac559681a9022df29d",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dawidd6/action-homebrew-bump-formula",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "1446dca236b0440c6f02723a3f14f13be2c04ab0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "algolia/setup-algolia-cli",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "anchore/sbom-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "df80a981bc6edbc4e220a492d3cbe9f5547a6e75",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": true,
+      "risk": "low"
+    },
+    {
+      "repo": "codecov/test-results-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "47f89e9acb64b76debcd5ea40642d25a4adced9f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "azure/login",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "aormsby/Fork-Sync-With-Upstream-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v3.4",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "BetaHuhn/repo-file-sync-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "40da4d517e0a744fce9e8aed03e63d6c8bafbdc0",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "dtolnay/rust-toolchain",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "415f4eec04da36a50da617131b6bd78f0282958b",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/pulumi",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "master",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "ludeeus/action-shellcheck",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "2.0.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "pulumi/pulumi-lsp",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "critical"
+    },
+    {
+      "repo": "geekyeggo/delete-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f275313e70c08f6120db482d7a6b98377786765b",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "examples",
+      "workflow_file": "pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi",
+      "workflow_file": "on-community-pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-aiven",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-aiven",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-akamai",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-akamai",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-alicloud",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-alicloud",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-archive",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-archive",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-artifactory",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-artifactory",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-auth0",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-auth0",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-auto-deploy",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-aws",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-aws",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-aws-apigateway",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-aws-apigateway",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-aws-native",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-aws-native",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-awsx",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-awsx",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-azure",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-azure",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-azure-native",
+      "workflow_file": "pull-request-community-autoresponder.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-azuread",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-azuread",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-azuredevops",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-azuredevops",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-cloudamqp",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-cloudamqp",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-cloudflare",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-cloudflare",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-cloudinit",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-cloudinit",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-cloudngfwaws",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-cloudngfwaws",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-command",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-command",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-confluentcloud",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-confluentcloud",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-consul",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-consul",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-converter-terraform",
+      "workflow_file": "pr-comment.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-databricks",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-databricks",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-datadog",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-datadog",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-dbtcloud",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-dbtcloud",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-digitalocean",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-digitalocean",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-dnsimple",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-dnsimple",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-docker",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-docker",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-docker-build",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-docker-build",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-ec",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-ec",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-eks",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-eks",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-external",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-external",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-f5bigip",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-f5bigip",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-fastly",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-fastly",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-gcp",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-gcp",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-github",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-github",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-gitlab",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-gitlab",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-go-provider",
+      "workflow_file": "pr-comment.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-google-native",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-harness",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-harness",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-hcloud",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-hcloud",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-http",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-http",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-hyperv",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-ise",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-ise",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-junipermist",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-junipermist",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kafka",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kafka",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-keycloak",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-keycloak",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kong",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kong",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kubernetes",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kubernetes",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kubernetes-cert-manager",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kubernetes-cert-manager",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kubernetes-coredns",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kubernetes-coredns",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kubernetes-ingress-nginx",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-kubernetes-ingress-nginx",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-linode",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-linode",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-lsp",
+      "workflow_file": "pr-comment.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-mailgun",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-mailgun",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-meraki",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-meraki",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-minio",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-minio",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-mongodbatlas",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-mongodbatlas",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-mysql",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-mysql",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-newrelic",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-newrelic",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-nomad",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-nomad",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-ns1",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-ns1",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-null",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-null",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-oci",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-oci",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-okta",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-okta",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-openstack",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-openstack",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-opsgenie",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-opsgenie",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-pagerduty",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-pagerduty",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-postgresql",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-postgresql",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-provider-boilerplate",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-provider-boilerplate",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-pulumiservice",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-pulumiservice",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-rabbitmq",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-rabbitmq",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-rancher2",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-rancher2",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-random",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-random",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-scm",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-scm",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-sdwan",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-sdwan",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-signalfx",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-signalfx",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-slack",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-slack",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-snowflake",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-snowflake",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-splunk",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-splunk",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-spotinst",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-spotinst",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-std",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-std",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-str",
+      "workflow_file": "pr-comment.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-tailscale",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-tailscale",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-terraform",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-terraform",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-terraform-module",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-tf-provider-boilerplate",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-tls",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-tls",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-tool-cdk2pulumi",
+      "workflow_file": "pull-request-lint.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-vault",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-vault",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-venafi",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-venafi",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-vsphere",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-vsphere",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-xyz",
+      "workflow_file": "community-moderation.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-xyz",
+      "workflow_file": "pull-request.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "pulumi-yaml",
+      "workflow_file": "pr-comment.yaml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    },
+    {
+      "repo": "templates",
+      "workflow_file": "pr.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

@@ -43,7 +43,7 @@ for repo in $(gh api "/orgs/$ORG/repos" --paginate --jq '.[].full_name'); do
         continue
     fi
 
-    /home/joshf/pinpoint/pinpoint inject --workflows "$tmpdir/.github/workflows/" --mode "$MODE" --version "$VERSION" 2>&1 || true
+    pinpoint inject --workflows "$tmpdir/.github/workflows/" --mode "$MODE" --version "$VERSION" 2>&1 || true
 
     cd "$tmpdir"
     if git diff --quiet; then

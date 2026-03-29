@@ -1,0 +1,48 @@
+{
+  "org": "edgedb",
+  "scanned_at": "2026-03-27T05:57:05Z",
+  "repos": {
+    "total": 5,
+    "with_workflows": 1,
+    "archived_skipped": 0,
+    "forked_skipped": 4
+  },
+  "references": {
+    "total": 6,
+    "sha_pinned": 0,
+    "tag_pinned": 6,
+    "branch_pinned": 0
+  },
+  "unique_actions": [
+    {
+      "repo": "Vampire/setup-wsl",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    },
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 5
+        }
+      ],
+      "immutable_releases": false,
+      "risk": "medium"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}

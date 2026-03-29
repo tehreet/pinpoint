@@ -1,0 +1,836 @@
+{
+  "org": "slsa-framework",
+  "scanned_at": "2026-03-27T06:03:24Z",
+  "repos": {
+    "total": 26,
+    "with_workflows": 14,
+    "archived_skipped": 1,
+    "forked_skipped": 2
+  },
+  "references": {
+    "total": 1353,
+    "sha_pinned": 1066,
+    "tag_pinned": 87,
+    "branch_pinned": 200
+  },
+  "unique_actions": [
+    {
+      "repo": "actions/checkout",
+      "used_in_repos": 12,
+      "refs": [
+        {
+          "ref": "11bd71901bbe5b1630ceea73d27597364c9af683",
+          "type": "sha",
+          "count": 586
+        },
+        {
+          "ref": "v4",
+          "type": "tag",
+          "count": 17
+        },
+        {
+          "ref": "de0fac2e4500dabe0009e67214ff5f5447ce83dd",
+          "type": "sha",
+          "count": 9
+        },
+        {
+          "ref": "c85c95e3d7251135ab7dc9ce3241c5835cc595a9",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "dc323e67f16fb5f7663d20ff7941f27f5809e9b6",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "f43a0e5ff2bd294095638e18286ca9a3d1956744",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "2541b1294d2704b0964813337f33b291d3f8596b",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v6",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "08c6903cd8c0fde910a37f88322edcfb5dd907a8",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "v3",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "ac593985615ec2ede58e132d2e21d2b1cbd6127c",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "8f4b7f84864484a7bf31766abe9204da3cbe65b3",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "slsa-framework/slsa-github-generator",
+      "used_in_repos": 8,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 188
+        },
+        {
+          "ref": "v2.1.0",
+          "type": "tag",
+          "count": 11
+        },
+        {
+          "ref": "v1.10.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v1.9.0",
+          "type": "tag",
+          "count": 2
+        },
+        {
+          "ref": "v2.0.0",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/upload-artifact",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+          "type": "sha",
+          "count": 35
+        },
+        {
+          "ref": "65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "82c141cc518b40d92cc801eee768e7aafc9c2fa2",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/setup-node",
+      "used_in_repos": 6,
+      "refs": [
+        {
+          "ref": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "type": "sha",
+          "count": 28
+        },
+        {
+          "ref": "39370e3970a6d050c480ffad4ff0ed4d3fdee5af",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "64ed1c7eab4cce3362f8c340dee64e5eaeef8f7c",
+          "type": "sha",
+          "count": 3
+        },
+        {
+          "ref": "3235b876344d2a9aa001b8d1453c930bba69e610",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "53b83947a5a98c8d113130e565377fae1a50d02f",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/setup-go",
+      "used_in_repos": 5,
+      "refs": [
+        {
+          "ref": "d35c59abb061a4a6fb18e82ac0862c26744d6ab5",
+          "type": "sha",
+          "count": 97
+        },
+        {
+          "ref": "4b73464bb391d4059bd26b0524d20df3927bd417",
+          "type": "sha",
+          "count": 5
+        },
+        {
+          "ref": "f111f3307d8850f501ac008e886eec1fd1932a34",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "github/codeql-action",
+      "used_in_repos": 4,
+      "refs": [
+        {
+          "ref": "b6a472f63d85b9c78a3ac5e89422239fc15e9b3c",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "ce28f5bb42b7a9f2c824e633a3f6ee835bab6858",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "v1",
+          "type": "tag",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/build-push-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "ca052bb54ab0790a636c9b5f226502c73d547a25",
+          "type": "sha",
+          "count": 17
+        },
+        {
+          "ref": "d08e5c354a6adb9ed34480a06d141179aa583294",
+          "type": "sha",
+          "count": 2
+        },
+        {
+          "ref": "e551b19e49efd4e98792db7592c17c09b89db8d8",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/download-artifact",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+          "type": "sha",
+          "count": 115
+        },
+        {
+          "ref": "fa0a91b85d4f404e444e00e005971372dc801d16",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/login-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "74a5d142397b4f367a81961eba4e8cd7edddf772",
+          "type": "sha",
+          "count": 20
+        },
+        {
+          "ref": "49ed152c8eca782a232dede0303416e8f356c37b",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "golangci/golangci-lint-action",
+      "used_in_repos": 3,
+      "refs": [
+        {
+          "ref": "ec5d18412c0aeab7936cb16880d708ba2a64e1ae",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "d6238b002a20823d52840fda27e2d4891c5952dc",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "1e7e51e771db61008b38414a730f564565cf7c20",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "ossf/scorecard-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "62b2cac7ed8198b15735ed49ab1e5cf35480ba46",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "05b42c624433fc40578a4040d5cf5e36ddca8cde",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "slsa-framework/slsa-verifier",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v2.7.1",
+          "type": "tag",
+          "count": 1
+        },
+        {
+          "ref": "3714a2a4684014deb874a0e737dffa0ee02dd647",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "ea584f4502babc6f60d9bc799dbbb13c1caa9ee6",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "thehanimo/pr-title-checker",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "7fbfe05602bdd86f926d3fb3bccb6f3aed43bc70",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/metadata-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "c1e51972afc2121e065aed6d45c65596fe445f3f",
+          "type": "sha",
+          "count": 17
+        },
+        {
+          "ref": "69f6fc9d46f2f8bf0d5491e4aabe0bb8c6a4678a",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "goreleaser/goreleaser-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "5742e2a039330cbb23ebf35f046f814d4c6ff811",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "ec59f474b9834571250b370d4735c50f8e2d1e29",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "kubernetes-sigs/release-actions",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "8af7b2a5596dff526de9db59b2c4b8457e9f52a1",
+          "type": "sha",
+          "count": 1
+        },
+        {
+          "ref": "a30d93cf2aa029e1e4c8a6c79f766aebf429fddb",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "docker/setup-buildx-action",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "e468171a9de216ec08956ac3ada2f0791b6bd435",
+          "type": "sha",
+          "count": 17
+        },
+        {
+          "ref": "dc7b9719a96d48369863986a06765841d7ea23f6",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "slsa-framework/example-trw",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "v2.1.0",
+          "type": "tag",
+          "count": 32
+        },
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "slsa-framework/source-actions",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "google-github-actions/auth",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "b7593ed2efd1c1617e1b0254da33b86225adb2a5",
+          "type": "sha",
+          "count": 4
+        },
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 3
+        },
+        {
+          "ref": "ba79af03959ebeac9769e648f473a284504d9193",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "sigstore/cosign-installer",
+      "used_in_repos": 2,
+      "refs": [
+        {
+          "ref": "d58896d6a1865668819e1d91763c7751a165e159",
+          "type": "sha",
+          "count": 12
+        },
+        {
+          "ref": "398d4b0eeef1380460a10c8013a76f728fb906ac",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "bufbuild/buf-setup-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a47c93e0b1648d5651a065437926377d060baa99",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actions/attest-build-provenance",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32",
+          "type": "sha",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "azure/login",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "532459ea530d8321f2fb9bb10d1e0bcf23869a43",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "slsa-framework/github-actions-demo",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v0.1",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "carabiner-dev/actions",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "HEAD",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "softprops/action-gh-release",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "72f2c25fcb47643c292f7107632f7a47c1df5cd8",
+          "type": "sha",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "google-github-actions/setup-gcloud",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "6a7c903a70c8625ed6700fa299f5ddb4ca6022e9",
+          "type": "sha",
+          "count": 3
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "ramonpetgrave64/slsa-github-generator",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2.1.0-rc.3",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "github-early-access/generate-build-provenance",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "5fb744556d7e95958990349de0ddb84909c219bb",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "laurentsimon/byob-doc",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "ianlewis/todo-issue-reopener",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "05ca1b2493e450e1cc464bb25e0fa735ae8e4a00",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "slsa-framework/example-package",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "arduino/setup-protoc",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "c65c819552d16ad3c9b72d9dfd5ba5237b9c906b",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "amannn/action-semantic-pull-request",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "48f256284bd46cdaab1048c3721360e808335d50",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "slsa-framework/oss-na24-slsa-workshop-organization",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 2
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "geekyeggo/delete-artifact",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "f275313e70c08f6120db482d7a6b98377786765b",
+          "type": "sha",
+          "count": 7
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "slsa-framework/slsa-source-poc",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/dependency-review-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "3b139cfc5fae8b618d3eae3675e383bb1769c019",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "cli/gh-action",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v2",
+          "type": "tag",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "slsa-framework/slsa-policy",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "v0.0.1",
+          "type": "tag",
+          "count": 4
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "bazelbuild/setup-bazelisk",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "b39c379c82683a5f25d34f0d062761f62693e0b2",
+          "type": "sha",
+          "count": 12
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "actionsdesk/lfs-warning",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "4b98a8a5e6c429c23c34eee02d71553bca216425",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    },
+    {
+      "repo": "chkimes/image-attestation",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "main",
+          "type": "branch",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "high"
+    },
+    {
+      "repo": "actions/setup-python",
+      "used_in_repos": 1,
+      "refs": [
+        {
+          "ref": "a309ff8b426b58ec0e2a45f0f869d46889d02405",
+          "type": "sha",
+          "count": 1
+        }
+      ],
+      "immutable_releases": null,
+      "risk": "low"
+    }
+  ],
+  "dangerous_triggers": [
+    {
+      "repo": "slsa",
+      "workflow_file": "conventional-commits.yml",
+      "trigger": "pull_request_target",
+      "risk": "medium",
+      "reason": "pull_request_target trigger requires manual review — grants write token on external PRs"
+    }
+  ],
+  "org_policy": {
+    "sha_pinning_required": false,
+    "checked": false
+  }
+}
