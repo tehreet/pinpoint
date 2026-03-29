@@ -2,579 +2,672 @@
 
 Every tool has failure modes. This document is a brutally honest assessment of
 where pinpoint breaks, doesn't scale, can be evaded, or creates new problems.
+Written from reading every line of code, every test, and every spec — not from
+marketing materials.
+
 If you're evaluating pinpoint for your organization, read this first.
 
-Each section includes concrete recommendations for how to handle the limitation.
-
 ---
 
-## 1. The Polling Gap Is a Fundamental, Unfixable Limitation
+## 1. Fundamental Architectural Constraints
 
-Pinpoint polls on an interval. Even at the minimum useful interval (5 minutes),
-there is a window where tags can be repointed, pipelines can execute malicious
-code, and the tags can be *reverted back to legitimate SHAs* — all before
-pinpoint's next poll. The attacker is invisible.
+These are inherent to pinpoint's design. They cannot be fixed without
+rebuilding from scratch.
 
-This isn't a bug; it's inherent to polling-based monitoring of third-party repos
-you don't own. Webhooks would close this gap but require admin access to the
-upstream repo, which you don't have for third-party actions.
+### 1a. The Polling Gap
 
-**Realistic impact:** The Trivy attacker left the malicious tags in place for
-~5.5 hours. The tj-actions attacker left them for ~3 hours. These are not
-sophisticated timing attacks — they're smash-and-grab. Pinpoint catches
-smash-and-grab. A nation-state actor who repoints for 90 seconds, waits for
-one CI run to trigger, and reverts? Pinpoint misses that completely.
+Pinpoint's monitor (`watch`) polls on an interval. Even at 5 minutes, an
+attacker can repoint a tag, wait for one CI run to trigger, and revert — all
+before the next poll. The attacker is invisible to the monitor.
 
-### Recommendations
+The Trivy attacker left malicious tags up for ~5.5 hours. The tj-actions
+attacker left them for ~3 hours. Pinpoint catches smash-and-grab. A
+nation-state actor who repoints for 90 seconds and reverts? The monitor
+misses it completely.
 
-1. **Always deploy the gate, not just the monitor.** `pinpoint gate` verifies
-   tags at execution time, not at poll time. The polling gap is irrelevant for
-   CI runs that have the gate. The monitor alone is a smoke detector; the gate
-   is the circuit breaker.
+**The gate eliminates this.** `pinpoint gate` verifies at execution time, not
+poll time. If every workflow has the gate, the polling gap is irrelevant for
+CI runs. The monitor alone is a smoke detector; the gate is the circuit
+breaker. Deploy both.
 
-2. **Run `pinpoint gate --on-disk` for self-hosted runners.** This hashes
-   the actual files the runner downloaded, closing the TOCTOU window between
-   runner download and gate verification. Zero additional API calls, ~28ms.
+### 1b. GitHub API as Single Source of Truth
 
-3. **Set up webhooks on repos you own.** For internal/private actions, configure
-   GitHub webhooks to trigger a `pinpoint scan` on tag events. This eliminates
-   the polling gap for repos under your control.
+Pinpoint trusts the GitHub API to return correct data. Every verification —
+tag resolution, workflow content, manifest fetching — goes through GitHub's
+REST or GraphQL endpoints. If GitHub's API is compromised, returns stale data,
+or behaves inconsistently between CDN edges, pinpoint inherits that blindness.
 
-4. **Keep the poll interval at 5 minutes or less.** The shorter the interval,
-   the smaller the window. At 5 minutes with GraphQL batching, 2,000 repos cost
-   under 10% of your API budget.
+The gate fetches workflow content from the API, not from the runner's disk.
+If the API returns different content than what `actions/checkout` actually
+downloaded, there is a semantic gap between what pinpoint verified and what
+executes. On-disk verification (`--on-disk`) partially closes this for action
+source code, but the workflow YAML itself is always API-sourced.
 
-5. **Combine with runtime detection.** Pinpoint is Layer 2 (pre-execution). Pair
-   it with Layer 3 (StepSecurity Harden-Runner, CrowdStrike Falcon on self-hosted
-   runners) for defense in depth. Neither alone is sufficient.
+### 1c. Regex-Based Workflow Parsing
 
----
+Both `discover` and `audit` extract action references using regex, not a YAML
+parser:
 
-## 2. Scale: API Costs at 2,000 Repos
-
-### 2a. API Rate Limits
-
-**GraphQL (default):** Pinpoint batches 50 repos per GraphQL query at 1 point
-per batch. Monitoring 2,000 repos costs 40 points per poll cycle. At 5-minute
-intervals: 40 × 12 = 480 points/hour — under 10% of the 5,000 points/hour
-GraphQL budget. This scales comfortably.
-
-**REST (fallback):** The REST `matching-refs` endpoint costs 1 API call per
-repo per poll. At 2,000 repos with a 5-minute interval: 24,000 requests/hour.
-That's 5x the 5,000/hour REST rate limit. REST fallback does not scale.
-
-### Recommendations
-
-1. **Always use GraphQL (the default).** REST is a fallback for environments
-   where GraphQL is unavailable. Don't use it at scale.
-
-2. **Use a GitHub App, not a PAT.** GitHub Apps get their own rate limit bucket
-   per installation. A PAT shares the rate limit with all other API usage by
-   that user. The `pinpoint-test-bot` pattern (App ID + private key → short-lived
-   token) is the production deployment model.
-
-3. **For >5,000 repos, use tiered polling.** Poll critical repos every 2 minutes,
-   standard repos every 10 minutes, inactive repos every hour. Pinpoint's config
-   supports this via the `schedule` field. Budget: 5,000 repos at mixed intervals
-   fits under 2,000 points/hour.
-
-4. **Budget ~500 REST calls/hour for enrichment at scale.** GraphQL handles tag
-   resolution, but enrichment (commit comparison, file size checks) uses REST.
-   At 2,000 repos, most enrichment calls are cached via ETags (304 responses are
-   free). Monitor your actual rate limit consumption with `pinpoint watch --json`
-   and tune from there.
-
-### 2b. Annotated Tag Dereferencing
-
-GraphQL auto-dereferences annotated tags. No extra API call needed. REST fallback
-requires a second call per annotated tag.
-
-### Recommendations
-
-1. **Use GraphQL.** This is a solved problem on the GraphQL path.
-2. If you must use REST, implement tag-object SHA caching (store the tag→commit
-   mapping locally so you only dereference once per tag per lifetime).
-
-### 2c. State File Size
-
-2,000 repos × 50 tags = 100,000 entries. With history, the JSON state file can
-reach 50-100MB. Loading/saving this on every poll is too expensive.
-
-### Recommendations
-
-1. **For <500 repos, the JSON file store is fine.** No action needed.
-2. **For 500-5,000 repos, use SQLite.** Add `store: sqlite` to your config.
-   Pinpoint uses `modernc.org/sqlite` (pure Go, no CGo). This is on the roadmap
-   but not yet implemented — track the issue.
-3. **For >5,000 repos, use PostgreSQL.** External database with connection pooling.
-   Same roadmap status.
-4. **In the meantime:** Prune old history with `pinpoint prune --older-than 30d`.
-   Keep the state file under 10MB by retaining only recent change events.
-
----
-
-## 3. The Token Is a High-Value Target
-
-Pinpoint requires a token with read access to every repo it monitors. If the
-runtime environment is compromised, that token gives an attacker a map of every
-action and tag you depend on — plus the SHAs you consider "known good."
-
-### Recommendations
-
-1. **Use a GitHub App with minimum permissions.** The app needs only
-   `contents: read`. Not `admin`, not `write`. Create a dedicated app (like
-   `pinpoint-test-bot`) rather than reusing an existing one with broader perms.
-
-2. **Mint short-lived tokens.** GitHub App installation tokens expire in 1 hour.
-   Use `actions/create-github-app-token` in workflows — the token is scoped and
-   short-lived. Never store long-lived PATs.
-
-3. **Isolate the gate workflow.** Run pinpoint in a dedicated workflow with
-   minimal steps: checkout (SHA-pinned) → generate token → run gate. No other
-   third-party actions in the same job. The reusable workflow pattern at
-   `shared-workflows/pinpoint-gate.yml` enforces this.
-
-4. **Pin the gate itself to a SHA.** Reference the shared workflow by
-   `@<commit-SHA>`, not `@main`. Pinpoint can't protect itself if its own
-   reference is mutable. All 28 repos in the test org use SHA-pinned references
-   to the shared workflow.
-
-5. **For maximum isolation:** Run `pinpoint watch` on a dedicated VM/container
-   outside of GitHub Actions entirely. The VPS deployment pattern (cron + systemd)
-   eliminates the risk of a compromised action stealing the monitoring token.
-
----
-
-## 4. False Positive Fatigue Will Kill Adoption
-
-Major version tags are designed to be moved. `actions/checkout@v4` moves forward
-with every patch release. At 2,000 repos, this can generate dozens of low-severity
-alerts per day. If operators learn to ignore pinpoint alerts, they'll also ignore
-the one that matters.
-
-### Recommendations
-
-1. **Deploy gate in `--warn` mode first.** Run for 1-2 weeks. Review the output.
-   Identify legitimate tag movements that trigger alerts. Add allow-list rules
-   for those patterns. Then flip to enforce. We did this across 28 repos and
-   caught zero false positives in enforce mode.
-
-2. **Use allow-list rules aggressively.**
-   ```yaml
-   allow:
-     - repo: actions/*
-       tags: ["v*"]
-       condition: major_tag_advance
-       reason: "GitHub-maintained actions advance major tags on every release"
-   ```
-   This suppresses the ~195 legitimate tag movements per year across the top 20
-   actions while still catching repoints, off-branch moves, and mass changes.
-
-3. **Use `--fail-on-missing` instead of alerting on unknown actions.** Rather
-   than alerting when an unknown action appears and hoping someone investigates,
-   block the build. This eliminates the "alert that nobody reads" problem. The
-   developer who added the action gets immediate feedback.
-
-4. **Route gate failures to the PR author, not a security channel.** Gate
-   violations should show up as a failing CI check on the PR, not as a Slack
-   message to a security team. The person who made the change is the person who
-   should fix it.
-
-5. **Tune risk thresholds if needed.** The default scoring (≥50 = CRITICAL, ≥20
-   = MEDIUM) works well for most orgs. If you're getting too many MEDIUM alerts,
-   raise the threshold to 40. The 495-point gap between legitimate (−30) and
-   attack (+465) means you have a wide tuning range.
-
----
-
-## 5. State Poisoning: No Integrity Protection
-
-The state file is a plain JSON file on disk. If an attacker can modify it, they
-can pre-seed it with malicious SHAs as the "known good" baseline.
-
-### Recommendations
-
-1. **Use the lockfile, not the state file, as your source of truth.** The
-   lockfile (`.github/actions-lock.json`) is committed to the repo and protected
-   by Git's content-addressable storage + branch protection. The state file
-   (`.pinpoint-state.json`) is only for the `watch` command's polling state.
-
-2. **Protect the lockfile with branch protection.** Require PR review for changes
-   to `.github/actions-lock.json`. The gate reads the lockfile from the base
-   branch on PRs (not the PR branch), so an attacker can't poison it via a PR.
-   This is already implemented and verified in Attack 8 of the battery.
-
-3. **Use the lockfile workflow to manage updates.** Don't hand-edit the lockfile.
-   `pinpoint lock` regenerates it, creates a PR, and a human reviews the SHA
-   changes before merging. This creates an audit trail.
-
-4. **For `watch` mode:** Store the state file outside the repo — on a dedicated
-   volume, in an S3 bucket, or in a database. Don't put it in the Actions cache
-   where other workflow steps can modify it.
-
-5. **Not yet implemented but planned:** HMAC signing of the state file, and a
-   `--verify-state` flag that checks the state file's integrity before using it.
-
----
-
-## 6. Actions Cache Is Unreliable for State Persistence
-
-GitHub's Actions cache evicts entries not accessed within 7 days. If `pinpoint
-watch` doesn't run for a week, the state file is lost. When pinpoint starts
-fresh, every tag looks new. If a tag was repointed during the gap, the malicious
-SHA becomes the new "known good."
-
-### Recommendations
-
-1. **Don't use the Actions cache for pinpoint state.** This is a foot-gun.
-   Instead:
-   - **Commit the state file to the repo** (creates git history noise but is
-     durable and auditable).
-   - **Use workflow artifacts** (no 7-day eviction, but have retention limits).
-   - **Store externally** (S3, GCS, a database) for production deployments.
-
-2. **Run `pinpoint watch` on a dedicated VM, not in Actions.** The VPS
-   deployment pattern (systemd timer or cron) has a persistent filesystem. No
-   cache eviction. No state loss.
-
-3. **Use the lockfile as the primary defense, not the state file.** The lockfile
-   is in the repo and can't be evicted. `pinpoint gate` reads the lockfile, not
-   the state file. The state file is only needed for `pinpoint watch` continuous
-   monitoring — it's the secondary defense.
-
-4. **If you must use Actions cache:** Schedule `pinpoint watch` to run at least
-   every 3 days (well within the 7-day eviction window). Use a `schedule` trigger,
-   not just `push` — repos with infrequent pushes will lose their cache otherwise.
-
----
-
-## 7. The Gate: Prevention With Its Own Limitations
-
-The gate runs as the first step in every workflow job. It fetches workflows,
-extracts `uses:` directives, resolves SHAs, and compares against the lockfile.
-If a tag has been repointed, the job aborts before untrusted code executes.
-
-### 7a. The gate itself must be SHA-pinned
-
-If you reference the gate as `@v1`, an attacker who compromises pinpoint can
-ship a gate that suppresses its own alerts.
-
-**Recommendation:** Pin the shared workflow reference to a SHA:
-```yaml
-uses: org/shared-workflows/.github/workflows/pinpoint-gate.yml@<SHA>
 ```
-When the shared workflow changes, update the SHA across all repos. Automate this
-with a script (we use `/tmp/update-all-repos.sh` pattern). Yes, this is manual
-SHA management for one reference — but it's one reference vs. hundreds of
-unpinned action references.
-
-### 7b. TOCTOU race condition
-
-The runner downloads action code before the job starts. The gate verifies
-during the job. There is a time window between download and verification.
-
-**Recommendation:** Use `pinpoint gate --on-disk`. This hashes the actual
-downloaded files at `_actions/{owner}/{repo}/{ref}/` and compares against
-`disk_integrity` in the lockfile. Even if a tag was repointed between download
-and verification, on-disk verification catches it if the content doesn't match.
-Cost: ~28ms, zero API calls.
-
-### 7c. Stale manifest = blind gate
-
-The lockfile is only as fresh as the last `pinpoint lock`. If nobody regenerates
-it, legitimate tag advances cause false positives, and operators learn to ignore
-gate failures.
-
-**Recommendation:** Automate lockfile regeneration:
-```yaml
-# pinpoint-lock.yml — runs on workflow changes + weekly
-on:
-  push:
-    paths: ['.github/workflows/**']
-  schedule:
-    - cron: "0 9 * * 1"  # Weekly Monday 9am
+uses:\s*['"]?([a-zA-Z0-9\-_.]+)/([a-zA-Z0-9\-_.]+)(?:/[^@\s'"]*)?@([a-zA-Z0-9\-_.]+)['"]?
 ```
-This is already deployed across all 28 test org repos. The workflow runs
-`pinpoint lock`, creates a PR if the lockfile changed, and a human reviews
-the SHA changes before merging.
 
-### 7d. Fork PR manifest poisoning
+This works for the common case but breaks on:
+- YAML anchors and aliases (`<<: *base-steps`)
+- Multiline `uses:` values with folded/literal block scalars
+- Conditional inclusion via matrix expressions
+- `uses:` inside comments that don't start at column 0
+- Action references constructed from `${{ }}` expressions
 
-An attacker submits a PR that modifies the lockfile. If the gate reads the
-lockfile from the PR branch, the attacker controls what's "known good."
+The gate's `--all-workflows` mode concatenates all workflow YAML files into a
+single blob before regex extraction. If one file's trailing content creates a
+valid `uses:` match with the next file's leading content, phantom actions could
+be extracted. In practice this is unlikely but architecturally unsound.
 
-**Recommendation:** Already handled. The gate detects `pull_request` events
-via `GITHUB_EVENT_NAME` and reads the lockfile from `GITHUB_BASE_REF` (the
-target branch), not the PR branch. Verified in Attack 8 of the battery.
+The audit's dangerous trigger detection (`pull_request_target`) also uses
+regex. An attacker who formats their workflow YAML to avoid the regex pattern
+while remaining valid YAML can evade trigger detection.
 
----
+### 1d. The Gate Is a Step, Not Infrastructure
 
-## 8. Adversarial Evasion Is Straightforward
+The gate runs as a workflow step. It has no special privileges — it's just
+Go code that calls the GitHub API and returns an exit code. This means:
 
-Once tag monitoring becomes common, attackers will adapt:
+- **Removing the gate is trivial.** Any developer with write access can delete
+  the gate step from a workflow. Branch protection on workflow files mitigates
+  this but most orgs don't enforce it.
 
-**a) Timing attacks:** Repoint → wait for CI → revert within the poll interval.
+- **The gate can't prevent its own removal.** Unlike GitHub's required status
+  checks (which are enforced at the platform level), the gate is advisory
+  unless paired with external enforcement.
 
-**b) Gradual rotation:** Repoint one tag per day. Each event scores low.
+- **Reusable workflows help but aren't bulletproof.** The shared workflow
+  pattern (`org/shared-workflows/.github/workflows/pinpoint-gate.yml@SHA`)
+  centralizes the gate. But the calling workflow still has to reference it.
+  If the caller removes the `uses:` line, the gate doesn't run.
 
-**c) Tag-delete-recreate:** Delete the tag and create a new one with the same
-name. May register as "new tag" rather than "repointed tag."
-
-**d) Legitimate-looking commits:** Merge a PR with malicious code mixed into
-legitimate changes, then advance the tag. Ancestry check says "descendant."
-Size change is minimal.
-
-**e) Compromise the monitoring tool:** If pinpoint is a GitHub Action,
-compromise pinpoint itself.
-
-### Recommendations
-
-1. **For (a) timing attacks:** The gate eliminates this for CI runs. Every
-   run verifies at execution time. The monitor alone doesn't catch sub-interval
-   revert-after-use attacks — accept this limitation and ensure every workflow
-   has the gate.
-
-2. **For (b) gradual rotation:** Set up `pinpoint watch` with alerting on ANY
-   tag movement, not just high-severity. Review all tag changes weekly. Use
-   `pinpoint scan --json` to build dashboards that track tag movement frequency
-   per action. A pattern of daily single-tag movements is anomalous and should
-   trigger investigation.
-
-3. **For (c) tag-delete-recreate:** Pinpoint tracks this — a deleted tag
-   followed by a recreated tag with a different SHA generates a change event.
-   The risk score may be lower than a direct repoint, so set your alert
-   threshold accordingly. `--fail-on-missing` also catches this if the new tag
-   doesn't match the lockfile entry.
-
-4. **For (d) legitimate-looking commits:** This is the hardest to detect
-   automatically. Pinpoint's `SIZE_ANOMALY` signal catches payload injections
-   that significantly change file size. For subtle injections: pair pinpoint
-   with code review requirements on action repos you control. For third-party
-   actions, this is fundamentally unsolvable without reading every line of code
-   in every dependency.
-
-5. **For (e) compromising pinpoint:** Pin the gate to a SHA. Run the gate from
-   a reusable workflow in a separate, tightly-controlled repo with branch
-   protection and required reviews. Limit who has write access to that repo to
-   1-2 security team members.
-
-**Honest assessment:** Pinpoint raises the bar significantly for casual and
-opportunistic attacks (Trivy, tj-actions). It does not meaningfully defend
-against a patient, targeted adversary who understands the tool. Neither does
-any other monitoring tool.
+- **The gate itself must be SHA-pinned.** If referenced as `@v1`, an attacker
+  who compromises pinpoint can ship a gate that approves everything.
 
 ---
 
-## 9. Bootstrapping Problem: No Historical Verification
+## 2. Detection Blind Spots
 
-If you deploy pinpoint today, it records current SHAs as the baseline. It
-cannot tell you whether those SHAs were already compromised last week.
+Things that happen in the real world that pinpoint cannot detect.
 
-### Recommendations
+### 2a. Compromised Maintainer Accounts
 
-1. **Run `pinpoint verify` before generating your first lockfile.** The verify
-   command performs four retroactive checks without needing a prior baseline:
-   - Release SHA match — does the tag point to the same commit as the Release?
-   - GPG signature continuity — did signing suddenly stop?
-   - Chronology check — is the commit backdated?
-   - Advisory database lookup — is this a known-compromised version?
+The CONTRIBUTOR_ANOMALY signal (+35) fires when new contributors appear in a
+release. If the attacker IS a known maintainer — as in the tj-actions attack
+where a maintainer's account was compromised — their commits won't trigger
+this signal. The contributor is already in the `known_contributors` set.
 
-   This doesn't guarantee cleanliness, but it surfaces the most common
-   indicators of compromise.
+This is the most dangerous class of supply chain attack and pinpoint has
+limited defense against it. The DIFF_ANOMALY and RELEASE_CADENCE_ANOMALY
+signals provide partial coverage (even a known maintainer pushing suspicious
+files at unusual times will fire), but a patient attacker who mimics normal
+development patterns can evade all three behavioral signals.
 
-2. **Cross-reference against known-good sources.** Before trusting your lockfile,
-   spot-check critical actions: visit the GitHub Releases page, verify the SHA
-   matches the release, check the commit author is a known maintainer. Do this
-   for your top 5-10 most sensitive dependencies.
+### 2b. Subtle Payload Injection
 
-3. **Generate your lockfile during a known-clean period.** Don't generate it
-   during or immediately after an incident. Generate it when you have confidence
-   that the actions you depend on are not currently compromised.
+SIZE_ANOMALY fires when the entry point changes by >50%. An attacker who
+adds 10 lines of malicious code to a 500-line file changes size by ~2%.
+This is invisible to size-based detection.
 
-4. **Not yet implemented but planned:** A community-curated dataset of known-good
-   tag→SHA mappings for popular actions, and integration with Sigstore
-   transparency logs. These would automate the cross-referencing.
+The file classification for DIFF_ANOMALY uses a hardcoded list of suspicious
+filenames: `action.yml`, `Makefile`, `Dockerfile`, `entrypoint.sh`,
+`setup.py`, `dist/`, and workflow files. An attacker who injects payload into
+a file named `utils.js` or `lib/helper.go` won't trigger the suspicious file
+signal.
 
----
+### 2c. Actions with >300 Tags
 
-## 10. The Meta-Problem: You're Adding a Dependency
+GraphQL pagination for tag fetching caps at 3 pages of 100 tags (300 total
+per repo). Repos with more than 300 tags will have incomplete tag data. An
+attacker could create many decoy tags to push the real attack beyond the
+pagination boundary.
 
-Pinpoint is a new piece of software in your CI/CD pipeline. It has bugs, it
-will have CVEs, and it can crash, hang, or produce wrong results.
+This is uncommon — most actions have <100 tags — but repos like
+`actions/checkout` accumulate tags over time.
 
-### Recommendations
+### 2d. Transitive Dependencies Beyond Depth 5
 
-1. **Deploy in `--warn` mode initially.** This lets pinpoint log violations
-   without blocking builds. If pinpoint itself has a bug that causes false
-   positives, your pipeline isn't broken — you just see warnings.
+Composite action resolution recurses to a maximum depth of 5. A malicious
+composite action nested 6 levels deep won't have its dependencies verified.
+The attacker would need to control a chain of 6 composite actions, which is
+unlikely but possible in a targeted supply chain attack.
 
-2. **Set a timeout on the gate step.**
-   ```yaml
-   - name: Pinpoint Gate
-     timeout-minutes: 2
-     uses: ...
-   ```
-   If pinpoint hangs (e.g., API timeout), the step fails after 2 minutes and
-   your pipeline continues. This prevents pinpoint from becoming a single point
-   of failure.
+### 2e. Non-GitHub Registries Without Credentials
 
-3. **Monitor pinpoint's own health.** In `watch` mode, pinpoint should emit
-   metrics: poll latency, API rate limit consumption, error rate, state file
-   size. Export these to your observability stack. If pinpoint stops polling,
-   you should know.
+Docker digest resolution for actions using private registries (ECR,
+Artifactory, private ghcr.io) will fail silently if pinpoint doesn't have
+credentials. The action is still verified by Git SHA, but the Docker image
+integrity is unchecked. Pinpoint logs a warning to stderr but does not fail —
+the operator may not notice.
 
-4. **Keep pinpoint itself updated.** Pin the shared workflow to a SHA, but
-   update it regularly. When a new version ships, update the SHA, regenerate
-   lockfiles, and verify the gate passes clean. The test org update process
-   (update shared workflow → update 28 repo SHA pins → regen lockfiles → merge)
-   takes about 10 minutes with the automation scripts.
-
-5. **Pin pinpoint's own dependencies.** Pinpoint has one dependency
-   (`gopkg.in/yaml.v3`). The binary is statically compiled. There is no
-   transitive dependency tree to worry about. This is intentional.
-
----
-
-## Summary: What Pinpoint Is and Isn't
-
-**Pinpoint is:**
-- A meaningful improvement over the status quo (which is nothing)
-- Effective against the class of attacks we've actually seen (Trivy, tj-actions)
-- Both detection (monitor) AND prevention (gate) in a single binary
-- The first tool to verify Docker image digests in GitHub Actions
-- Low-cost, self-hostable, and honest about its threat model
-- Content integrity verification (SHA-256 tarball hashes + on-disk tree hashing)
-- Transitive dependency resolution for composite actions
-- 10/10 on a comprehensive attack battery including lockfile poisoning,
-  typosquats, SHA swaps, Docker image repointing, and new malicious workflows
-- Suitable for monitoring 2,000+ repos with active gate enforcement
-
-**Pinpoint is not:**
-- A substitute for SHA pinning (prevention > detection, always)
-- Effective against patient, targeted adversaries who understand polling gaps
-- A guarantee that you'll catch every supply chain attack
-- A replacement for code review of action source code
-
-**The right deployment:**
-1. `pinpoint gate` (enforced) on every CI workflow — blocks known attacks
-2. `pinpoint gate --integrity` on a daily schedule — catches Docker image repointing
-3. `pinpoint watch` on a dedicated VM — continuous monitoring + alerting
-4. `pinpoint audit --org` quarterly — org-wide posture assessment
-5. `pinpoint verify` on first deployment — retroactive integrity check
-
----
-
-## 11. Docker Verification Limitations
-
-Pinpoint v0.7.0 adds Docker image digest verification — the first tool in the
-space to do this. But it has real limitations:
-
-### 11a. Registry Authentication
-
-Anonymous pulls from Docker Hub are rate-limited (100 pulls/6hr per IP). For
-orgs with many Docker actions, the integrity check may hit rate limits.
-
-**Recommendation:** Digest resolution uses HEAD requests (manifest only, not
-full image pulls), which are lighter weight. For Docker Hub, authenticate with
-a service account to get 200 pulls/6hr. For ghcr.io, use the same GitHub App
-token. For private registries, configure registry credentials via environment
-variables or a Docker config file.
-
-### 11b. Multi-Architecture Images
-
-Multi-arch images use manifest lists. Pinpoint captures the manifest list
-digest. An attacker who replaces only the linux/amd64 image within a manifest
-list while keeping the list digest unchanged would bypass detection.
-
-**Recommendation:** This is an extremely sophisticated attack requiring write
-access to the registry and knowledge of the manifest list structure. For
-critical actions, verify individual platform digests by running `pinpoint gate
---integrity` on runners of each architecture. Not yet implemented as an
-automatic check — tracked for a future spec.
-
-### 11c. Only --integrity Mode
-
-Docker digest verification only runs with `--integrity`. The default SHA-only
-gate does not re-resolve Docker digests from registries.
-
-**Recommendation:** Run two gate checks:
-- `pinpoint gate --all-workflows --fail-on-missing` on every CI run (fast, <2s)
-- `pinpoint gate --all-workflows --fail-on-missing --integrity` on a daily
-  schedule via `workflow_dispatch` + `schedule` trigger
-
-The daily integrity check catches Docker image repointing. The per-run SHA
-check catches everything else. Combined, they cover all 11 attack vectors.
-
-### 11d. Dockerfile Build Args
+### 2f. Build-Arg Parameterized Docker Images
 
 Dockerfile actions using `ARG` before `FROM` have parameterized base images.
-Pinpoint captures the literal `FROM` value, which may contain unresolved args.
+Pinpoint's `ParseDockerfile` skips `FROM` lines containing `${`. This means
+actions that construct their base image reference from build arguments have
+no digest verification at all.
 
-**Recommendation:** Avoid Docker actions that parameterize their base image
-with build args. If you must use one, manually verify the base image digest
-and add it to the lockfile. Pinpoint logs a warning when it encounters this
-pattern.
+### 2g. Chronology Tolerance Window
 
-### 11e. Private Registries
+The verify command's impossible chronology check uses a 48-hour tolerance.
+A backdated commit that's less than 48 hours older than its parent won't
+trigger. An attacker who backdates by 24 hours — plausible for timezone
+differences — evades this signal entirely.
 
-Actions pulling from private registries (ECR, Artifactory, etc.) may fail
-digest resolution if pinpoint doesn't have credentials.
+### 2h. Advisory Database Coverage
 
-**Recommendation:** Pinpoint gracefully degrades — a missing digest means no
-digest verification, but all other checks (SHA, integrity, on-disk) still run.
-For private registries, mount Docker credentials (e.g., `~/.docker/config.json`)
-in the environment where `pinpoint lock` runs. The registry client uses
-standard Docker credential helpers.
+The verify command's known-bad SHA check has exactly 4 hardcoded SHAs
+(tj-actions, reviewdog, trivy). The advisory database fetch queries GitHub's
+`/advisories` endpoint filtered to the `actions` ecosystem, which has limited
+coverage. Novel compromises won't appear in either source until after
+discovery and disclosure.
 
-## 12. Behavioral Anomaly Signal Limitations (Spec 025)
+---
 
-### 12a. Compromised Maintainer Bypass
+## 3. Evasion Techniques
 
-CONTRIBUTOR_ANOMALY (+35) fires when new contributors appear in a release.
-But if the attacker IS a known maintainer (as in the tj-actions attack where
-a maintainer account was compromised), their commits won't trigger this signal.
-The contributor is already in the `known_contributors` set.
+Once an attacker knows pinpoint exists, these are the adaptation strategies.
 
-**Recommendation:** CONTRIBUTOR_ANOMALY catches new/unknown accounts, not
-insider threats. Layer it with DIFF_ANOMALY and RELEASE_CADENCE_ANOMALY —
-even a known maintainer pushing suspicious files at unusual times will
-trigger composite scoring. The three signals together are designed to catch
-attacks that no single signal would flag.
+### 3a. Timing Attacks
 
-### 12b. action.yml False Positives
+Repoint the tag, wait for exactly one CI run to trigger on a target repo,
+revert. The gate catches this IF the target repo has the gate. The monitor
+misses it if the revert happens within the poll interval. If the attacker
+knows which repos have the gate (by checking for `.github/actions-lock.json`
+in public repos), they can target repos without it.
 
-DIFF_ANOMALY classifies all `action.yml` modifications as suspicious because
-determining what changed within the file (description vs runs.main) would
-require fetching and diffing content — an additional API call per detection.
-Actions that frequently update their action.yml metadata will generate noise.
+**Defense:** Deploy the gate on every workflow, not just critical ones. Use
+`--all-workflows` mode so even workflows that don't reference the action
+directly are covered.
 
-**Recommendation:** Suppress with allow rules for specific repos where
-action.yml churn is expected. A `diff_ignore` config option is planned but
-not yet implemented.
+### 3b. Gradual Rotation
 
-### 12c. Baseline Requirement
+Repoint one tag per day. Each event scores individually. A single tag
+repoint of a major version tag (e.g., `v4`) to a descendant commit scores
+-30 (MAJOR_TAG_ADVANCE deduction). If the attacker maintains ancestry and
+keeps entry point size similar, the risk score can be LOW or even negative.
 
-All three behavioral signals require historical data in the lockfile:
+**Defense:** Alert on ANY tag movement, not just high-severity. Review all
+tag changes weekly. The 495-point gap between normal (-30) and full attack
+(+465) means a careful attacker who maintains ancestry and minimal size
+change lands around +15 to +30 — enough for MEDIUM but not CRITICAL. Tune
+your alert threshold to match your risk tolerance.
+
+### 3c. Tag-Delete-Recreate
+
+Delete a tag and create a new one with the same name pointing to a different
+commit. Depending on API timing and caching, this may register as a new tag
+rather than a repointed tag, potentially getting a lower risk score.
+
+**Defense:** `--fail-on-missing` catches this because the recreated tag will
+either match the lockfile SHA (safe) or not (violation). The monitor's state
+tracking records tag deletions separately.
+
+### 3d. Compromise the Monitoring Tool
+
+If pinpoint runs as a GitHub Action, compromise pinpoint itself. Ship a gate
+that silently approves all checks.
+
+**Defense:** Pin the shared workflow to a SHA. Limit write access to the
+shared-workflows repo to 1-2 people. Run `pinpoint watch` on infrastructure
+you control (VPS, dedicated container), not in GitHub Actions.
+
+### 3e. Exploit the Regex Parser
+
+Construct a workflow file that is valid YAML but structures the `uses:`
+directive in a way the regex doesn't match. Examples:
+- Use YAML anchors to define the action reference elsewhere
+- Use multiline folded scalars (`>-`) for the `uses:` value
+- Place action references in reusable workflow inputs that get passed through
+
+**Defense:** None currently. A proper YAML parser would fix this but would
+add dependencies (or significant code). The regex covers >99% of real-world
+workflow syntax.
+
+### 3f. Target the Lockfile Update Process
+
+The lockfile is regenerated by `pinpoint lock`, typically in a scheduled
+workflow. If the attacker times their tag repoint to coincide with the lock
+regeneration, the malicious SHA gets recorded as the new "known good" baseline.
+Future gate runs verify against the poisoned lockfile.
+
+**Defense:** Lockfile regeneration creates a PR for human review. The reviewer
+must check SHA changes against expected releases. Automate this with a
+comparison against the action's GitHub Releases page. But in practice, most
+reviewers merge lockfile PRs without scrutiny.
+
+### 3g. Multi-Architecture Image Substitution
+
+Docker actions using multi-arch manifest lists get their manifest list digest
+verified. An attacker with registry write access could replace the
+linux/amd64 image within the manifest list while keeping the list digest
+unchanged (by also updating the manifest list). This requires registry
+compromise and manifest list manipulation but would bypass digest
+verification.
+
+**Defense:** Verify individual platform digests by running
+`pinpoint gate --integrity` on runners of each architecture. Not yet
+implemented as an automatic check.
+
+---
+
+## 4. Scale Limitations
+
+Where pinpoint breaks as usage grows.
+
+### 4a. State File Is JSON
+
+The `watch` command persists state as a single JSON file. At 2,000 repos
+with 50 tags each (100,000 entries), loading and saving this on every poll
+cycle becomes expensive. The atomic write pattern (write to `.tmp`, rename)
+means the entire file is rewritten every cycle.
+
+There is no SQLite backend, no PostgreSQL backend, no incremental update.
+This is fine for <500 repos. Beyond that, poll cycles slow down and the
+state file can reach 50-100MB.
+
+**Mitigation:** Monitor unique actions (typically 100-200) rather than all
+repos (2,000+). The audit deduplicates across repos.
+
+### 4b. REST API Doesn't Scale
+
+REST tag fetching costs 1 API call per repo per poll. At 2,000 repos with
+5-minute intervals: 24,000 requests/hour. The authenticated rate limit is
+5,000/hour. REST is 5x over budget.
+
+GraphQL solves this (50 repos per query, ~480 points/hour for 2,000 repos),
+but REST is the fallback for environments where GraphQL is unavailable
+(some GHES configurations). If you fall back to REST at scale, monitoring
+stops working.
+
+### 4c. GraphQL Tag Pagination
+
+Each repo gets 3 pages of 100 tags maximum (300 tags). This is hardcoded
+(`maxPaginationPages=3`). Repos that accumulate hundreds of tags over years
+will have incomplete data. The pagination continues from where it left off
+using cursors, so which 300 tags you get depends on GraphQL's ordering.
+
+### 4d. Enrichment Uses REST
+
+GraphQL handles tag resolution, but commit comparison (`CompareCommits`),
+commit metadata (`GetCommitInfo`), release immutability checks, and org
+policy checks all use REST. At 2,000 repos, enrichment calls accumulate.
+ETag caching helps (304 responses are free), but the first enrichment cycle
+after a restart hits REST hard.
+
+### 4e. Integrity Hashing at Scale
+
+`pinpoint lock` with integrity enabled downloads every action's tarball and
+computes SHA-256. With 200 unique actions averaging 500KB each, that's
+100MB of downloads per lockfile regeneration. The 10-goroutine worker pool
+is hardcoded — not tunable for faster networks or rate-limited environments.
+
+For large orgs with 500+ unique actions, lockfile regeneration can take
+several minutes and consume significant bandwidth.
+
+### 4f. Audit GraphQL Cost
+
+Org-wide audit fetches every repo's `.github/workflows/` directory content
+inline via GraphQL. For orgs with thousands of repos, this is multiple
+paginated queries at 50 repos per page. The content of every workflow file
+is transferred in the GraphQL response. A 5,000-repo org with 3 workflows
+per repo transfers ~15,000 workflow files worth of content in a single
+audit run.
+
+---
+
+## 5. Operational Footguns
+
+Ways pinpoint can hurt you if deployed carelessly.
+
+### 5a. Stale Lockfile = Blind Gate
+
+The lockfile is only as fresh as the last `pinpoint lock`. If nobody
+regenerates it for months, legitimate tag advances cause SHA mismatches.
+With `--fail-on-missing` (the default for new lockfile paths), the gate
+blocks the build. The developer who sees "SHA mismatch" doesn't know if
+it's an attack or just a stale lockfile.
+
+If this happens often enough, developers learn to work around the gate
+(removing it, switching to `--warn` mode permanently, or auto-merging
+lockfile PRs without review). Alert fatigue is the real threat model.
+
+**Automate lockfile regeneration.** Run `pinpoint lock` on a schedule
+(weekly) and on workflow file changes. The PR-based update flow creates
+human review checkpoints.
+
+### 5b. State Poisoning
+
+The state file (`.pinpoint-state.json`) is plain JSON on disk with no
+integrity protection — no HMAC, no signature, no checksum. If an attacker
+can modify it, they can pre-seed malicious SHAs as the "known good"
+baseline.
+
+The lockfile (`.github/actions-lock.json`) is the real source of truth and
+is protected by Git's content-addressable storage + branch protection. The
+state file is only for `watch` mode. But if you use `watch` as your primary
+defense (without the gate), state poisoning is a viable attack.
+
+### 5c. Actions Cache Eviction
+
+GitHub's Actions cache evicts entries not accessed within 7 days. If
+`pinpoint watch` runs in GitHub Actions and doesn't execute for a week,
+the state file is lost. Fresh start means every tag looks new. If a tag
+was repointed during the gap, the malicious SHA becomes the new baseline.
+
+**Don't use Actions cache for state.** Run `watch` on dedicated
+infrastructure with persistent storage, or commit the state file to the repo.
+
+### 5d. The Token Is a High-Value Target
+
+Pinpoint requires a token with `contents: read` across every repo it
+monitors. This token is a map of your entire dependency surface.
+
+If the runtime environment is compromised, the token reveals:
+- Every action and tag you depend on
+- The SHAs you consider "known good" (your lockfile contents)
+- Your workflow structure and CI pipeline design
+
+**Use GitHub App installation tokens** (short-lived, 1-hour expiry, scoped
+to specific permissions). Never use long-lived PATs. Isolate the gate
+workflow — no other third-party actions in the same job.
+
+### 5e. Fork PR Manifest Poisoning (Handled, but Subtly)
+
+An attacker submits a PR that modifies the lockfile, hoping the gate reads
+their poisoned version. Pinpoint handles this: for `pull_request` and
+`pull_request_target` events, the gate fetches the lockfile from
+`GITHUB_BASE_REF`, not the PR branch.
+
+But this depends on `GITHUB_BASE_REF` being set. If it's not (e.g., custom
+CI runners, non-standard event types), the gate falls back to `GITHUB_SHA`
+with a warning to stderr. The warning is easy to miss. The fallback trusts
+the PR's lockfile.
+
+### 5f. Warn Mode Inertia
+
+`--warn` mode logs violations without blocking. It's designed for phased
+rollout: run in warn mode for 1-2 weeks, review output, then switch to
+enforce. In practice, warn mode becomes permanent because nobody schedules
+the switchover. The gate runs, generates logs nobody reads, and provides
+zero actual protection.
+
+### 5g. Pinpoint Adds Latency to Every CI Run
+
+The gate makes 3+ API calls per run (fetch workflow, fetch manifest, resolve
+tags via GraphQL). In warm-path mode (~2s), this is tolerable. With
+`--integrity` (re-download tarballs, resolve Docker digests), it's 3-5s.
+With `--on-disk` (hash runner's downloaded files), it's +28ms.
+
+For orgs running thousands of CI jobs per hour, cumulative latency matters.
+A 2-second gate on 1,000 daily jobs is 33 minutes of developer wait time
+per day. Not catastrophic, but not free.
+
+### 5h. Branch Detection Is a Hardcoded List
+
+The gate identifies branch-pinned refs by checking against a fixed list:
+`main`, `master`, `develop`, `dev`, `trunk`, `release`, `staging`,
+`production`. An action pinned to `@my-feature-branch` won't be detected
+as branch-pinned. It'll be treated as a tag reference and checked against
+the manifest, where it likely won't exist — triggering a `--fail-on-missing`
+violation for the wrong reason.
+
+---
+
+## 6. Trust Assumptions
+
+Things pinpoint takes on faith that could be wrong.
+
+### 6a. Tarball Determinism
+
+Pinpoint assumes GitHub's tarball generation is deterministic — that the
+same commit always produces the same tarball bytes. This is empirically
+true today. If GitHub changes their tarball generation (compression
+algorithm, file ordering, header format), every integrity hash in every
+lockfile worldwide invalidates simultaneously. The gate would flag every
+action as compromised.
+
+### 6b. Tree Hash Portability
+
+On-disk tree hashing uses `filepath.Walk` to enumerate files, then hashes
+each file's content. The walk order depends on the filesystem's directory
+ordering. On most filesystems this is deterministic and sorted, but the
+Go standard library doesn't guarantee cross-platform ordering. A tree hash
+computed on Linux may differ from one computed on macOS if the filesystem
+returns entries in a different order.
+
+In practice, GitHub-hosted runners are all Linux with ext4, so this is
+consistent. Self-hosted runners on exotic filesystems could produce
+different tree hashes.
+
+### 6c. GitHub API Consistency
+
+The gate fetches the manifest from one API call, then resolves tags from
+another. Between these calls, the repository state can change. If a tag
+is repointed after the manifest is fetched but before the tag is resolved,
+the gate will correctly detect the mismatch — but only because the timing
+favors detection. The reverse timing (tag resolved first, then manifest
+fetched from a commit that already includes the updated lockfile) would
+miss it.
+
+This is a narrow window and not practically exploitable, but it means the
+gate's verification is not truly atomic.
+
+### 6d. GraphQL Tag Ordering
+
+When paginating tags, pinpoint trusts that GraphQL returns tags in a
+consistent order. If the ordering changes between requests (due to
+concurrent tag creation/deletion), some tags could be missed or duplicated
+across pages.
+
+### 6e. One Dependency
+
+Pinpoint has a single external dependency: `gopkg.in/yaml.v3`. If yaml.v3
+is compromised (same attack vector pinpoint defends against, applied to
+Go modules rather than GitHub Actions), pinpoint itself is compromised.
+The Go module proxy and checksum database provide protection, but this
+is still a supply chain trust assumption about your supply chain defender.
+
+### 6f. Docker Registry Trust
+
+Docker digest resolution trusts the registry's `Docker-Content-Digest`
+response header. If a registry is compromised and returns a valid digest
+for content it shouldn't, pinpoint accepts it. The OCI distribution spec
+requires registries to set this header honestly, but compromised registries
+don't follow specs.
+
+---
+
+## 7. Feature-Specific Limitations
+
+### 7a. Docker Verification
+
+**Only in `--integrity` mode.** The default gate does not re-resolve Docker
+digests. This means the daily `--integrity` check catches Docker image
+repointing, but per-run checks don't. An attacker who repoints a Docker
+image between daily checks has a window.
+
+**Registry rate limits.** Anonymous Docker Hub pulls are limited to 100/6hr.
+Digest resolution uses HEAD requests (lighter than pulls), but for orgs
+with many Docker actions, rate limits can prevent verification.
+
+**Multi-arch manifest lists.** Pinpoint captures the manifest list digest.
+Individual platform image substitution within the list is not detected.
+
+### 7b. Behavioral Anomaly Signals
+
+**Baseline requirement.** All three behavioral signals need historical data:
 - CONTRIBUTOR_ANOMALY needs `known_contributors` (populated after first lock)
-- RELEASE_CADENCE_ANOMALY needs `release_history` with ≥3 entries
+- RELEASE_CADENCE_ANOMALY needs `release_history` with 3+ entries
 - DIFF_ANOMALY needs a previous SHA to compare against
 
-The first `pinpoint lock` after upgrading captures the initial baseline but
-cannot detect anomalies until the second tag movement. There is no retroactive
+The first lockfile after upgrading captures the initial baseline but cannot
+detect anomalies until the second tag movement. There is no retroactive
 population from git history.
 
-**Recommendation:** Run `pinpoint lock` immediately after upgrading to v0.7+.
-The behavioral signals activate automatically as tag movements are observed.
-For critical actions, manually review the first release after baseline
-establishment.
+**High-cadence exclusion.** RELEASE_CADENCE_ANOMALY excludes projects with
+mean release intervals under 7 days. This prevents false positives on
+actively developed projects but also means attackers targeting high-cadence
+projects (nightly release actions, CI tooling) won't trigger cadence
+anomalies.
 
-### 12d. High-Cadence Exclusion
+**action.yml false positives.** DIFF_ANOMALY classifies all `action.yml`
+modifications as suspicious because determining what changed within the
+file would require fetching and diffing content — an additional API call
+per detection. Actions that frequently update their action.yml metadata
+will generate noise.
 
-RELEASE_CADENCE_ANOMALY excludes projects with mean release intervals under
-7 days. This prevents false positives on actively developed projects but
-also means attackers targeting high-cadence projects (nightly release actions,
-CI tooling) won't trigger cadence anomalies.
+### 7c. Verify Command (Retroactive Checks)
 
-**Recommendation:** High-cadence projects are partially protected by the
-other two behavioral signals. CONTRIBUTOR_ANOMALY and DIFF_ANOMALY operate
-independently of release cadence.
+The `verify` command runs 4 integrity signals without a prior baseline.
+But each has gaps:
+
+1. **Release/Tag SHA Mismatch** — If the action has no GitHub Releases
+   (common for smaller actions), this signal returns "limited" not "failed."
+   An attacker targeting an action without releases evades this check.
+
+2. **GPG Signature Discontinuity** — If the action was never GPG-signed,
+   signature dropping can't be detected. Most actions are unsigned.
+
+3. **Impossible Chronology** — 48-hour tolerance. Timezone-aware backdating
+   within this window is invisible.
+
+4. **Known Compromised SHA** — Exactly 4 hardcoded SHAs. Scales by adding
+   more to source code and recompiling. Not a dynamic database.
+
+### 7d. SARIF Output
+
+SARIF output maps to 6 rule IDs. Gate violations produce human-readable
+text and JSON but NOT SARIF. SARIF is generated by the `audit` and `scan`
+commands only. If you're integrating with GitHub's code scanning (which
+consumes SARIF), you need to run `scan` or `audit` separately from the
+gate.
+
+### 7e. Injection System
+
+`pinpoint inject` adds gate steps to workflow files using line-based
+processing (not YAML parsing). It detects jobs, steps, and indentation
+through string matching. Edge cases:
+
+- Non-standard indentation (tabs mixed with spaces) can confuse detection
+- Jobs with `uses:` at the job level (reusable workflows) are correctly
+  skipped, but detection relies on the specific string pattern
+- If a workflow uses non-standard YAML syntax, injection may produce
+  invalid YAML
+
+The injection is idempotent (checks for existing "pinpoint-action" in the
+first step) but the check is string-based, not semantic. A step named
+"Run pinpoint-action check" would also trigger the skip.
+
+### 7f. Audit Dangerous Trigger Detection
+
+The audit scans for `pull_request_target` workflows with dangerous patterns
+(checkout of PR head ref, interpolation of PR data in run steps). But:
+
+- **Test/playground repos are excluded** by name pattern matching
+  (`goat`, `playground`, `vulnerable`, `test-`, `-test`). Attackers who
+  name their repo normally evade this filter.
+
+- **`if: false` detection** skips disabled jobs. But `if: false` as a
+  string value in YAML is truthy. The detection checks for the literal
+  string, not YAML boolean semantics. Edge cases exist.
+
+- **Multiline run blocks** (`run: |`, `run: >`) are handled, but deeply
+  nested interpolation across multiple lines could evade the regex.
+
+---
+
+## 8. The Bootstrap Problem
+
+### 8a. No Historical Verification
+
+If you deploy pinpoint today, `pinpoint lock` records current SHAs as the
+baseline. It cannot tell you whether those SHAs were already compromised
+yesterday. The `verify` command provides partial retroactive coverage (4
+signals), but none of them are definitive.
+
+**Run `pinpoint verify` before your first lockfile.** Cross-reference
+critical actions against their GitHub Releases page. Generate your lockfile
+during a known-clean period, not during or after an incident.
+
+### 8b. First-Lock Blind Spot
+
+The first `pinpoint lock` cannot detect behavioral anomalies because there's
+no baseline. CONTRIBUTOR_ANOMALY returns nil (not empty), so it doesn't fire.
+RELEASE_CADENCE_ANOMALY needs 3+ releases in history. DIFF_ANOMALY needs a
+previous SHA.
+
+An attacker who compromises an action BEFORE pinpoint is deployed gets a
+free pass on the first lock. Their malicious SHA becomes the trusted
+baseline. All subsequent verification operates on a poisoned foundation.
+
+---
+
+## 9. What Pinpoint Is and Isn't
+
+### Pinpoint Is
+
+- A meaningful improvement over nothing (which is what 95% of orgs have)
+- Effective against the class of attacks we've actually seen: mass tag
+  repointing (Trivy, tj-actions, reviewdog) where the attacker leaves
+  malicious tags in place for hours
+- Both detection (monitor) and prevention (gate) in a single binary
+- The first open-source tool to verify Docker image digests in GitHub Actions
+- Content integrity verification: SHA-256 tarball hashes, on-disk tree
+  hashing, transitive dependency resolution to depth 5
+- 13-signal risk scoring with a 495-point separation between normal
+  operations and attack signatures
+- 11/11 on a comprehensive attack battery including lockfile poisoning,
+  typosquats, SHA swaps, Docker image repointing, and new malicious workflows
+- Capable of monitoring 2,000+ repos via GraphQL batching at <10% of API
+  budget
+- Deployable in under 5 minutes: single binary, one dependency, zero config
+  required for basic operation
+- GPL-3.0, free, auditable, no vendor lock-in
+
+### Pinpoint Is Not
+
+- A substitute for SHA pinning. Immutable references are always stronger
+  than monitoring mutable ones.
+- Effective against patient, targeted adversaries who understand the
+  detection signals and stay below thresholds.
+- A guarantee that your CI/CD pipeline is safe. Pinpoint covers one attack
+  surface (GitHub Actions supply chain). There are many others.
+- A replacement for code review of action source code. Pinpoint verifies
+  that the code hasn't changed, not that it's safe.
+- A YAML parser. The regex-based extraction covers >99% of real-world
+  workflows but is not semantically complete.
+- Tamper-proof. The gate, the lockfile, the state file, and the binary
+  itself can all be modified by anyone with write access.
+- Real-time. There is always a window — between polls, between lock
+  regeneration, between gate execution and actual code execution.
+
+### The Right Deployment
+
+1. `pinpoint gate --all-workflows --fail-on-missing --fail-on-unpinned` on
+   every workflow — blocks known attacks in real-time
+2. `pinpoint gate --integrity` on a daily schedule — catches Docker image
+   repointing and tarball substitution
+3. `pinpoint watch` on dedicated infrastructure — continuous monitoring with
+   alerting for repos that don't have the gate
+4. `pinpoint audit --org` quarterly — org-wide posture assessment, discovers
+   unprotected repos and dangerous triggers
+5. `pinpoint verify` on first deployment — retroactive integrity check
+   before trusting the initial baseline
+6. Automated `pinpoint lock` on schedule and on workflow changes — keeps
+   the lockfile fresh, creates human review checkpoints for SHA changes
+
+### The Honest Bottom Line
+
+Pinpoint raises the cost of supply chain attacks from "trivial" (force-push
+a tag, wait) to "requires understanding the detection system and staying
+below multiple independent thresholds while maintaining ancestry, timestamp
+plausibility, file size similarity, contributor consistency, and release
+cadence norms."
+
+That's a real improvement. It's not invulnerability.
