@@ -35,6 +35,7 @@ type Alert struct {
 // ScoreContext provides the data needed to score a tag repointing event.
 type ScoreContext struct {
 	TagName         string
+	IsBranch        bool   // True if the ref is a branch, not a tag
 	IsDescendant    bool   // Is the new commit a descendant of the old?
 	AheadBy         int
 	BehindBy        int
@@ -106,7 +107,7 @@ func Score(ctx ScoreContext) (Severity, []string) {
 	}
 
 	// Exact semver tag was repointed (these should never move)
-	if semverExactRe.MatchString(ctx.TagName) {
+	if !ctx.IsBranch && semverExactRe.MatchString(ctx.TagName) {
 		score += 50
 		signals = append(signals, "SEMVER_REPOINT: exact version tag should never be moved")
 	}
@@ -183,7 +184,7 @@ func Score(ctx ScoreContext) (Severity, []string) {
 	// === LOW SIGNALS (informational) ===
 
 	// Major version tag moved forward to descendant (expected behavior)
-	if majorVersionRe.MatchString(ctx.TagName) && ctx.IsDescendant {
+	if !ctx.IsBranch && majorVersionRe.MatchString(ctx.TagName) && ctx.IsDescendant {
 		score -= 30
 		signals = append(signals, "MAJOR_TAG_ADVANCE: major version tag moved forward (routine)")
 	}

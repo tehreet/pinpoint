@@ -356,3 +356,36 @@ func TestSuppress_CriticalNotSuppressed(t *testing.T) {
 		t.Errorf("expected 0 suppressed, got %d", len(result.Suppressed))
 	}
 }
+
+func TestSuppress_BranchRefNotSuppressedByMajorTagAdvance(t *testing.T) {
+	alerts := []risk.Alert{
+		{
+			Severity:    risk.SeverityMedium,
+			Type:        "TAG_REPOINTED",
+			Action:      "actions/checkout",
+			Tag:         "v2",
+			PreviousSHA: "aaa",
+			CurrentSHA:  "bbb",
+		},
+	}
+	rules := []config.AllowRule{
+		{
+			Repo:      "actions/*",
+			Condition: "major_tag_advance",
+			Reason:    "test",
+		},
+	}
+	contexts := map[string]risk.ScoreContext{
+		"actions/checkout@v2": {
+			TagName:      "v2",
+			IsBranch:     true,
+			IsDescendant: true,
+		},
+	}
+
+	result := Filter(alerts, rules, contexts)
+	if len(result.Allowed) != 1 {
+		t.Errorf("expected branch ref alert to NOT be suppressed, got %d allowed, %d suppressed",
+			len(result.Allowed), len(result.Suppressed))
+	}
+}

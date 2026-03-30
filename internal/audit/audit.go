@@ -65,7 +65,9 @@ type Options struct {
 var (
 	usesRe = regexp.MustCompile(`uses:\s*['"]?([a-zA-Z0-9\-_.]+)/([a-zA-Z0-9\-_.]+)(?:/[^@\s'"]*)?@([a-zA-Z0-9\-_.]+)['"]?`)
 	shaRe  = regexp.MustCompile(`^[0-9a-f]{40}$`)
-	tagRe  = regexp.MustCompile(`^v?\d`)
+	// tagRe matches version tags: v1, v1.2, v1.2.3, 1.0.0
+	// Must be ONLY digits, dots, and optional v prefix — no hyphens, no letters after.
+	tagRe = regexp.MustCompile(`^v?\d+(\.\d+)*$`)
 )
 
 // knownCompromised is a hardcoded list of previously compromised actions.
@@ -309,6 +311,10 @@ func extractRefs(content string) []actionRef {
 func classifyRef(ref string) string {
 	if shaRe.MatchString(ref) {
 		return "sha"
+	}
+	// Refs with slashes are always branches (release/v1.0, feature/foo)
+	if strings.Contains(ref, "/") {
+		return "branch"
 	}
 	if tagRe.MatchString(ref) {
 		return "tag"

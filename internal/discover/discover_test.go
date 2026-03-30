@@ -269,6 +269,58 @@ func rawRefs(refs []ActionRef) []string {
 	return out
 }
 
+func TestDiscover_BranchClassification(t *testing.T) {
+	t.Parallel()
+	dir := t.TempDir()
+	wf := `name: test
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@main
+      - uses: some/action@v1-beta
+      - uses: other/action@develop
+      - uses: pinned/action@abc1234567890abc1234567890abc1234567890ab
+`
+	if err := os.WriteFile(filepath.Join(dir, "ci.yml"), []byte(wf), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	refs, err := FromWorkflowDir(dir)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	type want struct {
+		isPinned bool
+		isBranch bool
+	}
+	expectations := map[string]want{
+		"v4":      {isPinned: false, isBranch: false}, // tag
+		"main":    {isPinned: false, isBranch: true},  // branch
+		"v1-beta": {isPinned: false, isBranch: true},  // branch (hyphenated)
+		"develop": {isPinned: false, isBranch: true},  // branch
+	}
+
+	for _, ref := range refs {
+		if ref.IsPinned {
+			continue
+		}
+		exp, ok := expectations[ref.Ref]
+		if !ok {
+			continue
+		}
+		if ref.IsBranch != exp.isBranch {
+			t.Errorf("ref %q: IsBranch = %v, want %v", ref.Ref, ref.IsBranch, exp.isBranch)
+		}
+		if ref.IsPinned != exp.isPinned {
+			t.Errorf("ref %q: IsPinned = %v, want %v", ref.Ref, ref.IsPinned, exp.isPinned)
+		}
+	}
+}
+
 // containsRaw checks whether any ref has a Raw field equal to want.
 func containsRaw(refs []ActionRef, want string) bool {
 	for _, r := range refs {

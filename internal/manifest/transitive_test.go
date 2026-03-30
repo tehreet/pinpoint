@@ -274,3 +274,51 @@ runs:
 		t.Errorf("expected 0 deps (locals skipped), got %d", len(deps))
 	}
 }
+
+func TestResolveRefToSHA_FallsBackToBranch(t *testing.T) {
+	commitSHA := "abc1234567890abc1234567890abc1234567890ab"
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+		if strings.Contains(path, "/git/ref/tags/v1") {
+			http.NotFound(w, r)
+			return
+		}
+		if strings.Contains(path, "/git/ref/heads/v1") {
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintf(w, `{"ref":"refs/heads/v1","object":{"type":"commit","sha":"%s"}}`, commitSHA)
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer server.Close()
+
+	sha, err := resolveRefToSHA(context.Background(), server.Client(), server.URL, "", "actions", "checkout", "v1")
+	if err != nil {
+		t.Fatalf("resolveRefToSHA failed: %v", err)
+	}
+	if sha != commitSHA {
+		t.Errorf("got SHA %q, want %q", sha, commitSHA)
+	}
+}
+
+func TestResolveRefToSHA_TagTakesPrecedence(t *testing.T) {
+	tagSHA := "aaa1234567890abc1234567890abc1234567890ab"
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+		if strings.Contains(path, "/git/ref/tags/v1") {
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintf(w, `{"ref":"refs/tags/v1","object":{"type":"commit","sha":"%s"}}`, tagSHA)
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer server.Close()
+
+	sha, err := resolveRefToSHA(context.Background(), server.Client(), server.URL, "", "actions", "checkout", "v1")
+	if err != nil {
+		t.Fatalf("resolveRefToSHA failed: %v", err)
+	}
+	if sha != tagSHA {
+		t.Errorf("got SHA %q, want %q (tag should take precedence)", sha, tagSHA)
+	}
+}

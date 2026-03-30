@@ -821,3 +821,32 @@ func TestClassifyDiffFiles_DocsOnly(t *testing.T) {
 		t.Errorf("expected 0 suspicious for docs-only, got: %v", suspicious)
 	}
 }
+
+func TestScore_BranchRefSkipsTagSignals(t *testing.T) {
+	// A branch named "v1.2.3" should NOT trigger SEMVER_REPOINT
+	_, signals := Score(ScoreContext{
+		TagName:    "v1.2.3",
+		IsBranch:   true,
+		CommitDate: time.Now(),
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "SEMVER_REPOINT") {
+			t.Errorf("SEMVER_REPOINT should not fire for branch ref, got: %s", s)
+		}
+	}
+}
+
+func TestScore_BranchRefSkipsMajorTagAdvance(t *testing.T) {
+	// A branch named "v2" should NOT get the -30 MAJOR_TAG_ADVANCE deduction
+	_, signals := Score(ScoreContext{
+		TagName:      "v2",
+		IsBranch:     true,
+		IsDescendant: true,
+		CommitDate:   time.Now(),
+	})
+	for _, s := range signals {
+		if strings.HasPrefix(s, "MAJOR_TAG_ADVANCE") {
+			t.Errorf("MAJOR_TAG_ADVANCE should not fire for branch ref, got: %s", s)
+		}
+	}
+}

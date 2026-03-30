@@ -19,6 +19,7 @@ type ActionRef struct {
 	Repo     string
 	Ref      string // Tag, branch, or SHA
 	IsPinned bool   // True if ref looks like a full SHA
+	IsBranch bool   // True if ref looks like a branch name
 	Source   string // Workflow file where it was found
 	Raw      string // The full uses: string
 }
@@ -33,7 +34,24 @@ var (
 	usesRe = regexp.MustCompile(`uses:\s*['"]?([a-zA-Z0-9\-_.]+)/([a-zA-Z0-9\-_.]+)(?:/[^@\s'"]*)?@([a-zA-Z0-9\-_.]+)['"]?`)
 	// Full 40-char hex SHA
 	shaRe = regexp.MustCompile(`^[0-9a-f]{40}$`)
+	// tagLikeRe matches refs that look like version tags: v1, v1.2, v1.2.3, 1.0
+	tagLikeRe = regexp.MustCompile(`^v?\d+(\.\d+)*$`)
 )
+
+// looksLikeBranch returns true if a non-SHA ref appears to be a branch.
+func looksLikeBranch(ref string) bool {
+	switch ref {
+	case "main", "master", "develop", "dev", "trunk", "release", "staging", "production":
+		return true
+	}
+	if strings.Contains(ref, "/") {
+		return true
+	}
+	if !tagLikeRe.MatchString(ref) {
+		return true
+	}
+	return false
+}
 
 // FromWorkflowDir scans a directory of workflow files and extracts all Action references.
 func FromWorkflowDir(dir string) ([]ActionRef, error) {
@@ -97,6 +115,7 @@ func fromFile(path string) ([]ActionRef, error) {
 			Repo:     matches[2],
 			Ref:      matches[3],
 			IsPinned: shaRe.MatchString(matches[3]),
+			IsBranch: !shaRe.MatchString(matches[3]) && looksLikeBranch(matches[3]),
 			Source:   filepath.Base(path),
 			Raw:      matches[0],
 		}

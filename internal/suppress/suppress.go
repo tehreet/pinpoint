@@ -84,7 +84,7 @@ func ruleMatches(rule config.AllowRule, a risk.Alert, ctx risk.ScoreContext) boo
 	// Check condition
 	switch rule.Condition {
 	case "major_tag_advance":
-		return majorVersionRe.MatchString(a.Tag) && ctx.IsDescendant
+		return !ctx.IsBranch && majorVersionRe.MatchString(a.Tag) && ctx.IsDescendant
 	case "descendant":
 		return ctx.IsDescendant
 	case "release_within_5m":

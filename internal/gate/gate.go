@@ -75,6 +75,20 @@ var knownBranches = map[string]bool{
 	"trunk": true, "release": true, "staging": true, "production": true,
 }
 
+// looksLikeBranch returns true if the ref is definitely a branch based on its name.
+// Refs with slashes (release/v1.0) and known branch names are branches.
+// Version-like refs (v1, v1.2.3) are ambiguous and NOT classified here —
+// they get resolved via the API, and reclassified as branches if no matching tag exists.
+func looksLikeBranch(ref string) bool {
+	if knownBranches[ref] {
+		return true
+	}
+	if strings.Contains(ref, "/") {
+		return true
+	}
+	return false
+}
+
 // RunGate performs the pre-execution verification.
 func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 	start := time.Now()
@@ -259,7 +273,7 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 			continue
 		}
 
-		isBranch := knownBranches[ref]
+		isBranch := looksLikeBranch(ref)
 		tagRefs = append(tagRefs, actionRef{
 			Owner: owner, Repo: repo, Ref: ref, Raw: raw,
 			IsSHA: false, IsBranch: isBranch,
@@ -314,6 +328,24 @@ func RunGate(ctx context.Context, opts GateOptions) (*GateResult, error) {
 						tagRefs[i].Owner = "" // sentinel: mark as handled
 					}
 				}
+			}
+		}
+	}
+
+	// Reclassify version-like refs that don't exist as tags.
+	// If GraphQL returns no matching tag for a ref like "v1", treat it as a branch.
+	if tagMap != nil {
+		for i, ar := range tagRefs {
+			if ar.IsBranch || ar.IsSHA {
+				continue
+			}
+			key := ar.Owner + "/" + ar.Repo
+			repoTags := tagMap[key]
+			if repoTags == nil {
+				continue // repo not accessible, can't reclassify
+			}
+			if repoTags[ar.Ref] == "" {
+				tagRefs[i].IsBranch = true
 			}
 		}
 	}

@@ -41,6 +41,43 @@ func TestClassifyRef(t *testing.T) {
 	}
 }
 
+func TestClassifyRef_BranchLikeVersions(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		ref  string
+		want string
+	}{
+		// Pure versions → tag
+		{"v1", "tag"},
+		{"v4", "tag"},
+		{"v1.2.3", "tag"},
+		{"1.0.0", "tag"},
+		{"v2.0", "tag"},
+		{"1.0", "tag"},
+		// Version-like branches → branch
+		{"v1-beta", "branch"},
+		{"v2-rc1", "branch"},
+		{"v3.0-rc1", "branch"},
+		{"v1-fix", "branch"},
+		{"v2.0-experimental", "branch"},
+		// Slash branches → branch
+		{"release/v1.0", "branch"},
+		{"feature/v2", "branch"},
+		// Standard branches → branch
+		{"main", "branch"},
+		{"master", "branch"},
+		{"develop", "branch"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.ref, func(t *testing.T) {
+			got := classifyRef(tt.ref)
+			if got != tt.want {
+				t.Errorf("classifyRef(%q) = %q, want %q", tt.ref, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestExtractRefs(t *testing.T) {
 	t.Parallel()
 	content := `name: CI

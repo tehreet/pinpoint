@@ -1650,8 +1650,11 @@ jobs:
 		t.Errorf("violations = %d, want 0", len(result.Violations))
 	}
 	output := buf.String()
-	if !strings.Contains(output, "tag not found on remote") {
-		t.Errorf("expected 'tag not found on remote' warning, got:\n%s", output)
+	// v4 is a version-like ref that doesn't exist as a tag on the remote,
+	// so looksLikeBranch returns false, then post-GraphQL reclassification
+	// marks it as a branch since the tag is missing.
+	if !strings.Contains(output, "branch-pinned") {
+		t.Errorf("expected 'branch-pinned' warning (reclassified from missing tag), got:\n%s", output)
 	}
 }
 
@@ -2162,5 +2165,29 @@ jobs:
 	output := buf.String()
 	if !strings.Contains(output, "SHA matches manifest") {
 		t.Errorf("output should contain 'SHA matches manifest', got:\n%s", output)
+	}
+}
+
+func TestLooksLikeBranch(t *testing.T) {
+	tests := []struct {
+		ref  string
+		want bool
+	}{
+		{"main", true},
+		{"master", true},
+		{"develop", true},
+		{"release/v1.0", true},
+		{"feature/foo", true},
+		{"v1", false},       // ambiguous — needs API check
+		{"v1.2.3", false},   // ambiguous — needs API check
+		{"v4", false},       // ambiguous — needs API check
+	}
+	for _, tt := range tests {
+		t.Run(tt.ref, func(t *testing.T) {
+			got := looksLikeBranch(tt.ref)
+			if got != tt.want {
+				t.Errorf("looksLikeBranch(%q) = %v, want %v", tt.ref, got, tt.want)
+			}
+		})
 	}
 }

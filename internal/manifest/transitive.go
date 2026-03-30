@@ -226,8 +226,26 @@ func parseTransitiveRef(raw string) (owner, repo, ref string, err error) {
 }
 
 // resolveRefToSHA resolves a tag or branch ref to a commit SHA using the GitHub REST API.
+// Tries tags first, then falls back to branches.
 func resolveRefToSHA(ctx context.Context, client *http.Client, baseURL, token, owner, repo, ref string) (string, error) {
-	url := fmt.Sprintf("%s/repos/%s/%s/git/ref/tags/%s", baseURL, owner, repo, ref)
+	// Try tags first (most common for action refs)
+	sha, err := resolveGitRef(ctx, client, baseURL, token, owner, repo, "tags/"+ref)
+	if err == nil {
+		return sha, nil
+	}
+
+	// Fall back to branches
+	sha, branchErr := resolveGitRef(ctx, client, baseURL, token, owner, repo, "heads/"+ref)
+	if branchErr == nil {
+		return sha, nil
+	}
+
+	return "", fmt.Errorf("ref %q not found as tag or branch: %w", ref, err)
+}
+
+// resolveGitRef resolves a fully-qualified git ref (e.g., "tags/v1" or "heads/main") to a commit SHA.
+func resolveGitRef(ctx context.Context, client *http.Client, baseURL, token, owner, repo, qualifiedRef string) (string, error) {
+	url := fmt.Sprintf("%s/repos/%s/%s/git/ref/%s", baseURL, owner, repo, qualifiedRef)
 
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
@@ -245,7 +263,7 @@ func resolveRefToSHA(ctx context.Context, client *http.Client, baseURL, token, o
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("HTTP %d resolving ref %s", resp.StatusCode, ref)
+		return "", fmt.Errorf("HTTP %d resolving ref %s", resp.StatusCode, qualifiedRef)
 	}
 
 	var gr gitRefResponse
@@ -253,7 +271,6 @@ func resolveRefToSHA(ctx context.Context, client *http.Client, baseURL, token, o
 		return "", err
 	}
 
-	// If it's an annotated tag, dereference to get the commit SHA
 	if gr.Object.Type == "tag" {
 		return dereferenceAnnotatedTag(ctx, client, baseURL, token, owner, repo, gr.Object.SHA)
 	}
